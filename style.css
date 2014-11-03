@@ -1,0 +1,38 @@
+html {
+  overflow: auto;
+}
+
+body {
+  min-width: 350px;
+  min-height: 400px;
+  overflow: hidden;
+  padding: 10px;
+  font-family: "Open Sans", sans-erif;
+}
+
+#main-view {
+  display: none;
+}
+
+#refresh-data {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  height: 26px;
+  width: 26px;
+  padding: 0px;
+}
+
+#refresh-data span {
+  margin-top: 3px;
+}
+
+#title {
+  margin: 10px 0px;
+}
+
+ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}

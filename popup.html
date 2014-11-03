@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link href="style.css" rel="stylesheet" media="screen" type="text/css">
+
+
+  </head>
+  <body tabindex="1">
+
+    <div id="login-view">
+      <h3>Welcome to Clicky!</h3>
+      <hr \>
+      <h4>Who are you?</h4>
+      <p>Select your username from the list below...</p>
+      <ul id="user-select"></ul>
+
+    </div>
+
+    <div id="main-view">
+      <button class="btn btn-default btn-xs" id="refresh-data">
+        <span class="glyphicon glyphicon-refresh"></span>
+      </button>
+
+      <h3 id="title">Clicky</h3>
+      <p id="greeting"></p>
+      <p>Select a user or a channel below to share a link</p>
+      <hr \>
+
+      <h4>Users</h4>
+      <ul id="userList" class="roomList"><li>Loading...</li></ul>
+
+      <hr \>
+
+      <h4>Channels</h4>
+      <ul id="channelList" class="roomList"><li>Loading...</li></ul>
+    </div>
+  </body>
+
+  <script src="jquery/jquery-2.1.1.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="app.js"></script>
+
+
+</html>
