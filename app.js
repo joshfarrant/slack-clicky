@@ -91,7 +91,7 @@ function buildChannelList(channels) {
   var html = '';
   $.each(channels, function(i) {
     var channel = channels[i];
-    html += '<li class="channel"><a href="#" data-room="' + channel.id + '">#';
+    html += '<li class="channel"><a href="#" title="' + channels[i].purpose.value + '" data-room="' + channel.id + '">#';
     html += channel.name + '</a>';
     html += '</li>';
   });
@@ -104,7 +104,7 @@ function buildUserList(users) {
   var html = '';
   $.each(users, function(i) {
     var user = users[i];
-    html += '<li class="user"><a href="#" data-room="' + user.id + '">' + user.name + '</a></li>';
+    html += '<li class="user"><a href="#" title="' + users[i].profile.real_name + '" data-room="' + user.id + '">' + user.name + '</a></li>';
   });
   list.html(html);
 }
