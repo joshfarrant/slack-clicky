@@ -36,3 +36,12 @@ ul {
   margin: 0px;
   padding: 0px;
 }
+
+.label-success {
+  float: right;
+  display: none;
+}
+
+#me-promo {
+  float: right;
+}

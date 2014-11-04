@@ -68,6 +68,8 @@ function postMessage(message, channel) {
     data: data,
     success: function() {
       console.info('[info] Link shared');
+      $('span#' + channel).fadeIn();
+      $('span#' + channel).delay(2000).fadeOut();
     }
   });
 }
@@ -93,7 +95,7 @@ function buildChannelList(channels) {
     var channel = channels[i];
     html += '<li class="channel"><a href="#" title="' + channels[i].purpose.value + '" data-room="' + channel.id + '">#';
     html += channel.name + '</a>';
-    html += '</li>';
+    html += '<span id="success-' + channels[i].id + '" class="label label-success">Link shared!</span></li>';
   });
   list.html(html);
 }
@@ -104,7 +106,9 @@ function buildUserList(users) {
   var html = '';
   $.each(users, function(i) {
     var user = users[i];
-    html += '<li class="user"><a href="#" title="' + users[i].profile.real_name + '" data-room="' + user.id + '">' + user.name + '</a></li>';
+    html += '<li class="user"><a href="#" title="' + users[i].profile.real_name + '" data-room="' + user.id + '">';
+    html += user.name + '</a>';
+    html += '<span id="' + users[i].id + '" class="label label-success">Link shared!</span></li>';
   });
   list.html(html);
 }
