@@ -1,21 +1,33 @@
+// Insert Slack API Token into this variable
 var slackToken = 'SLACK_API_TOKEN';
+
+// Gets current Clicky user from local storage if it exists
 var user = JSON.parse(localStorage.getItem('clicky-user'));
 
+
+// Gets list of all available (and unarchived) channels
 function getChannels() {
   var data = {
     'token': slackToken,
     'exclude_archived': 1
   }
 
+  // Checks if channels list exists in local storage
+  // If not it is fetched from the Slack API
+  // If it is, that is fetched instead
   if (localStorage.getItem('clicky-channels') === null) {
     $.ajax({
       type: 'POST',
       url: 'https://slack.com/api/channels.list',
       data: data,
       success: function(data) {
-        var channels = data.channels;
-        localStorage.setItem('clicky-channels', JSON.stringify(channels));
-        buildChannelList(channels);
+        if (data.ok === true) {
+          var channels = data.channels;
+          localStorage.setItem('clicky-channels', JSON.stringify(channels));
+          buildChannelList(channels);
+        } else {
+          console.error('[error] Error getting channels: ' + data.error);
+        }
       }
     });
   } else {
@@ -26,21 +38,29 @@ function getChannels() {
 }
 
 
+// Gets list of all users
 function getUsers() {
   var data = {
     'token': slackToken
   }
 
+  // Checks if users list exists in local storage
+  // If not it is fetched from the Slack API
+  // If it is, that is fetched instead
   if (localStorage.getItem('clicky-users') === null) {
     $.ajax({
       type: 'POST',
       url: 'https://slack.com/api/users.list',
       data: data,
       success: function(data) {
-        var users = data.members;
-        localStorage.setItem('clicky-users', JSON.stringify(users));
-        buildUserDropdown();
-        buildUserList(users);
+        if (data.ok === true) {        
+          var users = data.members;
+          localStorage.setItem('clicky-users', JSON.stringify(users));
+          buildUserLoginList();
+          buildUserList(users);
+        } else {
+          console.error('[error] Error getting users: ' + data.error);
+        }        
       }
     });
   } else {
@@ -51,8 +71,8 @@ function getUsers() {
 }
 
 
+// Sends link to user or channel using Slack API
 function postMessage(message, channel) {
-  
   var data = {
     'token': slackToken,
     'channel': channel,
@@ -66,17 +86,27 @@ function postMessage(message, channel) {
     type: 'POST',
     url: 'https://slack.com/api/chat.postMessage',
     data: data,
-    success: function() {
-      console.info('[info] Link shared');
-      $('span#' + channel).fadeIn();
-      $('span#' + channel).delay(2000).fadeOut();
+    success: function(data) {
+      var badge = $('span#' + channel);
+      if (data.ok === true) {      
+        console.info('[info] Link shared');
+        badge.html('Link shared!');
+        badge.fadeIn();
+        badge.delay(2000).fadeOut();
+      } else {
+        console.error('[error] Error sharing link: ' + data.error);
+        badge.removeClass('label-success').addClass('label-danger');
+        badge.html('Error sharing link');
+        badge.fadeIn();
+        badge.delay(2000).fadeOut();
+      }          
     }
   });
 }
 
 
+// Gets active tab url
 function postCurrentTabTo(channel) {
-
   chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
     var tab = tabs[0];
     var tabUrl = tab.url;
@@ -88,34 +118,36 @@ function postCurrentTabTo(channel) {
 }
 
 
+// Builds channel list in 'Channels' interface
 function buildChannelList(channels) {
   var list = $('#channelList');
   var html = '';
   $.each(channels, function(i) {
     var channel = channels[i];
-    html += '<li class="channel"><a href="#" title="' + channels[i].purpose.value + '" data-room="' + channel.id + '">#';
+    html += '<li class="channel"><a href="#" title="' + channel.purpose.value + '" data-room="' + channel.id + '">#';
     html += channel.name + '</a>';
-    html += '<span id="success-' + channels[i].id + '" class="label label-success">Link shared!</span></li>';
+    html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
 }
 
 
+// Builds user list in 'Channels' interface
 function buildUserList(users) {
   var list = $('#userList');
   var html = '';
   $.each(users, function(i) {
     var user = users[i];
-    html += '<li class="user"><a href="#" title="' + users[i].profile.real_name + '" data-room="' + user.id + '">';
+    html += '<li class="user"><a href="#" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
     html += user.name + '</a>';
-    html += '<span id="' + users[i].id + '" class="label label-success">Link shared!</span></li>';
+    html += '<span id="' + user.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
 }
 
 
-function buildUserDropdown() {
-
+// Builds user list in login interface
+function buildUserLoginList() {
   var usersJson = localStorage.getItem('clicky-users');
   users = JSON.parse(usersJson);
   var html = '';
@@ -127,6 +159,7 @@ function buildUserDropdown() {
 }
 
 
+// Builds greeting
 function buildGreeting() {
   var greetings = [
     "Hello",
@@ -154,6 +187,7 @@ function buildGreeting() {
 }
 
 
+// Loads correct view based on available data
 function loadView() {
   if (localStorage.getItem('clicky-user') !== null) {
     user = JSON.parse(localStorage.getItem('clicky-user'));
@@ -164,17 +198,21 @@ function loadView() {
     getUsers();
   } else {
     getUsers();
-    buildUserDropdown();
+    buildUserLoginList();
   }
 }
 
 
+// Handles click events on users and channels
+// Shares active tab to that user/channel
 $(document).on('click', '.roomList>li>a', function() {
   var channel = $(this).attr('data-room');
   postCurrentTabTo(channel);
 });
 
 
+// Handles click events on users login screen
+// Assigns selected user to clicky-user in local storage
 $(document).on('click', '#user-select>.user>a', function() {
   var name = $(this).html();
   var usersJson = localStorage.getItem('clicky-users');
@@ -189,6 +227,9 @@ $(document).on('click', '#user-select>.user>a', function() {
 });
 
 
+// Handles click events on refresh button
+// Deletes users and channels from local storage
+// Gets new data and rebuilds interfaces
 $(document).on('click', '#refresh-data', function() {
   console.info('[info] Refreshing data');
   localStorage.removeItem('clicky-users');
@@ -201,6 +242,7 @@ $(document).on('click', '#refresh-data', function() {
 });
 
 
+// Loads views when document is ready
 $(document).ready(function() {
   loadView();
 });
