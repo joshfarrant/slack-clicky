@@ -1,5 +1,5 @@
-// Insert Slack API Token into this variable
-var slackToken = 'SLACK_API_TOKEN';
+var slackToken;
+var team = localStorage.getItem('clicky-team');
 
 // Gets current Clicky user from local storage if it exists
 var user = JSON.parse(localStorage.getItem('clicky-user'));
@@ -38,6 +38,20 @@ function getChannels() {
 }
 
 
+// Builds channel list in 'Channels' interface
+function buildChannelList(channels) {
+  var list = $('#channelList');
+  var html = '';
+  $.each(channels, function(i) {
+    var channel = channels[i];
+    html += '<li class="channel"><a href="#" title="' + channel.purpose.value + '" data-room="' + channel.id + '">#';
+    html += channel.name + '</a>';
+    html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
+  });
+  list.html(html);
+}
+
+
 // Gets list of all users
 function getUsers() {
   var data = {
@@ -68,6 +82,35 @@ function getUsers() {
     users = JSON.parse(usersJson);
     buildUserList(users);
   }
+}
+
+
+// Builds user list in 'Channels' interface
+function buildUserList(users) {
+  var list = $('#userList');
+  var html = '';
+
+  $.each(users, function(i) {
+    var user = users[i];
+    html += '<li class="user"><a href="#" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
+    html += user.name + '</a>';
+    html += '<span id="' + user.id + '" class="label label-success"></span></li>';
+  });
+  list.html(html);
+  $('span.team').html(team);
+}
+
+
+// Gets active tab url
+function postCurrentTabTo(channel) {
+  chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
+    var tab = tabs[0];
+    var tabUrl = tab.url;
+    var formattedLink = '<' + tabUrl + '>';
+
+    postMessage(formattedLink, channel);
+
+  });
 }
 
 
@@ -102,47 +145,6 @@ function postMessage(message, channel) {
       }          
     }
   });
-}
-
-
-// Gets active tab url
-function postCurrentTabTo(channel) {
-  chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
-    var tab = tabs[0];
-    var tabUrl = tab.url;
-    var formattedLink = '<' + tabUrl + '>';
-
-    postMessage(formattedLink, channel);
-
-  });
-}
-
-
-// Builds channel list in 'Channels' interface
-function buildChannelList(channels) {
-  var list = $('#channelList');
-  var html = '';
-  $.each(channels, function(i) {
-    var channel = channels[i];
-    html += '<li class="channel"><a href="#" title="' + channel.purpose.value + '" data-room="' + channel.id + '">#';
-    html += channel.name + '</a>';
-    html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
-  });
-  list.html(html);
-}
-
-
-// Builds user list in 'Channels' interface
-function buildUserList(users) {
-  var list = $('#userList');
-  var html = '';
-  $.each(users, function(i) {
-    var user = users[i];
-    html += '<li class="user"><a href="#" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
-    html += user.name + '</a>';
-    html += '<span id="' + user.id + '" class="label label-success"></span></li>';
-  });
-  list.html(html);
 }
 
 
@@ -184,23 +186,86 @@ function buildGreeting() {
   var greetingId = Math.floor(Math.random() * greetings.length);
   var greeting = greetings[greetingId] + ', ' + user.profile.first_name + '!';
   $('#greeting').html(greeting);
+  $('span.team').html(team);
+}
+
+
+// Checks that provided API key is valid
+function testAuth(token) {
+  var data = {
+    token: token
+  };
+
+  var response = $.ajax({
+    type: 'POST',
+    url: 'https://slack.com/api/auth.test',
+    data: data,
+    async: false,
+    success: function(data) {
+      return data;
+    }
+  }).responseJSON;
+
+  if (response.ok === true) {
+    return response.team;
+  } else {
+    return false;
+  }
 }
 
 
 // Loads correct view based on available data
 function loadView() {
-  if (localStorage.getItem('clicky-user') !== null) {
-    user = JSON.parse(localStorage.getItem('clicky-user'));
-    $('#login-view').hide();
-    $('#main-view').show();
-    buildGreeting();
-    getChannels();
-    getUsers();
+  if (localStorage.getItem('clicky-token') !== null) {
+    slackToken = localStorage.getItem('clicky-token');
+
+    if (localStorage.getItem('clicky-user') !== null) {
+      user = JSON.parse(localStorage.getItem('clicky-user'));
+      $('#login-view').hide();
+      $('#api-token-view').hide();
+      buildGreeting();
+      getChannels();
+      getUsers();
+      $('#main-view').show();      
+    } else {
+      getUsers();
+      buildUserLoginList();
+      $('#main-view').hide();
+      $('#api-token-view').hide();
+      $('#login-view').show();
+    }
+
   } else {
-    getUsers();
-    buildUserLoginList();
+    $('#login-view').hide();
+    $('#main-view').hide();
+    $('#api-token-view').show();    
   }
 }
+
+
+// Handles API token form submit
+$(document).on('click', '#clicky-token-submit', function() {
+  var token = $('#clicky-token-input').val();
+  var auth = testAuth(token);
+  
+  if (auth === false) {
+    console.info('[info] Authenticated failed');
+    $('#clicky-token-input').val('');
+  } else {
+    team = auth;    
+    console.info('[info] Successfully authenticated as ' + team);
+    localStorage.setItem('clicky-token', token);
+    localStorage.setItem('clicky-team', team);
+    loadView();
+  }
+
+});
+
+// Handles link clicks
+$(document).on('click', 'a#slack-api', function() {
+  var href = $(this).attr('href');
+  chrome.tabs.create({'url': href});
+});
 
 
 // Handles click events on users and channels

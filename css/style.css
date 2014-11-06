@@ -5,9 +5,18 @@ html {
 body {
   min-width: 350px;
   min-height: 400px;
+  height: auto;
   overflow: hidden;
   padding: 10px;
-  font-family: "Open Sans", sans-erif;
+  font-family: "Open Sans", sans-serif;
+}
+
+#api-token-view {
+  display: none;
+}
+
+#login-view {
+  display: none;
 }
 
 #main-view {
@@ -16,7 +25,7 @@ body {
 
 #refresh-data {
   position: absolute;
-  top: 20px;
+  top: 10px;
   right: 10px;
   height: 26px;
   width: 26px;
