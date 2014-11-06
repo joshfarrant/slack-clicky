@@ -14,10 +14,10 @@
       <h3>Welcome to Clicky!</h3>
       <hr \>
       <h4>First thing's first...</h4>
-      <p>To start using Clicky you will need to enter you Slack API Token below.</p>
+      <p>To start using Clicky you will need to enter your Slack Token below.</p>
 
       <div id="clicky-token-form" class="input-group">
-        <input type="text" id="clicky-token-input" class="form-control">      
+        <input type="text" id="clicky-token-input" class="form-control" placeholder="Enter Slack token here">      
         <span class="input-group-btn">
           <button class="btn btn-default" id="clicky-token-submit" type="button">Go!</button>
         </span>
@@ -25,21 +25,16 @@
 
       <hr \>
 
-      <p>If you don't have a Slack API Token then you just have to visit <a id="slack-api" href="https://api.slack.com/#auth">this page</a> on Slack's website, click <strong>Create token</strong>, and copy the generated token into the field above.</p>
+      <p>Don't have a Slack API Token?</p>
+      <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/#auth">this page on Slack's website</a>, click <strong>'Create token'</strong> and copy the generated token into the field above.</p>
+
+      <hr \>
+
+      <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>
+
 
     </div>
     <!-- /API Token view -->
-    
-    <!-- Login view -->
-    <div id="login-view">
-      <h3>Clicky for <span class="team">Hello</span></h3>
-      <hr \>
-      <h4>Who are you?</h4>
-      <p>Select your username from the list below</p>
-      <ul id="user-select"></ul>
-    </div>
-    <!-- /Login view -->
-
 
     <!-- Main view -->
     <div id="main-view">
@@ -63,7 +58,12 @@
 
       <hr \>
 
-      <p id="me-promo">Clicky by Josh Farrant</p>
+      <h4>Groups</h4>
+      <ul id="groupList" class="roomList"><li>Loading...</li></ul>
+
+      <hr \>
+
+      <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>
 
     </div>
     <!-- /Main view -->

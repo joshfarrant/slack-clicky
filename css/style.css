@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  min-width: 350px;
+  width: 350px;
   min-height: 400px;
   height: auto;
   overflow: hidden;
@@ -53,4 +53,10 @@ li span.label {
 
 #me-promo {
   float: right;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: #888;
 }
