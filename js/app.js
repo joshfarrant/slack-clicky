@@ -44,7 +44,7 @@ function buildChannelList(channels) {
   var html = '';
   $.each(channels, function(i) {
     var channel = channels[i];
-    html += '<li class="channel"><a href="javascript:void(0)" title="' + channel.purpose.value + '" data-room="' + channel.id + '">#';
+    html += '<li class="channel"><a href="javascript:void(0)" title="' + channel.purpose.value + '" data-room="' + channel.id + '"># ';
     html += channel.name + '</a>';
     html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
   });
@@ -61,7 +61,7 @@ function getUsers() {
   // Checks if users list exists in local storage
   // If not it is fetched from the Slack API
   // If it is, that is fetched instead
-  if (localStorage.getItem('clicky-users') === null) {
+  if (localStorage.getItem('clicky-users') === null) { 
     $.ajax({
       type: 'POST',
       url: 'https://slack.com/api/users.list',
@@ -96,7 +96,6 @@ function buildUserList(users) {
     html += '<span id="' + user.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
-  $('span.team').html(team);
 }
 
 
@@ -145,7 +144,6 @@ function buildGroupsList(groups) {
     html += '<span id="' + group.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
-  $('span.team').html(team);
 }
 
 
@@ -236,11 +234,26 @@ function postMessage(message, channel) {
         badge.fadeIn();
         badge.delay(2000).fadeOut();
       } else {
-        console.error('[error] Error sharing link: ' + data.error);
+        var errorMsgs = {
+          'channel_not_found': 'Channel not found, refresh and try again',
+          'is_archived': 'Channel Archived, refresh and try again',
+          'msg_too_long': 'Please try again',
+          'no_text': 'Please try again',
+          'rate_limited': 'Please try again',
+          'not_authed': 'Please re-login',
+          'invalid_auth': 'Please re-login',
+          'account_inactive': 'Please re-login'
+        };
+        errorMsg = errorMsgs[data.error];
+        console.error('[error] Error sharing link: ' + errorMsg);
         badge.removeClass('label-success').addClass('label-danger');
-        badge.html('Error sharing link, please try again');
+        badge.html('Error: ' + errorMsg);
         badge.fadeIn();
-        // badge.delay(2000).fadeOut();
+        badge.delay(2000).fadeOut();
+        if (data.error == 'not_authed' || data.error == 'invalid_auth' || data.error == 'account_inactive') {
+          localStorage.clear();
+          loadView();
+        };
       }          
     }
   });
@@ -272,7 +285,6 @@ function buildGreeting() {
   var greetingId = Math.floor(Math.random() * greetings.length);
   var greeting = greetings[greetingId] + ', ' + user.profile.first_name + '!';
   $('#greeting').html(greeting);
-  $('span.team').html(team);
   $('#title').css('color: #' + user.color);  
 }
 
@@ -297,6 +309,20 @@ function loadView() {
     $('#main-view').hide();
     $('#api-token-view').show();    
   }
+}
+
+function refreshData() {
+  console.info('[info] Refreshing data');
+  localStorage.removeItem('clicky-users');
+  localStorage.removeItem('clicky-channels');
+  localStorage.removeItem('clicky-groups');
+  console.info('[info] Local storage items removed');
+  $('#userList').html('Loading...');
+  $('#channelList').html('Loading...');
+  $('#groupList').html('Loading...');  
+  getChannels();
+  getUsers();
+  getGroups();
 }
 
 
@@ -342,16 +368,14 @@ $(document).on('click', '.roomList>li>a', function() {
 // Deletes users and channels from local storage
 // Gets new data and rebuilds interfaces
 $(document).on('click', '#refresh-data', function() {
-  console.info('[info] Refreshing data');
-  localStorage.removeItem('clicky-users');
-  localStorage.removeItem('clicky-channels');
-  localStorage.removeItem('clicky-groups');
-  console.info('[info] Local storage items removed');
-  $('#userList').html('Loading...');
-  $('#channelList').html('Loading...');
-  getChannels();
-  getUsers();
-  getGroups();  
+  refreshData();
+  var icon = $(this).find(".glyphicon-refresh");
+  var animateClass = "icon-refresh-animate";
+
+  icon.addClass(animateClass);
+  window.setTimeout( function() {
+    icon.removeClass( animateClass );
+  }, 1000 );  
 });
 
 
