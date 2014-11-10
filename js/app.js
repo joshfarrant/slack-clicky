@@ -393,7 +393,7 @@ $(document).on('click', '.roomList>li>a', function() {
 $(document).on('click', '#refresh-data', function() {
   refreshData();
   var icon = $(this).find(".glyphicon-refresh");
-  var animateClass = "icon-refresh-animate";
+  var animateClass = 'icon-refresh-animate';
 
   icon.addClass(animateClass);
   window.setTimeout( function() {
@@ -404,10 +404,10 @@ $(document).on('click', '#refresh-data', function() {
 
 // Handles list toggle clicks
 $(document).on('click', 'i.list-toggle', function() {
-  console.log('beep');
-  var room = $(this).parent('div');
+  var icon = $(this);
+  var room = icon.parent('div');
   var visible = room.attr('data-visible');
-  var toggleId = $(this).attr('data-toggle');
+  var toggleId = icon.attr('data-toggle');
   var list = $('#' + toggleId);
 
   var visible = room.attr('data-visible') === 'true' ? true : false;
@@ -415,16 +415,24 @@ $(document).on('click', 'i.list-toggle', function() {
   var hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
 
   if (visible == true) {
-    console.log('fleep');
     list.slideUp(150);
-    $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+
+    icon.addClass('icon-refresh-animate');
+    window.setTimeout( function() {
+      icon.removeClass('icon-refresh-animate glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+    }, 250 );
+
     room.attr('data-visible', false);
     hiddenList[toggleId] = true;
     localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
   } else {
-    console.log('floop');
     list.slideDown(150);
-    $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+
+    icon.addClass('icon-refresh-animate');
+    window.setTimeout( function() {
+      icon.removeClass('icon-refresh-animate glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+    }, 250 );
+
     room.attr('data-visible', true);
     hiddenList[toggleId] = false;    
     localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));

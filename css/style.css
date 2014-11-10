@@ -4,7 +4,7 @@ html {
 
 body {
   width: 350px;
-  min-height: 400px;
+  min-height: 300px;
   height: auto;
   overflow: hidden;
   padding: 10px;
@@ -89,7 +89,7 @@ li {
 
 .icon-refresh-animate {
   -webkit-animation-name: rotateThis;
-  -webkit-animation-duration: 1s;
+  -webkit-animation-duration: 0.5s;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
