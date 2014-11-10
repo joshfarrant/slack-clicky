@@ -292,6 +292,27 @@ function buildGreeting() {
 
 // Loads correct view based on available data
 function loadView() {
+  // Handles list hiding
+  if (localStorage.getItem('clicky-hidden') === null) {
+    var hiddenList = {
+      'channelList' : false,
+      'userList' : false,
+      'groupList' : false
+    }
+    localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
+  } else {
+    var hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
+    var keys = Object.keys(hiddenList);
+    for (var i in keys) {
+      if (hiddenList[keys[i]] === true) {
+        var list = $('ul#' + keys[i]);
+        list.hide();
+        list.siblings('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        list.parent('div').attr('data-visible', false);
+      } 
+    }
+  }
+
   if (localStorage.getItem('clicky-token') !== null) {
     slackToken = localStorage.getItem('clicky-token');
     user = JSON.parse(localStorage.getItem('clicky-user'));
@@ -307,9 +328,10 @@ function loadView() {
 
   } else {
     $('#main-view').hide();
-    $('#api-token-view').show();    
+    $('#api-token-view').show();
   }
 }
+
 
 function refreshData() {
   console.info('[info] Refreshing data');
@@ -349,6 +371,7 @@ $(document).on('click', '#clicky-token-submit', function() {
 
 });
 
+
 // Handles link clicks
 $(document).on('click', 'a.linkable', function() {
   var href = $(this).attr('href');
@@ -376,6 +399,37 @@ $(document).on('click', '#refresh-data', function() {
   window.setTimeout( function() {
     icon.removeClass( animateClass );
   }, 1000 );  
+});
+
+
+// Handles list toggle clicks
+$(document).on('click', 'i.list-toggle', function() {
+  console.log('beep');
+  var room = $(this).parent('div');
+  var visible = room.attr('data-visible');
+  var toggleId = $(this).attr('data-toggle');
+  var list = $('#' + toggleId);
+
+  var visible = room.attr('data-visible') === 'true' ? true : false;
+
+  var hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
+
+  if (visible == true) {
+    console.log('fleep');
+    list.slideUp(150);
+    $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+    room.attr('data-visible', false);
+    hiddenList[toggleId] = true;
+    localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
+  } else {
+    console.log('floop');
+    list.slideDown(150);
+    $(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+    room.attr('data-visible', true);
+    hiddenList[toggleId] = false;    
+    localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
+  }
+
 });
 
 

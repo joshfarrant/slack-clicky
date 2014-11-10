@@ -12,7 +12,7 @@
     <!-- API Token view -->
     <div id="api-token-view">
       <h3>Welcome to Clicky!</h3>
-      <hr \>
+      <hr />
       <h4>First thing's first...</h4>
       <p>To start using Clicky you will need to enter your Slack API Token below.</p>
 
@@ -23,12 +23,12 @@
         </span>
       </div>
 
-      <hr \>
+      <hr />
 
       <p>Don't have a Slack API Token?</p>
       <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/#auth">this page on Slack's website</a>, click <strong>'Create token'</strong> and copy the generated token into the field above.</p>
 
-      <hr \>
+      <hr />
 
       <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>
 
@@ -48,22 +48,31 @@
 
       <p>Select a channel, user, or group below to share a link</p>
 
-      <hr \>
+      <hr />
 
-      <h4>Channels</h4>
-      <ul id="channelList" class="roomList"><li>Loading...</li></ul>
+      <div id="channels" data-visible="true">
+        <i class="glyphicon glyphicon-chevron-up list-toggle" data-toggle="channelList"></i>      
+        <h4 class="list-title">Channels</h4>
+        <ul id="channelList" class="roomList"><li>Loading...</li></ul>
+      </div>
 
-      <hr \>
+      <hr />
 
-      <h4>Users</h4>
-      <ul id="userList" class="roomList"><li>Loading...</li></ul>
+      <div id="users" data-visible="true">
+        <i class="glyphicon glyphicon-chevron-up list-toggle" id="user-toggle" data-toggle="userList"></i>      
+        <h4 class="list-title">Users</h4>
+        <ul id="userList" class="roomList"><li>Loading...</li></ul>
+      </div>
 
-      <hr \>
+      <hr />
 
-      <h4>Groups</h4>
-      <ul id="groupList" class="roomList"><li>Loading...</li></ul>
+      <div id="groups" data-visible="true">
+        <i class="glyphicon glyphicon-chevron-up list-toggle" id="group-toggle" data-toggle="groupList"></i>      
+        <h4 class="list-title">Groups</h4>
+        <ul id="groupList" class="roomList"><li>Loading...</li></ul>
+      </div>
 
-      <hr \>
+      <hr />
 
       <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>
 
