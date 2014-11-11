@@ -11,11 +11,11 @@ body {
   padding-top: 0px;
   font-family: "Lato", sans-serif;
   font-weight: 400;
-  overflow: hidden;
+  color: #333333;
 }
 
 h2 {
-  font-weight: 200;
+  font-weight: 300;
 }
 
 h4 {
@@ -66,6 +66,14 @@ li span.label {
 #me-promo {
   float: right;
   font-weight: 300;
+}
+
+#main-view ul a {
+  text-decoration: none;
+}
+
+#main-view ul a:hover {
+  font-weight: 700;
 }
 
 a.disabled {
