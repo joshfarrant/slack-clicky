@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "Clicky",
+  "name": "#Clicky for Slack",
   "description": "Post links to Slack with a single click!",
   "version": "1.0.0",
   "permissions": [
@@ -17,5 +17,6 @@
     "32": "assets/icon32.png",
     "48": "assets/icon48.png",
     "128": "assets/icon128.png"
-  }
+  },
+  "short_name": "#Clicky"
 }
