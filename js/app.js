@@ -44,8 +44,8 @@ function buildChannelList(channels) {
   var html = '';
   $.each(channels, function(i) {
     var channel = channels[i];
-    html += '<li class="channel"><a href="javascript:void(0)" title="' + channel.purpose.value + '" data-room="' + channel.id + '"># ';
-    html += channel.name + '</a>';
+    html += '<li class="channel"><span class="share-link" id="share-channel" title="' + channel.purpose.value + '" data-room="' + channel.id + '"># ';
+    html += channel.name + '</span>';
     html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
@@ -91,8 +91,8 @@ function buildUserList(users) {
 
   $.each(users, function(i) {
     var user = users[i];
-    html += '<li class="user"><a href="javascript:void(0)" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
-    html += user.name + '</a>';
+    html += '<li class="user"><span class="share-link" id="share-user" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
+    html += user.name + '</span>';
     html += '<span id="' + user.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
@@ -139,8 +139,8 @@ function buildGroupsList(groups) {
 
   $.each(groups, function(i) {
     var group = groups[i];
-    html += '<li class="group"><a href="javascript:void(0)" title="' + group.name + '" data-room="' + group.id + '">';
-    html += group.name + '</a>';
+    html += '<li class="group"><span id="share-group" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
+    html += group.name + '</span>';
     html += '<span id="' + group.id + '" class="label label-success"></span></li>';
   });
   list.html(html);
@@ -228,7 +228,7 @@ function postMessage(message, channel) {
       var badge = $('span#' + channel);
       if (data.ok === true) {      
         console.info('[info] Link shared');
-        badge.siblings('a').addClass('disabled');
+        badge.siblings('.share-link').addClass('disabled');
         badge.removeClass('label-danger').addClass('label-success');        
         badge.html('Link shared!');
         badge.fadeIn();
@@ -381,9 +381,11 @@ $(document).on('click', 'a.linkable', function() {
 
 // Handles click events on users, channels, and groups
 // Shares active tab to that user/channel/group
-$(document).on('click', '.roomList>li>a', function() {
+$(document).on('click', '.share-link', function() {
   var channel = $(this).attr('data-room');
-  postCurrentTabTo(channel);
+  if (!$(this).hasClass('disabled')) {
+    postCurrentTabTo(channel);
+  }
 });
 
 
@@ -440,6 +442,23 @@ $(document).on('click', 'i.list-toggle', function() {
 
 });
 
+
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-56656365-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+$(document).on('click', '.share-link', function(e) {
+  var id = e.target.id;
+  var type = id.split('-')[1];
+  _gaq.push(['_trackEvent', 'shareTo_' + type, 'clicked']);
+});
 
 // Loads views when document is ready
 $(document).ready(function() {
