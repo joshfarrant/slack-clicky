@@ -4,14 +4,14 @@
   "name": "#Clicky for Slack",
   "short_name": "#Clicky",  
   "description": "Post links to Slack with a single click!",
-  "version": "1.0.1",
+  "version": "1.0.2",
 
   "permissions": [
     "https://slack.com/api/*",
     "https://ssl.google-analytics.com/*",
     "tabs"
   ],
-  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",  
+  "content_security_policy": "script-src 'self' https://stats.g.doubleclick.net; object-src 'self'",  
 
   "browser_action": {
     "default_icon": "assets/icon32.png",

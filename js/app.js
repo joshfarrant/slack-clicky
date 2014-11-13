@@ -4,6 +4,8 @@ var team = localStorage.getItem('clicky-team');
 // Gets current Clicky user from local storage if it exists
 var user = JSON.parse(localStorage.getItem('clicky-user'));
 
+var rooms = [];
+
 
 // Gets list of all available (and unarchived) channels
 function getChannels() {
@@ -44,6 +46,7 @@ function buildChannelList(channels) {
   var html = '';
   $.each(channels, function(i) {
     var channel = channels[i];
+    rooms.push(channel);
     html += '<li class="channel"><span class="share-link" id="share-channel" title="' + channel.purpose.value + '" data-room="' + channel.id + '"># ';
     html += channel.name + '</span>';
     html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
@@ -91,6 +94,7 @@ function buildUserList(users) {
 
   $.each(users, function(i) {
     var user = users[i];
+    rooms.push(user);
     html += '<li class="user"><span class="share-link" id="share-user" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
     html += user.name + '</span>';
     html += '<span id="' + user.id + '" class="label label-success"></span></li>';
@@ -139,6 +143,7 @@ function buildGroupsList(groups) {
 
   $.each(groups, function(i) {
     var group = groups[i];
+    rooms.push(group);
     html += '<li class="group"><span id="share-group" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
     html += group.name + '</span>';
     html += '<span id="' + group.id + '" class="label label-success"></span></li>';
@@ -348,6 +353,41 @@ function refreshData() {
 }
 
 
+function filterRooms(str) {
+  var matches = [];
+  $('#resultList').html('');
+
+  for (var i in rooms) {
+    var room = rooms[i]
+    if (room.name.indexOf(str) >= 0 && str != '') {
+      matches.push(room);
+    }
+  }
+
+  if (matches[0]) {
+    $('#rooms').hide();
+    for (var i in matches) {
+      var match = matches[i];
+      var html = '';
+      html += '<li class="result"><span id="share-result" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
+      html += match.name + '</span>';
+      html += '<span id="' + match.id + '" class="label label-success"></span></li>';
+      $('#resultList').append(html);
+    }    
+  } else {
+    console.log('beep');
+    $('#rooms').show();
+    $('#resultList').html('');
+  }
+
+}
+
+
+$('#search-input').keyup(function() {
+  var str = $('#search-input').val();
+  filterRooms(str);
+});
+
 // Handles API token form submit
 $(document).on('click', '#clicky-token-submit', function() {
   var token = $('#clicky-token-input').val();
@@ -355,7 +395,6 @@ $(document).on('click', '#clicky-token-submit', function() {
   
   if (auth === false) {
     console.info('[info] Authenticated failed');
-    $('#clicky-token-input').val('');
     $('#clicky-token-input').val('');
   } else {
     team = auth.team;
@@ -405,7 +444,7 @@ $(document).on('click', '#refresh-data', function() {
 
 
 // Handles list toggle clicks
-$(document).on('click', 'i.list-toggle', function() {
+$(document).on('click', '.list-toggle', function() {
   var icon = $(this);
   var room = icon.parent('div');
   var visible = room.attr('data-visible');
@@ -450,7 +489,7 @@ _gaq.push(['_trackPageview']);
 
 (function() {
   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  ga.src = 'https://stats.g.doubleclick.net/dc.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 

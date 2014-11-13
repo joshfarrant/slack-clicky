@@ -49,28 +49,45 @@
 
       <p>Select a channel, user, or group below to share a link</p>
 
-      <hr />
-
-      <div id="channels" data-visible="true">
-        <i class="glyphicon glyphicon-chevron-up list-toggle" data-toggle="channelList"></i>      
-        <h4 class="list-title">Channels</h4>
-        <ul id="channelList" class="roomList"><li>Loading...</li></ul>
+      <div id="search-form" class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+          <input id="search-input" class="form-control" placeholder="Search" autofocus>
       </div>
 
       <hr />
 
-      <div id="users" data-visible="true">
-        <i class="glyphicon glyphicon-chevron-up list-toggle" id="user-toggle" data-toggle="userList"></i>      
-        <h4 class="list-title">Users</h4>
-        <ul id="userList" class="roomList"><li>Loading...</li></ul>
+      <div id="rooms">
+
+        <div id="channels" data-visible="true">
+          <i class="glyphicon glyphicon-chevron-up list-toggle" data-toggle="channelList"></i>      
+          <h4 class="list-title list-toggle">Channels</h4>
+          <ul id="channelList" class="roomList"><li>Loading...</li></ul>
+        </div>
+
+        <hr />
+
+        <div id="users" data-visible="true">
+          <i class="glyphicon glyphicon-chevron-up list-toggle" id="user-toggle" data-toggle="userList"></i>      
+          <h4 class="list-title list-toggle">Users</h4>
+          <ul id="userList" class="roomList"><li>Loading...</li></ul>
+        </div>
+
+        <hr />
+
+        <div id="groups" data-visible="true">
+          <i class="glyphicon glyphicon-chevron-up list-toggle" id="group-toggle" data-toggle="groupList"></i>      
+          <h4 class="list-title list-toggle">Groups</h4>
+          <ul id="groupList" class="roomList"><li>Loading...</li></ul>
+        </div>
+
+        <hr />
+        
       </div>
 
-      <hr />
-
-      <div id="groups" data-visible="true">
-        <i class="glyphicon glyphicon-chevron-up list-toggle" id="group-toggle" data-toggle="groupList"></i>      
-        <h4 class="list-title">Groups</h4>
-        <ul id="groupList" class="roomList"><li>Loading...</li></ul>
+      <div id="search-results" data-visible="true">
+        <i class="glyphicon glyphicon-remove list-toggle" id="search-results-toggle"></i>      
+        <h4 class="list-title">Results</h4>
+        <ul id="resultList" class="roomList"></ul>
       </div>
 
       <hr />

@@ -1,0 +1,119 @@
+$off-black: #333;
+
+html {
+  overflow: auto;
+}
+
+body {
+  width: 350px;
+  min-height: 300px;
+  height: auto;
+  overflow: hidden;
+  padding: 0px 10px 10px 10px;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  color: $off-black;
+}
+
+h2 {
+  font-weight: 300;
+}
+
+h4 {
+  font-weight: 700;
+}
+
+#api-token-view,
+#main-view {
+  display: none;
+  #me-promo {
+    float: right;
+    font-weight: 300;
+  }  
+}
+
+#refresh-data {
+  color: $off-black;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 14px;
+  width: 14px;
+  padding: 0px;
+  span {
+    margin-top: 3px;
+  }
+}
+
+#main-view {
+  #title {
+    margin: 10px 0px;
+  }
+  #search-form {
+    border: 1px solid #bbb;
+    border-radius: 50px;
+    >* {
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+      height: auto;
+    }
+    input {
+      padding: 4px 8px 4px 4px;
+    }
+    span {
+      padding: 4px 4px 4px 8px;
+    }
+    i {
+      color: #bbb;
+    }
+    + hr {
+      margin-top: 10px;
+    }    
+  }  
+  ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    li {
+      font-size: 15px;      
+      span.label {
+        float: right;
+        display: none;
+      }
+      .share-link {
+        cursor: pointer;
+        color: #428bca;
+        &:hover {
+          font-weight: 700;
+          color: #2a6496;
+        }
+        &.disabled {
+          pointer-events: none;
+          cursor: default;
+          color: #888 !important;
+          font-weight: 400 !important;  
+        }
+      }
+    }
+  }
+  i.list-toggle {
+    cursor: pointer;
+    float: right;
+    padding: 5px;
+    position: relative;
+    top: -3px;
+    -webkit-user-select: none;
+  }
+  .icon-refresh-animate {
+    -webkit-animation-name: rotateThis;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
+
+  @-webkit-keyframes rotateThis {
+    from { transform: scale( 1 ) rotate( 0deg );   }
+    to   { transform: scale( 1 ) rotate( 360deg ); }
+  }
+}
