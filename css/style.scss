@@ -6,7 +6,7 @@ html {
 
 body {
   width: 350px;
-  min-height: 300px;
+  min-height: 600px;
   height: auto;
   overflow: hidden;
   padding: 0px 10px 10px 10px;
@@ -61,16 +61,32 @@ h4 {
     input {
       padding: 4px 8px 4px 4px;
     }
-    span {
+    span.search {
       padding: 4px 4px 4px 8px;
     }
+    span.clear {
+      display: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+    }    
     i {
       color: #bbb;
     }
     + hr {
       margin-top: 10px;
     }    
-  }  
+  }
+  #search-results {
+    display: none;
+    i {
+      cursor: pointer;
+      float: right;
+      padding: 5px;
+      position: relative;
+      top: -3px;
+      -webkit-user-select: none;
+    }
+  }
   ul {
     list-style: none;
     margin: 0px;

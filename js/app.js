@@ -25,6 +25,7 @@ function getChannels() {
       success: function(data) {
         if (data.ok === true) {
           var channels = data.channels;
+          for (var i in channels) channels[i].name = '#' + channels[i].name;
           localStorage.setItem('clicky-channels', JSON.stringify(channels));
           buildChannelList(channels);
         } else {
@@ -47,7 +48,7 @@ function buildChannelList(channels) {
   $.each(channels, function(i) {
     var channel = channels[i];
     rooms.push(channel);
-    html += '<li class="channel"><span class="share-link" id="share-channel" title="' + channel.purpose.value + '" data-room="' + channel.id + '"># ';
+    html += '<li class="channel"><span class="share-link" id="share-channel" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
     html += channel.name + '</span>';
     html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
   });
@@ -363,30 +364,40 @@ function filterRooms(str) {
       matches.push(room);
     }
   }
+  console.log(matches);
 
-  if (matches[0]) {
-    $('#rooms').hide();
-    for (var i in matches) {
-      var match = matches[i];
-      var html = '';
-      html += '<li class="result"><span id="share-result" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
-      html += match.name + '</span>';
-      html += '<span id="' + match.id + '" class="label label-success"></span></li>';
-      $('#resultList').append(html);
-    }    
-  } else {
-    console.log('beep');
-    $('#rooms').show();
-    $('#resultList').html('');
+  $('#rooms').hide();
+  $('#search-results').show();
+  // $('#search-form span.clear').show();
+  for (var i in matches) {
+    var match = matches[i];
+    var html = '';
+    html += '<li class="result"><span id="share-result" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
+    html += match.name + '</span>';
+    html += '<span id="' + match.id + '" class="label label-success"></span></li>';
+    $('#resultList').append(html);
   }
 
+  if (matches.length === 0 && str === '') {
+    $('#rooms').show();
+    $('#search-results').hide();
+    $('#search-form span.clear').hide();
+    $('#resultList').html(null);
+  }
 }
 
 
 $('#search-input').keyup(function() {
   var str = $('#search-input').val();
-  filterRooms(str);
+  filterRooms(str.toLowerCase());
 });
+
+
+$(document).on('click', '#search-results-toggle', function() {
+  filterRooms();
+  $('#search-input').val(null);
+});
+
 
 // Handles API token form submit
 $(document).on('click', '#clicky-token-submit', function() {

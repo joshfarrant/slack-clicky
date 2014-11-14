@@ -3,7 +3,7 @@ html {
 
 body {
   width: 350px;
-  min-height: 300px;
+  min-height: 600px;
   height: auto;
   overflow: hidden;
   padding: 0px 10px 10px 10px;
@@ -48,12 +48,25 @@ h4 {
     height: auto; }
   #main-view #search-form input {
     padding: 4px 8px 4px 4px; }
-  #main-view #search-form span {
+  #main-view #search-form span.search {
     padding: 4px 4px 4px 8px; }
+  #main-view #search-form span.clear {
+    display: none;
+    -webkit-user-select: none;
+    cursor: pointer; }
   #main-view #search-form i {
     color: #bbb; }
   #main-view #search-form + hr {
     margin-top: 10px; }
+#main-view #search-results {
+  display: none; }
+  #main-view #search-results i {
+    cursor: pointer;
+    float: right;
+    padding: 5px;
+    position: relative;
+    top: -3px;
+    -webkit-user-select: none; }
 #main-view ul {
   list-style: none;
   margin: 0px;
