@@ -1,4 +1,5 @@
-$off-black: #333;
+$off-black: #555459;
+$light-black: lighten($off-black, 40%);
 
 html {
   overflow: auto;
@@ -50,7 +51,7 @@ h4 {
     margin: 10px 0px;
   }
   #search-form {
-    border: 1px solid #bbb;
+    border: 1px solid $light-black;
     border-radius: 50px;
     >* {
       background-color: transparent;
@@ -70,7 +71,7 @@ h4 {
       cursor: pointer;
     }    
     i {
-      color: #bbb;
+      color: $light-black;
     }
     + hr {
       margin-top: 10px;
@@ -107,7 +108,7 @@ h4 {
         &.disabled {
           pointer-events: none;
           cursor: default;
-          color: #888 !important;
+          color: $light-black !important;
           font-weight: 400 !important;  
         }
       }

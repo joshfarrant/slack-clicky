@@ -9,7 +9,7 @@ body {
   padding: 0px 10px 10px 10px;
   font-family: "Lato", sans-serif;
   font-weight: 400;
-  color: #333; }
+  color: #555459; }
 
 h2 {
   font-weight: 300; }
@@ -26,7 +26,7 @@ h4 {
     font-weight: 300; }
 
 #refresh-data {
-  color: #333;
+  color: #555459;
   position: absolute;
   top: 10px;
   right: 10px;
@@ -39,7 +39,7 @@ h4 {
 #main-view #title {
   margin: 10px 0px; }
 #main-view #search-form {
-  border: 1px solid #bbb;
+  border: 1px solid #bbbbbe;
   border-radius: 50px; }
   #main-view #search-form > * {
     background-color: transparent;
@@ -55,7 +55,7 @@ h4 {
     -webkit-user-select: none;
     cursor: pointer; }
   #main-view #search-form i {
-    color: #bbb; }
+    color: #bbbbbe; }
   #main-view #search-form + hr {
     margin-top: 10px; }
 #main-view #search-results {
@@ -85,7 +85,7 @@ h4 {
       #main-view ul li .share-link.disabled {
         pointer-events: none;
         cursor: default;
-        color: #888 !important;
+        color: #bbbbbe !important;
         font-weight: 400 !important; }
 #main-view i.list-toggle {
   cursor: pointer;

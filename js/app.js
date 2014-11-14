@@ -241,8 +241,8 @@ function postMessage(message, channel) {
         badge.delay(2000).fadeOut();
       } else {
         var errorMsgs = {
-          'channel_not_found': 'Channel not found, refresh and try again',
-          'is_archived': 'Channel Archived, refresh and try again',
+          'channel_not_found': 'Refresh and try again',
+          'is_archived': 'Refresh and try again',
           'msg_too_long': 'Please try again',
           'no_text': 'Please try again',
           'rate_limited': 'Please try again',
@@ -339,6 +339,7 @@ function loadView() {
 }
 
 
+// Deletes data in local storage and fetches new data from the Slack API
 function refreshData() {
   console.info('[info] Refreshing data');
   localStorage.removeItem('clicky-users');
@@ -354,6 +355,7 @@ function refreshData() {
 }
 
 
+// Handles search and filters list of rooms
 function filterRooms(str) {
   var matches = [];
   $('#resultList').html('');
@@ -364,7 +366,6 @@ function filterRooms(str) {
       matches.push(room);
     }
   }
-  console.log(matches);
 
   $('#rooms').hide();
   $('#search-results').show();
@@ -387,15 +388,17 @@ function filterRooms(str) {
 }
 
 
+// Searches all rooms on keyup
 $('#search-input').keyup(function() {
   var str = $('#search-input').val();
   filterRooms(str.toLowerCase());
 });
 
 
+// Clears search input on click
 $(document).on('click', '#search-results-toggle', function() {
-  filterRooms();
-  $('#search-input').val(null);
+  filterRooms('');
+  $('#search-input').val('');
 });
 
 
@@ -509,6 +512,7 @@ $(document).on('click', '.share-link', function(e) {
   var type = id.split('-')[1];
   _gaq.push(['_trackEvent', 'shareTo_' + type, 'clicked']);
 });
+
 
 // Loads views when document is ready
 $(document).ready(function() {

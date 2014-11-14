@@ -4,7 +4,7 @@
   "name": "#Clicky for Slack",
   "short_name": "#Clicky",  
   "description": "Post links to Slack with a single click!",
-  "version": "1.0.2",
+  "version": "1.1.0",
 
   "permissions": [
     "https://slack.com/api/*",
