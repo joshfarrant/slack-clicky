@@ -384,8 +384,9 @@ function refreshData() {
   getChannels();
   getUsers();
   getGroups();
-  var auth = testAuth();
-  if (!auth) {
+  var token = localStorage.getItem('clicky-token');
+  var auth = testAuth(token);
+  if (auth == false) {
     localStorage.clear();
     loadView();
   }
