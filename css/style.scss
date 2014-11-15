@@ -33,6 +33,13 @@ h4 {
   }  
 }
 
+#api-token-view {
+  #invalidToken {
+    display: none;
+    margin-top: 20px;
+  }
+}
+
 #refresh-data {
   color: $off-black;
   position: absolute;
@@ -93,7 +100,11 @@ h4 {
     margin: 0px;
     padding: 0px;
     li {
-      font-size: 15px;      
+      font-size: 15px;
+      span#noMatches {
+        color: $light-black;
+        font-style: italic;
+      }     
       span.label {
         float: right;
         display: none;

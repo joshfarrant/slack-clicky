@@ -177,6 +177,30 @@ function testAuth(token) {
 }
 
 
+// Submits and tests entered API token
+function submitToken(token) {
+  var auth = testAuth(token);
+
+  if (auth === false) {
+    console.info('[info] Authenticated failed');
+    $('#clicky-token-input').val('');
+    $('#invalidToken').slideDown();
+    return false;
+  } else {
+    team = auth.team;
+    slackToken = token;
+    var user_id = auth.user_id;
+    var authUser = getUserData(user_id);
+    console.info('[info] Successfully authenticated as ' + authUser.profile.first_name + ' at ' + team);
+    localStorage.setItem('clicky-user', JSON.stringify(authUser));
+    localStorage.setItem('clicky-token', token);
+    localStorage.setItem('clicky-team', team);
+    loadView();
+    return true;
+  }
+}
+
+
 // Gets authenticated user data from API
 function getUserData(user) {
   var data = {
@@ -329,7 +353,10 @@ function loadView() {
       getChannels();
       getUsers();
       getGroups();
-      $('#main-view').show();      
+      $('#main-view').show();
+      setTimeout(function() {
+        $('#search-input').focus();
+      }, 500);
     }
 
   } else {
@@ -379,11 +406,15 @@ function filterRooms(str) {
     $('#resultList').append(html);
   }
 
-  if (matches.length === 0 && str === '') {
-    $('#rooms').show();
-    $('#search-results').hide();
-    $('#search-form span.clear').hide();
-    $('#resultList').html(null);
+  if (matches.length === 0) {
+    var noResultsMsg = '<li class="result"><span id="noMatches">No results found</span></li>';
+    $('#resultList').append(noResultsMsg);
+    if (str === '') {
+      $('#rooms').show();
+      $('#search-results').hide();
+      $('#search-form span.clear').hide();
+      $('#resultList').html(null);
+    }
   }
 }
 
@@ -402,26 +433,23 @@ $(document).on('click', '#search-results-toggle', function() {
 });
 
 
-// Handles API token form submit
+// Handles API token form submit on 'Go!' click
 $(document).on('click', '#clicky-token-submit', function() {
+  $(this).prop('disabled', true).addClass('disabled');
   var token = $('#clicky-token-input').val();
-  var auth = testAuth(token);
-  
-  if (auth === false) {
-    console.info('[info] Authenticated failed');
-    $('#clicky-token-input').val('');
-  } else {
-    team = auth.team;
-    slackToken = token;
-    var user_id = auth.user_id;
-    var authUser = getUserData(user_id);
-    console.info('[info] Successfully authenticated as ' + authUser.profile.first_name + ' at ' + team);
-    localStorage.setItem('clicky-user', JSON.stringify(authUser));
-    localStorage.setItem('clicky-token', token);
-    localStorage.setItem('clicky-team', team);
-    loadView();
-  }
+  submitToken(token);
+  $('#clicky-token-submit').prop('disabled', false).removeClass('disabled');
+});
 
+
+// Handles API token form submit on enter press
+$('#clicky-token-input').keypress(function(e) {
+  if (event.which == 13) {
+    $(this).prop('disabled', true).addClass('disabled');
+    var token = $('#clicky-token-input').val();
+    submitToken(token);
+    $('#clicky-token-submit').prop('disabled', false).removeClass('disabled');
+  }
 });
 
 

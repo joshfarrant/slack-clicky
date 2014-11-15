@@ -24,6 +24,12 @@
         </span>
       </div>
 
+      <div class="alert alert-danger alert-dismissible" id="invalidToken" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+        <strong>Oops!</strong> The token you entered wasn't valid.
+        Try copy-pasting it again, or contact <a class="linkable" href="https://www.twitter.com/farpixel">@FarPixel</a> for help!
+      </div>
+
       <hr />
 
       <p>Don't have a Slack API Token?</p>
@@ -51,7 +57,7 @@
 
       <div id="search-form" class="input-group">
           <span class="input-group-addon search"><i class="glyphicon glyphicon-search"></i></span>
-          <input id="search-input" class="form-control" placeholder="Search" autofocus>
+          <input id="search-input" class="form-control" placeholder="Search">
           <span class="input-group-addon clear"><i class="glyphicon glyphicon-remove-circle"></i></span>
       </div>
 
