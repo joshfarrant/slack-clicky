@@ -24,16 +24,18 @@
         </span>
       </div>
 
-      <div class="alert alert-danger alert-dismissible" id="invalidToken" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+      <div class="alert alert-danger alert-dismissible" id="invalidToken">
+        <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
         <strong>Oops!</strong> The token you entered wasn't valid.
         Try copy-pasting it again, or contact <a class="linkable" href="https://www.twitter.com/farpixel">@FarPixel</a> for help!
       </div>
 
       <hr />
 
-      <p>Don't have a Slack API Token?</p>
-      <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/#auth">this page on Slack's website</a>, click <strong>'Create token'</strong> and copy the generated token into the field above.</p>
+      <p>Don't know your Slack API Token?</p>
+      <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/#auth">this page on Slack's website</a>, click
+      <br>
+      <strong>Create token</strong> and copy the generated token into the field above.</p>
 
       <hr />
 
@@ -51,9 +53,11 @@
       </a>
 
       <h2 id="title">#Clicky</h2>
-      <h4 id="greeting"></h4>
-
-      <p>Select a channel, user, or group below to share a link</p>
+      
+      <div id="instructions">
+        <h4 id="greeting"></h4>
+        <p>Select a channel, user, or group below to share a link</p>
+      </div>
 
       <div id="search-form" class="input-group">
           <span class="input-group-addon search"><i class="glyphicon glyphicon-search"></i></span>

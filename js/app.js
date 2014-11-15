@@ -313,7 +313,8 @@ function buildGreeting() {
     "Yo"
   ];
   var greetingId = Math.floor(Math.random() * greetings.length);
-  var greeting = greetings[greetingId] + ', ' + user.profile.first_name + '!';
+  // var greeting = greetings[greetingId] + ', ' + user.profile.first_name + '!';
+  var greeting = 'Hi, ' + user.profile.first_name + '!';
   $('#greeting').html(greeting);
   $('#title').css('color: #' + user.color);  
 }
@@ -330,6 +331,7 @@ function loadView() {
       'groupList' : false
     }
     localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
+
   } else {
     var hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
     var keys = Object.keys(hiddenList);
@@ -343,6 +345,8 @@ function loadView() {
     }
   }
 
+  if (localStorage.getItem('clicky-first-load') === null) $('#instructions').show();
+
   if (localStorage.getItem('clicky-token') !== null) {
     slackToken = localStorage.getItem('clicky-token');
     user = JSON.parse(localStorage.getItem('clicky-user'));
@@ -354,6 +358,7 @@ function loadView() {
       getUsers();
       getGroups();
       $('#main-view').show();
+      localStorage.setItem('clicky-first-load', false);
       setTimeout(function() {
         $('#search-input').focus();
       }, 500);
@@ -379,6 +384,11 @@ function refreshData() {
   getChannels();
   getUsers();
   getGroups();
+  var auth = testAuth();
+  if (!auth) {
+    localStorage.clear();
+    loadView();
+  }
 }
 
 
@@ -438,7 +448,7 @@ $(document).on('click', '#clicky-token-submit', function() {
   $(this).prop('disabled', true).addClass('disabled');
   var token = $('#clicky-token-input').val();
   submitToken(token);
-  $('#clicky-token-submit').prop('disabled', false).removeClass('disabled');
+  $(this).prop('disabled', false).removeClass('disabled');
 });
 
 
@@ -448,7 +458,7 @@ $('#clicky-token-input').keypress(function(e) {
     $(this).prop('disabled', true).addClass('disabled');
     var token = $('#clicky-token-input').val();
     submitToken(token);
-    $('#clicky-token-submit').prop('disabled', false).removeClass('disabled');
+    $(this).prop('disabled', false).removeClass('disabled');
   }
 });
 
@@ -467,6 +477,13 @@ $(document).on('click', '.share-link', function() {
   if (!$(this).hasClass('disabled')) {
     postCurrentTabTo(channel);
   }
+});
+
+
+// Handles invalid alert close
+$(document).on('click', '#invalidToken button.close', function() {
+  $('#invalidToken').slideUp();
+  $('#clicky-token-input').focus();
 });
 
 
