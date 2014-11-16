@@ -22,6 +22,7 @@ h4 {
   display: none; }
   #api-token-view #me-promo,
   #main-view #me-promo {
+    margin: 10px 0px 0px 0px;
     float: right;
     font-weight: 300; }
 
@@ -75,35 +76,46 @@ h4 {
     position: relative;
     top: -3px;
     -webkit-user-select: none; }
-#main-view ul {
+#main-view #rooms .room {
+  clear: both;
+  overflow: hidden;
+  border-bottom: 1px solid #EEE;
+  padding: 10px 0; }
+#main-view #rooms .room ul {
   list-style: none;
   margin: 0px;
   padding: 0px; }
-  #main-view ul li {
+  #main-view #rooms .room ul li {
     font-size: 15px; }
-    #main-view ul li span#noMatches {
+    #main-view #rooms .room ul li span#noMatches {
       color: #bbbbbe;
       font-style: italic; }
-    #main-view ul li span.label {
+    #main-view #rooms .room ul li span.label {
       float: right;
       display: none; }
-    #main-view ul li .share-link {
+    #main-view #rooms .room ul li .share-link {
+      text-align: center;
+      float: left;
       cursor: pointer;
-      color: #428bca; }
-      #main-view ul li .share-link:hover {
-        font-weight: 700;
-        color: #2a6496; }
-      #main-view ul li .share-link.disabled {
+      color: #428bca;
+      border: 1px solid #428bca;
+      border-radius: 5px;
+      padding: 2px;
+      margin: 2px; }
+      #main-view #rooms .room ul li .share-link:hover {
+        color: #2a6496;
+        border-color: #2a6496; }
+      #main-view #rooms .room ul li .share-link.disabled {
         pointer-events: none;
         cursor: default;
         color: #bbbbbe !important;
+        border-color: #bbbbbe !important;
         font-weight: 400 !important; }
-#main-view i.list-toggle {
+#main-view #rooms .room i.list-toggle {
   cursor: pointer;
   float: right;
   padding: 5px;
-  position: relative;
-  top: -3px;
+  margin-top: 7px;
   -webkit-user-select: none; }
 #main-view .icon-refresh-animate {
   -webkit-animation-name: rotateThis;
@@ -115,5 +127,45 @@ h4 {
     transform: scale(1) rotate(0deg); }
   to {
     transform: scale(1) rotate(360deg); } }
+#main-view .share-success,
+#main-view .share-success:hover {
+  pointer-events: none;
+  cursor: default;
+  -webkit-animation-name: share-success;
+  -webkit-animation-duration: 0.2s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-fill-mode: forwards; }
+@-webkit-keyframes share-success {
+  25% {
+    color: #FFF;
+    border-color: #4cae4c; }
+  50% {
+    color: #FFF; }
+  75% {
+    color: #FFF; }
+  100% {
+    color: #FFF;
+    background-color: #5cb85c;
+    border-color: #4cae4c; } }
+#main-view .share-error,
+#main-view .share-error:hover {
+  -webkit-animation-name: share-error;
+  -webkit-animation-duration: 0.2s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-fill-mode: forwards; }
+@-webkit-keyframes share-error {
+  25% {
+    color: #FFF;
+    border-color: #d43f3a; }
+  50% {
+    color: #FFF; }
+  75% {
+    color: #FFF; }
+  100% {
+    color: #FFF;
+    background-color: #d9534f;
+    border-color: #d43f3a; } }
 
 /*# sourceMappingURL=style.css.map */

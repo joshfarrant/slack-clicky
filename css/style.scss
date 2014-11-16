@@ -1,5 +1,11 @@
 $off-black: #555459;
 $light-black: lighten($off-black, 40%);
+$link: #428bca;
+$link-hover: #2a6496;
+$success-color: #5cb85c;
+$success-border-color: #4cae4c;
+$error-color: #d9534f;
+$error-border-color: #d43f3a;
 
 html {
   overflow: auto;
@@ -28,6 +34,7 @@ h4 {
 #main-view {
   display: none;
   #me-promo {
+    margin: 10px 0px 0px 0px;
     float: right;
     font-weight: 300;
   }  
@@ -100,43 +107,59 @@ h4 {
       -webkit-user-select: none;
     }
   }
-  ul {
-    list-style: none;
-    margin: 0px;
-    padding: 0px;
-    li {
-      font-size: 15px;
-      span#noMatches {
-        color: $light-black;
-        font-style: italic;
-      }     
-      span.label {
-        float: right;
-        display: none;
+  #rooms {
+    .room {
+      & {
+        clear: both;
+        overflow: hidden;
+        border-bottom: 1px solid #EEE;
+        padding: 10px 0;
       }
-      .share-link {
+      ul {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        li {
+          font-size: 15px;
+          span#noMatches {
+            color: $light-black;
+            font-style: italic;
+          }     
+          span.label {
+            float: right;
+            display: none;
+          }
+          .share-link {
+            text-align: center;
+            float: left;
+            cursor: pointer;
+            color: $link;
+            border: 1px solid $link;
+            border-radius: 5px;
+            padding: 2px;
+            margin: 2px;
+             &:hover {
+              color: $link-hover;
+              border-color: $link-hover;
+            }
+            &.disabled {
+              pointer-events: none;
+              cursor: default;
+              color: $light-black !important;
+              border-color: $light-black !important;
+              font-weight: 400 !important;  
+            }
+          }
+        }
+      }
+      i.list-toggle {
         cursor: pointer;
-        color: #428bca;
-        &:hover {
-          font-weight: 700;
-          color: #2a6496;
-        }
-        &.disabled {
-          pointer-events: none;
-          cursor: default;
-          color: $light-black !important;
-          font-weight: 400 !important;  
-        }
+        float: right;
+        padding: 5px;
+        margin-top: 7px;
+        -webkit-user-select: none;
       }
     }
-  }
-  i.list-toggle {
-    cursor: pointer;
-    float: right;
-    padding: 5px;
-    position: relative;
-    top: -3px;
-    -webkit-user-select: none;
   }
   .icon-refresh-animate {
     -webkit-animation-name: rotateThis;
@@ -148,5 +171,41 @@ h4 {
   @-webkit-keyframes rotateThis {
     from { transform: scale( 1 ) rotate( 0deg );   }
     to   { transform: scale( 1 ) rotate( 360deg ); }
+  }
+
+  .share-success,
+  .share-success:hover {
+    pointer-events: none;
+    cursor: default;
+    -webkit-animation-name: share-success;
+    -webkit-animation-duration: 0.2s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-fill-mode: forwards; 
+  }
+
+  @-webkit-keyframes share-success {
+    0%   {}
+    25%  { color: #FFF; border-color: $success-border-color }
+    50%  { color: #FFF; }
+    75%  { color: #FFF; }
+    100% { color: #FFF; background-color: $success-color; border-color: $success-border-color }
+  }
+
+  .share-error,
+  .share-error:hover {
+    -webkit-animation-name: share-error;
+    -webkit-animation-duration: 0.2s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-fill-mode: forwards; 
+  }
+
+  @-webkit-keyframes share-error {
+    0%   {}
+    25%  { color: #FFF; border-color: $error-border-color }
+    50%  { color: #FFF; }
+    75%  { color: #FFF; }
+    100% { color: #FFF; background-color: $error-color; border-color: $error-border-color }
   }
 }

@@ -48,9 +48,8 @@ function buildChannelList(channels) {
   $.each(channels, function(i) {
     var channel = channels[i];
     rooms.push(channel);
-    html += '<li class="channel"><span class="share-link" id="share-channel" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
-    html += channel.name + '</span>';
-    html += '<span id="success-' + channel.id + '" class="label label-success"></span></li>';
+    html += '<li class="channel"><span class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
+    html += channel.name + '</span></li>';
   });
   list.html(html);
 }
@@ -96,9 +95,8 @@ function buildUserList(users) {
   $.each(users, function(i) {
     var user = users[i];
     rooms.push(user);
-    html += '<li class="user"><span class="share-link" id="share-user" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
-    html += user.name + '</span>';
-    html += '<span id="' + user.id + '" class="label label-success"></span></li>';
+    html += '<li class="user"><span class="share-link" id="' + user.id + '" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
+    html += user.name + '</span></li>';
   });
   list.html(html);
 }
@@ -145,9 +143,8 @@ function buildGroupsList(groups) {
   $.each(groups, function(i) {
     var group = groups[i];
     rooms.push(group);
-    html += '<li class="group"><span id="share-group" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
-    html += group.name + '</span>';
-    html += '<span id="' + group.id + '" class="label label-success"></span></li>';
+    html += '<li class="group"><span id="' + group.id + '" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
+    html += group.name + '</span></li>';
   });
   list.html(html);
 }
@@ -256,13 +253,16 @@ function postMessage(message, channel) {
     data: data,
     success: function(data) {
       var badge = $('span#' + channel);
+      var badgeText = badge.text();
+      badge.removeClass('share-error');
+      badge.width(badge.width()); // Fixes badge with to it's current width
       if (data.ok === true) {      
         console.info('[info] Link shared');
-        badge.siblings('.share-link').addClass('disabled');
-        badge.removeClass('label-danger').addClass('label-success');        
-        badge.html('Link shared!');
-        badge.fadeIn();
-        badge.delay(2000).fadeOut();
+        badge.addClass('share-success');
+        badge.html('Sent!').delay(2000).queue(function(n) {
+          badge.html(badgeText);
+          n();
+        });
       } else {
         var errorMsgs = {
           'channel_not_found': 'Refresh and try again',
@@ -276,10 +276,11 @@ function postMessage(message, channel) {
         };
         errorMsg = errorMsgs[data.error];
         console.error('[error] Error sharing link: ' + errorMsg);
-        badge.removeClass('label-success').addClass('label-danger');
-        badge.html('Error: ' + errorMsg);
-        badge.fadeIn();
-        badge.delay(2000).fadeOut();
+        badge.addClass('share-error');
+        badge.html('Error :(').delay(2000).queue(function(n) {
+          badge.html(badgeText);
+          n();
+        });
         if (data.error == 'not_authed' || data.error == 'invalid_auth' || data.error == 'account_inactive') {
           localStorage.clear();
           loadView();
@@ -412,8 +413,7 @@ function filterRooms(str) {
     var match = matches[i];
     var html = '';
     html += '<li class="result"><span id="share-result" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
-    html += match.name + '</span>';
-    html += '<span id="' + match.id + '" class="label label-success"></span></li>';
+    html += match.name + '</span></li>';
     $('#resultList').append(html);
   }
 
