@@ -56,7 +56,7 @@
       
       <div id="instructions">
         <h4 id="greeting"></h4>
-        <p>Select a channel, user, or group below to share a link</p>
+        <p>Select a channel, user, or group below to share a link!</p>
       </div>
 
       <div id="search-form" class="input-group">
@@ -70,31 +70,30 @@
 
         <div id="channels" class="room" data-visible="true">
           <i class="glyphicon glyphicon-chevron-up list-toggle" data-toggle="channelList"></i>      
-          <h4 class="list-title list-toggle">Channels</h4>
+          <h4 class="list-title">Channels</h4>
           <ul id="channelList" class="roomList"><li>Loading...</li></ul>
         </div>
 
         <div id="users" class="room" data-visible="true">
           <i class="glyphicon glyphicon-chevron-up list-toggle" id="user-toggle" data-toggle="userList"></i>      
-          <h4 class="list-title list-toggle">Users</h4>
+          <h4 class="list-title">Users</h4>
           <ul id="userList" class="roomList"><li>Loading...</li></ul>
         </div>
 
         <div id="groups" class="room" data-visible="true">
           <i class="glyphicon glyphicon-chevron-up list-toggle" id="group-toggle" data-toggle="groupList"></i>      
-          <h4 class="list-title list-toggle">Groups</h4>
+          <h4 class="list-title">Groups</h4>
           <ul id="groupList" class="roomList"><li>Loading...</li></ul>
         </div>
         
       </div>
 
-      <div id="search-results" data-visible="true">
-        <i class="glyphicon glyphicon-remove" id="search-results-toggle"></i>
-        <h4 class="list-title">Results</h4>
-        <ul id="resultList" class="roomList"></ul>
-
-        <hr />
-
+      <div id="search">
+        <div id="search-results" data-visible="true">
+          <i class="glyphicon glyphicon-remove" id="search-results-toggle"></i>
+          <h4 class="list-title">Results</h4>
+          <ul id="resultList" class="roomList"></ul>
+        </div>
       </div>
 
       <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">#Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>

@@ -72,6 +72,7 @@ function getUsers() {
       success: function(data) {
         if (data.ok === true) {        
           var users = data.members;
+          for (var i in users) users[i].name = '@' + users[i].name;
           localStorage.setItem('clicky-users', JSON.stringify(users));
           buildUserList(users);
         } else {
@@ -407,12 +408,12 @@ function filterRooms(str) {
   }
 
   $('#rooms').hide();
-  $('#search-results').show();
+  $('#search').show();
   // $('#search-form span.clear').show();
   for (var i in matches) {
     var match = matches[i];
     var html = '';
-    html += '<li class="result"><span id="share-result" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
+    html += '<li class="result"><span id="' + match.id + '" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
     html += match.name + '</span></li>';
     $('#resultList').append(html);
   }
@@ -422,7 +423,7 @@ function filterRooms(str) {
     $('#resultList').append(noResultsMsg);
     if (str === '') {
       $('#rooms').show();
-      $('#search-results').hide();
+      $('#search').hide();
       $('#search-form span.clear').hide();
       $('#resultList').html(null);
     }

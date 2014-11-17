@@ -13,7 +13,7 @@ html {
 
 body {
   width: 300px;
-  min-height: 300px;
+  min-height: 400px;
   height: auto;
   overflow: hidden;
   padding: 0px 10px 10px 10px;
@@ -72,6 +72,7 @@ h4 {
   #search-form {
     border: 1px solid $light-black;
     border-radius: 50px;
+    // margin-top: 15px;
     >* {
       background-color: transparent;
       border: none;
@@ -96,19 +97,23 @@ h4 {
       margin-top: 10px;
     }    
   }
-  #search-results {
+  #search {
     display: none;
-    i {
-      cursor: pointer;
-      float: right;
-      padding: 5px;
-      position: relative;
-      top: -3px;
-      -webkit-user-select: none;
+    #search-results {
+      i {
+        cursor: pointer;
+        float: right;
+        padding: 5px;
+        position: relative;
+        margin-top: 7px;
+        -webkit-user-select: none;
+      }
     }
   }
-  #rooms {
-    .room {
+  #rooms,
+  #search {
+    .room,
+    #search-results {
       & {
         clear: both;
         overflow: hidden;
@@ -139,15 +144,9 @@ h4 {
             padding: 2px;
             margin: 2px;
              &:hover {
-              color: $link-hover;
-              border-color: $link-hover;
-            }
-            &.disabled {
-              pointer-events: none;
-              cursor: default;
-              color: $light-black !important;
-              border-color: $light-black !important;
-              font-weight: 400 !important;  
+              color: #FFF;
+              border-color: $link;
+              background-color: $link;;
             }
           }
         }

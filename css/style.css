@@ -3,7 +3,7 @@ html {
 
 body {
   width: 300px;
-  min-height: 300px;
+  min-height: 400px;
   height: auto;
   overflow: hidden;
   padding: 0px 10px 10px 10px;
@@ -67,33 +67,51 @@ h4 {
     color: #bbbbbe; }
   #main-view #search-form + hr {
     margin-top: 10px; }
-#main-view #search-results {
+#main-view #search {
   display: none; }
-  #main-view #search-results i {
+  #main-view #search #search-results i {
     cursor: pointer;
     float: right;
     padding: 5px;
     position: relative;
-    top: -3px;
+    margin-top: 7px;
     -webkit-user-select: none; }
-#main-view #rooms .room {
+#main-view #rooms .room,
+#main-view #rooms #search-results,
+#main-view #search .room,
+#main-view #search #search-results {
   clear: both;
   overflow: hidden;
   border-bottom: 1px solid #EEE;
   padding: 10px 0; }
-#main-view #rooms .room ul {
+#main-view #rooms .room ul,
+#main-view #rooms #search-results ul,
+#main-view #search .room ul,
+#main-view #search #search-results ul {
   list-style: none;
   margin: 0px;
   padding: 0px; }
-  #main-view #rooms .room ul li {
+  #main-view #rooms .room ul li,
+  #main-view #rooms #search-results ul li,
+  #main-view #search .room ul li,
+  #main-view #search #search-results ul li {
     font-size: 15px; }
-    #main-view #rooms .room ul li span#noMatches {
+    #main-view #rooms .room ul li span#noMatches,
+    #main-view #rooms #search-results ul li span#noMatches,
+    #main-view #search .room ul li span#noMatches,
+    #main-view #search #search-results ul li span#noMatches {
       color: #bbbbbe;
       font-style: italic; }
-    #main-view #rooms .room ul li span.label {
+    #main-view #rooms .room ul li span.label,
+    #main-view #rooms #search-results ul li span.label,
+    #main-view #search .room ul li span.label,
+    #main-view #search #search-results ul li span.label {
       float: right;
       display: none; }
-    #main-view #rooms .room ul li .share-link {
+    #main-view #rooms .room ul li .share-link,
+    #main-view #rooms #search-results ul li .share-link,
+    #main-view #search .room ul li .share-link,
+    #main-view #search #search-results ul li .share-link {
       text-align: center;
       float: left;
       cursor: pointer;
@@ -102,16 +120,17 @@ h4 {
       border-radius: 5px;
       padding: 2px;
       margin: 2px; }
-      #main-view #rooms .room ul li .share-link:hover {
-        color: #2a6496;
-        border-color: #2a6496; }
-      #main-view #rooms .room ul li .share-link.disabled {
-        pointer-events: none;
-        cursor: default;
-        color: #bbbbbe !important;
-        border-color: #bbbbbe !important;
-        font-weight: 400 !important; }
-#main-view #rooms .room i.list-toggle {
+      #main-view #rooms .room ul li .share-link:hover,
+      #main-view #rooms #search-results ul li .share-link:hover,
+      #main-view #search .room ul li .share-link:hover,
+      #main-view #search #search-results ul li .share-link:hover {
+        color: #FFF;
+        border-color: #428bca;
+        background-color: #428bca; }
+#main-view #rooms .room i.list-toggle,
+#main-view #rooms #search-results i.list-toggle,
+#main-view #search .room i.list-toggle,
+#main-view #search #search-results i.list-toggle {
   cursor: pointer;
   float: right;
   padding: 5px;
