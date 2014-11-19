@@ -29,7 +29,7 @@ function getChannels() {
           localStorage.setItem('clicky-channels', JSON.stringify(channels));
           buildChannelList(channels);
         } else {
-          console.error('[error] Error getting channels: ' + data.error);
+          console.error('[err] Error getting channels: ' + data.error);
         }
       }
     });
@@ -48,7 +48,7 @@ function buildChannelList(channels) {
   $.each(channels, function(i) {
     var channel = channels[i];
     rooms.push(channel);
-    html += '<li class="channel"><span class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
+    html += '<li class="channel"><span data-type="channel" class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
     html += channel.name + '</span></li>';
   });
   list.html(html);
@@ -76,7 +76,7 @@ function getUsers() {
           localStorage.setItem('clicky-users', JSON.stringify(users));
           buildUserList(users);
         } else {
-          console.error('[error] Error getting users: ' + data.error);
+          console.error('[err] Error getting users: ' + data.error);
         }        
       }
     });
@@ -96,7 +96,7 @@ function buildUserList(users) {
   $.each(users, function(i) {
     var user = users[i];
     rooms.push(user);
-    html += '<li class="user"><span class="share-link" id="' + user.id + '" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
+    html += '<li class="user"><span data-type="user" class="share-link" id="' + user.id + '" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
     html += user.name + '</span></li>';
   });
   list.html(html);
@@ -124,7 +124,7 @@ function getGroups() {
           localStorage.setItem('clicky-groups', JSON.stringify(groups));
           buildGroupsList(groups);
         } else {
-          console.error('[error] Error getting groups: ' + data.error);
+          console.error('[err] Error getting groups: ' + data.error);
         }
       }
     });
@@ -144,7 +144,7 @@ function buildGroupsList(groups) {
   $.each(groups, function(i) {
     var group = groups[i];
     rooms.push(group);
-    html += '<li class="group"><span id="' + group.id + '" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
+    html += '<li class="group"><span data-type="group" id="' + group.id + '" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
     html += group.name + '</span></li>';
   });
   list.html(html);
@@ -254,7 +254,7 @@ function postMessage(message, channel) {
     data: data,
     success: function(data) {
       var badge = $('span#' + channel);
-      var badgeText = badge.text();
+      var badgeText = badge.html();
       badge.removeClass('share-error');
       badge.width(badge.width()); // Fixes badge with to it's current width
       if (data.ok === true) {      
@@ -276,7 +276,7 @@ function postMessage(message, channel) {
           'account_inactive': 'Please re-login'
         };
         errorMsg = errorMsgs[data.error];
-        console.error('[error] Error sharing link: ' + errorMsg);
+        console.error('[err] Error sharing link: ' + errorMsg);
         badge.addClass('share-error');
         badge.html('Error :(').delay(2000).queue(function(n) {
           badge.html(badgeText);
@@ -286,6 +286,29 @@ function postMessage(message, channel) {
           localStorage.clear();
           loadView();
         };
+      }          
+    }
+  });
+}
+
+
+// Deletes link to user or channel using Slack API
+function deleteMessage(timestamp, channel) {
+  var data = {
+    'token': slackToken,
+    'channel': channel,
+    'ts': timestamp
+  };
+
+  $.ajax({
+    type: 'POST',
+    url: 'https://slack.com/api/chat.delete',
+    data: data,
+    success: function(data) {
+      if (data.ok === true) {      
+        console.info('[info] Message deleted');
+      } else {
+        console.error('[err] Error deleting message: ' + data.error);
       }          
     }
   });
@@ -413,7 +436,17 @@ function filterRooms(str) {
   for (var i in matches) {
     var match = matches[i];
     var html = '';
-    html += '<li class="result"><span id="' + match.id + '" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
+    var roomType;
+
+    if (match.name[0] == '#') {
+      roomType = 'channel_search'
+    } else if (match.name[0] == '@') {
+      roomType = 'user_search'
+    } else {
+      roomType = 'group_search'
+    }
+
+    html += '<li class="result"><span data-type="' + roomType + '" id="' + match.id + '" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
     html += match.name + '</span></li>';
     $('#resultList').append(html);
   }
@@ -555,8 +588,8 @@ _gaq.push(['_trackPageview']);
 })();
 
 $(document).on('click', '.share-link', function(e) {
-  var id = e.target.id;
-  var type = id.split('-')[1];
+  var attributes = e.target.attributes;
+  var type = attributes["data-type"].value;
   _gaq.push(['_trackEvent', 'shareTo_' + type, 'clicked']);
 });
 
