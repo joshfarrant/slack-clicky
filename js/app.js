@@ -247,19 +247,20 @@ function postMessage(message, channel) {
     'unfurl_links': true,
     'unfurl_media': true
   };
+  var badge = $('span#' + channel);
+  badge.addClass('disabled');
 
   $.ajax({
     type: 'POST',
     url: 'https://slack.com/api/chat.postMessage',
     data: data,
     success: function(data) {
-      var badge = $('span#' + channel);
       var badgeText = badge.text();
       badge.removeClass('share-error');
       badge.width(badge.width()); // Fixes badge with to it's current width
       if (data.ok === true) {      
         console.info('[info] Link shared');
-        badge.addClass('share-success');
+        badge.addClass('share-success').removeClass('disabled');
         badge.html('Sent!').delay(2000).queue(function(n) {
           badge.html(badgeText);
           n();
@@ -277,7 +278,7 @@ function postMessage(message, channel) {
         };
         errorMsg = errorMsgs[data.error];
         console.error('[error] Error sharing link: ' + errorMsg);
-        badge.addClass('share-error');
+        badge.addClass('share-error').removeClass('disabled');
         badge.html('Error :(').delay(2000).queue(function(n) {
           badge.html(badgeText);
           n();

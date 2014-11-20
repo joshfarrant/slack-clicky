@@ -127,6 +127,11 @@ h4 {
         color: #FFF;
         border-color: #428bca;
         background-color: #428bca; }
+      #main-view #rooms .room ul li .share-link .disabled,
+      #main-view #rooms #search-results ul li .share-link .disabled,
+      #main-view #search .room ul li .share-link .disabled,
+      #main-view #search #search-results ul li .share-link .disabled {
+        pointer-events: none; }
 #main-view #rooms .room i.list-toggle,
 #main-view #rooms #search-results i.list-toggle,
 #main-view #search .room i.list-toggle,

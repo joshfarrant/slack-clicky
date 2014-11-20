@@ -143,10 +143,13 @@ h4 {
             border-radius: 5px;
             padding: 2px;
             margin: 2px;
-             &:hover {
+            &:hover {
               color: #FFF;
               border-color: $link;
               background-color: $link;;
+            }
+            .disabled {
+              pointer-events: none;
             }
           }
         }
