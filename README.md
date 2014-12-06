@@ -2,7 +2,7 @@
 
 \#Clicky for Slack is a Chrome Extension designed to make sharing a link to Slack as quick and easy as possible. Share your current page to a Slack channel, user, or group in a single click!
 
-\#Clicky can also be found in the [Chrome Store](https://chrome.google.com/webstore/detail/clicky-for-slack/bllgmdlgbbmijcoecbnmgeoekhebgmac)!
+\#Clicky can also be found in the [Chrome Store!](https://chrome.google.com/webstore/detail/clicky-for-slack/bllgmdlgbbmijcoecbnmgeoekhebgmac)
 
 ## Manual Installation
 

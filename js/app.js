@@ -6,6 +6,7 @@ var user = JSON.parse(localStorage.getItem('clicky-user'));
 
 var rooms = [];
 
+var shared = [];
 
 // Gets list of all available (and unarchived) channels
 function getChannels() {
@@ -225,20 +226,20 @@ function getUserData(user) {
 
 
 // Gets active tab url
-function postCurrentTabTo(channel) {
+function postCurrentTabTo(channel,search) {
   chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
     var tab = tabs[0];
     var tabUrl = tab.url;
     var formattedLink = '<' + tabUrl + '>';
 
-    postMessage(formattedLink, channel);
+    postMessage(formattedLink, channel, search);
 
   });
 }
 
 
 // Sends link to user or channel using Slack API
-function postMessage(message, channel) {
+function postMessage(message, channel, search) {
   var data = {
     'token': slackToken,
     'channel': channel,
@@ -247,7 +248,7 @@ function postMessage(message, channel) {
     'unfurl_links': true,
     'unfurl_media': true
   };
-  var badge = $('span#' + channel);
+  var badge = search ? $('span.search#' + channel) : $('span#' + channel);
   badge.addClass('disabled');
 
   $.ajax({
@@ -260,9 +261,11 @@ function postMessage(message, channel) {
       badge.width(badge.width()); // Fixes badge with to it's current width
       if (data.ok === true) {      
         console.info('[info] Link shared');
-        badge.addClass('share-success').removeClass('disabled');
+        $('span#' + channel).addClass('share-success').removeClass('disabled');
+        shared.push(channel);
         badge.html('Sent!').delay(2000).queue(function(n) {
           badge.html(badgeText);
+          $('span#' + channel).addClass('share-success-no-animate').removeClass('share-success');
           n();
         });
       } else {
@@ -404,6 +407,7 @@ function refreshData() {
   localStorage.removeItem('clicky-users');
   localStorage.removeItem('clicky-channels');
   localStorage.removeItem('clicky-groups');
+  rooms = [];
   console.info('[info] Local storage items removed');
   $('#userList').html('Loading...');
   $('#channelList').html('Loading...');
@@ -439,6 +443,15 @@ function filterRooms(str) {
     var match = matches[i];
     var html = '';
     var roomType;
+    var sharedTo;
+    var classes = 'share-link search';
+
+    if ($.inArray(match.id, shared) != -1) {
+      sharedTo = true;
+      classes += ' share-success-no-animate';
+    } else {
+      sharedTo = false;
+    }
 
     if (match.name[0] == '#') {
       roomType = 'channel_search'
@@ -448,7 +461,7 @@ function filterRooms(str) {
       roomType = 'group_search'
     }
 
-    html += '<li class="result"><span data-type="' + roomType + '" id="' + match.id + '" class="share-link" title="' + match.name + '" data-room="' + match.id + '">';
+    html += '<li class="result"><span data-type="' + roomType + '" id="' + match.id + '" class="' + classes + '" title="' + match.name + '" data-room="' + match.id + '">';
     html += match.name + '</span></li>';
     $('#resultList').append(html);
   }
@@ -512,7 +525,8 @@ $(document).on('click', 'a.linkable', function() {
 $(document).on('click', '.share-link', function() {
   var channel = $(this).attr('data-room');
   if (!$(this).hasClass('disabled')) {
-    postCurrentTabTo(channel);
+    var search = $(this).hasClass('search') ? true : false;
+    postCurrentTabTo(channel, search);
   }
 });
 

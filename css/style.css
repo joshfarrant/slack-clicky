@@ -172,6 +172,13 @@ h4 {
     color: #FFF;
     background-color: #5cb85c;
     border-color: #4cae4c; } }
+#main-view .share-success-no-animate,
+#main-view .share-success-no-animate:hover {
+  pointer-events: none;
+  cursor: default;
+  color: #FFF !important;
+  background-color: #5cb85c;
+  border-color: #4cae4c !important; }
 #main-view .share-error,
 #main-view .share-error:hover {
   -webkit-animation-name: share-error;

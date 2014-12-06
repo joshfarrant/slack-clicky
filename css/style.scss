@@ -194,6 +194,15 @@ h4 {
     100% { color: #FFF; background-color: $success-color; border-color: $success-border-color }
   }
 
+  .share-success-no-animate,
+  .share-success-no-animate:hover {
+    pointer-events: none;
+    cursor: default;
+    color: #FFF !important;
+    background-color: $success-color;
+    border-color: $success-border-color !important;
+  }
+
   .share-error,
   .share-error:hover {
     -webkit-animation-name: share-error;
