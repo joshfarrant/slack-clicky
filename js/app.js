@@ -73,7 +73,13 @@ function getUsers() {
       success: function(data) {
         if (data.ok === true) {        
           var users = data.members;
-          for (var i in users) users[i].name = '@' + users[i].name;
+          for (var i in users) {
+            var user = users[i];
+            user.name = '@' + user.name;
+            if (user.deleted) {
+              users.splice(i, 1);
+            }
+          }
           localStorage.setItem('clicky-users', JSON.stringify(users));
           buildUserList(users);
         } else {
@@ -244,7 +250,7 @@ function postMessage(message, channel, search) {
     'token': slackToken,
     'channel': channel,
     'text' : message,
-    'username': 'clicky from ' + user.name,
+    'username': '#Clicky from ' + user.name,
     'unfurl_links': true,
     'unfurl_media': true
   };
