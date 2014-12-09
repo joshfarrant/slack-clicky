@@ -555,6 +555,13 @@ $(document).on('click', 'span#history', function() {
 });
 
 
+// Handles history view 'back' button clicks
+$(document).on('click', 'span#history-back', function() {
+  $('#history-view').hide();
+  $('#main-view').show();
+});
+
+
 // Handles click events on users, channels, and groups
 // Shares active tab to that user/channel/group
 $(document).on('click', '.share-link', function() {
