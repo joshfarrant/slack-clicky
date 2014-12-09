@@ -31,13 +31,14 @@ h4 {
 }
 
 #api-token-view,
-#main-view {
+#main-view,
+#history-view {
   display: none;
   #me-promo {
     margin: 10px 0px 0px 0px;
     float: right;
     font-weight: 300;
-  }  
+  }
 }
 
 #api-token-view {
@@ -47,7 +48,67 @@ h4 {
   }
 }
 
-#refresh-data {
+#history-view {
+  #title {
+    margin: 10px 0px 20px 0px;
+  }
+  span#history-back {
+    position: absolute;
+    top: 22px;
+    right: 10px;
+    font-weight: 300;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    color: $link;
+    border-radius: 5px;
+    padding: 0px 2px;
+    &:hover {
+      color: #FFF;
+      border-color: $link;
+      background-color: $link;;
+    }
+  }
+  #history-list {
+    a {
+      color: $link;
+      margin: 15px 0px;
+      &:hover {
+        text-decoration: none;
+        color: $link-hover;
+      }
+      .list-group-item-heading {
+        color: $off-black;
+        font-weight: 400;
+        font-size: 15px;
+        &:hover {
+          text-decoration: none;
+          color: $link-hover;
+        }
+      }
+      p {
+        font-weight: 300;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+      }
+      .history-moment {
+        color: $light-black;
+        font-size: 14px;
+        font-weight: 300;
+        float: right;
+        position: relative;
+        bottom: 1px;
+      }
+    }
+  }
+}
+
+.corner-button {
   color: $off-black;
   font-size: 16px;
   position: absolute;
@@ -68,6 +129,24 @@ h4 {
   }
   #instructions {
     display: none;
+  }
+  span#history {
+    margin: 10px 0px 0px 0px;
+    float: left;
+    position: relative;
+    left: 2px;
+    font-weight: 300;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    color: $link;
+    border-radius: 5px;
+    padding: 0px 2px;
+    &:hover {
+      color: #FFF;
+      border-color: $link;
+      background-color: $link;;
+    }
   }
   #search-form {
     border: 1px solid $light-black;

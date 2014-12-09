@@ -33,7 +33,7 @@
       <hr />
 
       <p>Don't know your Slack API Token?</p>
-      <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/#auth">this page on Slack's website</a>, click
+      <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/web">this page on Slack's website</a>, click
       <br>
       <strong>Create token</strong> and copy the generated token into the field above.</p>
 
@@ -48,14 +48,13 @@
 
     <!-- Main view -->
     <div id="main-view">
-      <a id="refresh-data">
+      <a id="refresh-data" class="corner-button">
         <i class="glyphicon glyphicon-refresh"></i>
       </a>
 
       <h2 id="title">#Clicky</h2>
       
       <div id="instructions">
-        <h4 id="greeting"></h4>
         <p>Select a channel, user, or group below to share a link!</p>
       </div>
 
@@ -96,14 +95,30 @@
         </div>
       </div>
 
+      <span id="history">History</span>
+
       <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">#Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>
     </div>
     <!-- /Main view -->
+
+<!-- History view -->
+    <div id="history-view">
+
+      <h2 id="title">History</h2>
+      <span id="history-back">Back</span>
+      
+      <div id="history-list">
+        <div class="list-group" id="history-list"></div>
+      </div>
+
+    </div>
+    <!-- /History view -->
 
   </body>
 
   <script type="text/javascript" src="/components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="/components/bootstrap/dist/js/bootstrap.js"></script>
+  <script type="text/javascript" src="/components/moment/moment.js"></script>
 
   <script src="/js/app.js"></script>
 

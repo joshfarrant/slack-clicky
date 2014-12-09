@@ -5,7 +5,7 @@ var team = localStorage.getItem('clicky-team');
 var user = JSON.parse(localStorage.getItem('clicky-user'));
 
 var rooms = [];
-
+var prettyRooms = {};
 var shared = [];
 
 // Gets list of all available (and unarchived) channels
@@ -46,9 +46,19 @@ function getChannels() {
 function buildChannelList(channels) {
   var list = $('#channelList');
   var html = '';
+
+  if (channels.length == 0) {
+    console.info('[info] No channels available');
+    $('div#channels').hide();
+    return;
+  } else {
+    $('div#channels').show();
+  }
+
   $.each(channels, function(i) {
     var channel = channels[i];
     rooms.push(channel);
+    prettyRooms[channel.id] = channel.name
     html += '<li class="channel"><span data-type="channel" class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
     html += channel.name + '</span></li>';
   });
@@ -100,9 +110,18 @@ function buildUserList(users) {
   var list = $('#userList');
   var html = '';
 
+  if (users.length == 0) {
+    console.info('[info] No users available');
+    $('div#users').hide();
+    return;
+  } else {
+    $('div#users').show();
+  }
+
   $.each(users, function(i) {
     var user = users[i];
     rooms.push(user);
+    prettyRooms[user.id] = user.name
     html += '<li class="user"><span data-type="user" class="share-link" id="' + user.id + '" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
     html += user.name + '</span></li>';
   });
@@ -148,9 +167,18 @@ function buildGroupsList(groups) {
   var list = $('#groupList');
   var html = '';
 
+  if (groups.length == 0) {
+    console.info('[info] No groups available');
+    $('div#groups').hide();
+    return;
+  } else {
+    $('div#groups').show();
+  }
+
   $.each(groups, function(i) {
     var group = groups[i];
     rooms.push(group);
+    prettyRooms[group.id] = group.name
     html += '<li class="group"><span data-type="group" id="' + group.id + '" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
     html += group.name + '</span></li>';
   });
@@ -236,9 +264,8 @@ function postCurrentTabTo(channel,search) {
   chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
     var tab = tabs[0];
     var tabUrl = tab.url;
-    var formattedLink = '<' + tabUrl + '>';
 
-    postMessage(formattedLink, channel, search);
+    postMessage(tabUrl, channel, search);
 
   });
 }
@@ -246,10 +273,11 @@ function postCurrentTabTo(channel,search) {
 
 // Sends link to user or channel using Slack API
 function postMessage(message, channel, search) {
+  var formattedMessage = '<' + message + '>';
   var data = {
     'token': slackToken,
     'channel': channel,
-    'text' : message,
+    'text' : formattedMessage,
     'username': '#Clicky from ' + user.name,
     'unfurl_links': true,
     'unfurl_media': true
@@ -269,6 +297,17 @@ function postMessage(message, channel, search) {
         console.info('[info] Link shared');
         $('span#' + channel).addClass('share-success').removeClass('disabled');
         shared.push(channel);
+
+        var history = JSON.parse(localStorage.getItem('clicky-history'));
+        var timestamp = new Date().getTime() / 1000;
+        var roundedTimestamp = Math.floor(timestamp);
+        var historyEntry = {
+          url: message,
+          to: prettyRooms[channel],
+          timestamp: roundedTimestamp
+        }
+        history.push(historyEntry);
+        localStorage.setItem('clicky-history', JSON.stringify(history));
         badge.html('Sent!').delay(2000).queue(function(n) {
           badge.html(badgeText);
           $('span#' + channel).addClass('share-success-no-animate').removeClass('share-success');
@@ -326,37 +365,6 @@ function deleteMessage(timestamp, channel) {
 }
 
 
-// Builds greeting
-function buildGreeting() {
-  var greetings = [
-    "Hello",
-    "Hi",
-    "Hiya",
-    "Hey",
-    "Ciao",
-    "Sup",
-    "Wha'gwan",
-    "Hola",
-    "Bonjour",
-    "G'day",
-    "What's Poppin'",
-    "Howdy",
-    "Aloha",
-    "Namaste",
-    "Salutations",
-    "Wassup",
-    "What's up",
-    "Yo"
-  ];
-  var greetingId = Math.floor(Math.random() * greetings.length);
-  // var greeting = greetings[greetingId] + ', ' + user.profile.first_name + '!';
-  var greeting = 'Hi, ' + user.profile.first_name + '!';
-  $('#greeting').html(greeting);
-  $('#title').css('color: #' + user.color);  
-}
-
-
-
 // Loads correct view based on available data
 function loadView() {
   // Handles list hiding
@@ -383,13 +391,14 @@ function loadView() {
 
   if (localStorage.getItem('clicky-first-load') === null) $('#instructions').show();
 
+  if (localStorage.getItem('clicky-history') === null) localStorage.setItem('clicky-history', JSON.stringify([]));
+
   if (localStorage.getItem('clicky-token') !== null) {
     slackToken = localStorage.getItem('clicky-token');
     user = JSON.parse(localStorage.getItem('clicky-user'));
     if (localStorage.getItem('clicky-user') !== null) {
       user = JSON.parse(localStorage.getItem('clicky-user'));
       $('#api-token-view').hide();
-      buildGreeting();
       getChannels();
       getUsers();
       getGroups();
@@ -523,6 +532,26 @@ $('#clicky-token-input').keypress(function(e) {
 $(document).on('click', 'a.linkable', function() {
   var href = $(this).attr('href');
   chrome.tabs.create({'url': href});
+});
+
+
+// Handles history button clicks
+$(document).on('click', 'span#history', function() {
+  var history = JSON.parse(localStorage.getItem('clicky-history'));
+  var html = '';
+  for (var i = history.length - 1; i >= 0; i--) {
+    var entry = history[i];
+    var prettyUrl = ( entry.url.split('://') )[1];
+    var time = moment.unix(entry.timestamp).fromNow();
+    html += '<a href="'+entry.url+'" class="linkable">';
+    html += '<span class="history-moment">'+time+'</span>';
+    html += '<h4 class="list-group-item-heading">'+entry.to+'</h4>';
+    html += '<p>'+prettyUrl+'</p>';
+    html += '</a>'
+  }
+  $('#history-list').html(html);
+  $('#main-view').hide();
+  $('#history-view').show();
 });
 
 

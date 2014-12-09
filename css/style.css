@@ -18,10 +18,12 @@ h4 {
   font-weight: 700; }
 
 #api-token-view,
-#main-view {
+#main-view,
+#history-view {
   display: none; }
   #api-token-view #me-promo,
-  #main-view #me-promo {
+  #main-view #me-promo,
+  #history-view #me-promo {
     margin: 10px 0px 0px 0px;
     float: right;
     font-weight: 300; }
@@ -30,7 +32,54 @@ h4 {
   display: none;
   margin-top: 20px; }
 
-#refresh-data {
+#history-view #title {
+  margin: 10px 0px 20px 0px; }
+#history-view span#history-back {
+  position: absolute;
+  top: 22px;
+  right: 10px;
+  font-weight: 300;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  color: #428bca;
+  border-radius: 5px;
+  padding: 0px 2px; }
+  #history-view span#history-back:hover {
+    color: #FFF;
+    border-color: #428bca;
+    background-color: #428bca; }
+#history-view #history-list a {
+  color: #428bca;
+  margin: 15px 0px; }
+  #history-view #history-list a:hover {
+    text-decoration: none;
+    color: #2a6496; }
+  #history-view #history-list a .list-group-item-heading {
+    color: #555459;
+    font-weight: 400;
+    font-size: 15px; }
+    #history-view #history-list a .list-group-item-heading:hover {
+      text-decoration: none;
+      color: #2a6496; }
+  #history-view #history-list a p {
+    font-weight: 300;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    padding-bottom: 10px; }
+  #history-view #history-list a .history-moment {
+    color: #bbbbbe;
+    font-size: 14px;
+    font-weight: 300;
+    float: right;
+    position: relative;
+    bottom: 1px; }
+
+.corner-button {
   color: #555459;
   font-size: 16px;
   position: absolute;
@@ -40,13 +89,29 @@ h4 {
   width: 16px;
   padding: 0px;
   cursor: pointer; }
-  #refresh-data span {
+  .corner-button span {
     margin-top: 3px; }
 
 #main-view #title {
   margin: 10px 0px; }
 #main-view #instructions {
   display: none; }
+#main-view span#history {
+  margin: 10px 0px 0px 0px;
+  float: left;
+  position: relative;
+  left: 2px;
+  font-weight: 300;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  color: #428bca;
+  border-radius: 5px;
+  padding: 0px 2px; }
+  #main-view span#history:hover {
+    color: #FFF;
+    border-color: #428bca;
+    background-color: #428bca; }
 #main-view #search-form {
   border: 1px solid #bbbbbe;
   border-radius: 50px; }
