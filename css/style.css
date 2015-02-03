@@ -28,9 +28,14 @@ h4 {
     float: right;
     font-weight: 300; }
 
-#api-token-view #invalidToken {
-  display: none;
-  margin-top: 20px; }
+#api-token-view button#OAuth {
+  width: 100%;
+  margin: 15px 0 20px 0;
+  background-color: #2AB27B;
+  color: #fff;
+  letter-spacing: 1px;
+  font-size: 20px;
+  font-weight: 400; }
 
 #history-view #title {
   margin: 10px 0px 20px 0px; }

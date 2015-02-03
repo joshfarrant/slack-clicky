@@ -15,33 +15,20 @@
       <h3>Welcome to #Clicky!</h3>
       <hr />
       <h4>First thing's first...</h4>
-      <p>To start using #Clicky you will need to enter your Slack API Token below.</p>
+      
+      <button class="btn btn-default" id="OAuth">Authorize with Slack</button>
 
-      <div id="clicky-token-form" class="input-group">
-        <input type="text" id="clicky-token-input" class="form-control" placeholder="Enter Slack token here">      
-        <span class="input-group-btn">
-          <button class="btn btn-default" id="clicky-token-submit" type="button">Go!</button>
-        </span>
-      </div>
-
-      <div class="alert alert-danger alert-dismissible" id="invalidToken">
-        <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
-        <strong>Oops!</strong> The token you entered wasn't valid.
-        Try copy-pasting it again, or contact <a class="linkable" href="https://www.twitter.com/farpixel">@FarPixel</a> for help!
-      </div>
+      <p>Once you've authorized #Clicky with Slack, come back here to get started!</p>
 
       <hr />
 
-      <p>Don't know your Slack API Token?</p>
-      <p>Visit <a id="slack-api" class="linkable" href="https://api.slack.com/web#auth">this page on Slack's website</a>, click
-      <br>
-      <strong>Create token</strong> and copy the generated token into the field above.</p>
+      <p>Don't worry - #Clicky will never send any messages without you asking it to.</p>
+
+      <p>For help signing in, email <a class="linkable" href="mailto:josh@farrant.me">josh@farrant.me</a> or tweet <a class="linkable" href="https://twitter.com/farpixel">@FarPixel</a> .</p>
 
       <hr />
 
       <p id="me-promo"><a class="linkable" href="https://github.com/joshfarrant/slack-clicky">#Clicky</a> by <a class="linkable" href="https://www.twitter.com/farpixel">Josh Farrant</a></p>
-
-
 
     </div>
     <!-- /API Token view -->
@@ -55,7 +42,7 @@
       <h2 id="title">#Clicky</h2>
       
       <div id="instructions">
-        <p>Select a channel, user, or group below to share a link!</p>
+        <p>Great, you're in! Select a channel, user, or group below to share a link!</p>
       </div>
 
       <div id="search-form" class="input-group">
@@ -101,7 +88,7 @@
     </div>
     <!-- /Main view -->
 
-<!-- History view -->
+    <!-- History view -->
     <div id="history-view">
 
       <h2 id="title">History</h2>

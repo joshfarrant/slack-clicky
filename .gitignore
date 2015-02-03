@@ -1,3 +1,4 @@
 components/
 .sass-cache/
 css/style.css.map
+config.json

@@ -81,13 +81,14 @@ function getUsers() {
       url: 'https://slack.com/api/users.list',
       data: data,
       success: function(data) {
-        if (data.ok === true) {        
-          var users = data.members;
-          for (var i in users) {
-            var user = users[i];
+        if (data.ok === true) {
+          var allUsers = data.members;
+          var users = [];
+          for (var i in allUsers) {
+            var user = allUsers[i];
             user.name = '@' + user.name;
-            if (user.deleted) {
-              users.splice(i, 1);
+            if (!user.deleted) {
+              users.push(user);
             }
           }
           localStorage.setItem('clicky-users', JSON.stringify(users));
@@ -216,8 +217,6 @@ function submitToken(token) {
 
   if (auth === false) {
     console.info('[info] Authenticated failed');
-    $('#clicky-token-input').val('');
-    $('#invalidToken').slideDown();
     return false;
   } else {
     team = auth.team;
@@ -512,7 +511,11 @@ $(document).on('click', '#search-results-toggle', function() {
 $(document).on('click', '#clicky-token-submit', function() {
   $(this).prop('disabled', true).addClass('disabled');
   var token = $('#clicky-token-input').val();
-  submitToken(token);
+  var auth = submitToken(token);
+  if (!auth) {
+    $('#clicky-token-input').val('');
+    $('#invalidToken').slideDown();
+  }
   $(this).prop('disabled', false).removeClass('disabled');
 });
 
@@ -522,7 +525,11 @@ $('#clicky-token-input').keypress(function(e) {
   if (event.which == 13) {
     $(this).prop('disabled', true).addClass('disabled');
     var token = $('#clicky-token-input').val();
-    submitToken(token);
+    var auth = submitToken(token);
+    if (!auth) {
+      $('#clicky-token-input').val('');
+      $('#invalidToken').slideDown();
+    }
     $(this).prop('disabled', false).removeClass('disabled');
   }
 });
@@ -577,6 +584,12 @@ $(document).on('click', '.share-link', function() {
 $(document).on('click', '#invalidToken button.close', function() {
   $('#invalidToken').slideUp();
   $('#clicky-token-input').focus();
+});
+
+
+$(document).on('click', 'button#OAuth', function() {
+  console.log('OAuth dance initiated');
+  chrome.extension.sendRequest({msg: 'beginOAuth'});
 });
 
 
