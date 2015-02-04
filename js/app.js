@@ -8,38 +8,105 @@ var rooms = [];
 var prettyRooms = {};
 var shared = [];
 
-// Gets list of all available (and unarchived) channels
-function getChannels() {
-  var data = {
-    'token': slackToken,
-    'exclude_archived': 1
-  }
 
-  // Checks if channels list exists in local storage
-  // If not it is fetched from the Slack API
-  // If it is, that is fetched instead
-  if (localStorage.getItem('clicky-channels') === null) {
+function getSlackData() {
+
+  if (localStorage.getItem('clicky-channels') !== null &&
+      localStorage.getItem('clicky-groups') !== null &&
+      localStorage.getItem('clicky-users') !== null) {
+
+    buildChannelList( JSON.parse( localStorage.getItem('clicky-channels') ) );
+    buildGroupsList( JSON.parse( localStorage.getItem('clicky-groups') ) );
+    buildUserList( JSON.parse( localStorage.getItem('clicky-users') ) );
+
+  } else {
+
+    var token = localStorage.getItem('clicky-token');
+
+    var data = {
+      token: token
+    }
+
     $.ajax({
-      type: 'POST',
-      url: 'https://slack.com/api/channels.list',
+      type: 'GET',
+      url: 'https://slack.com/api/rtm.start',
       data: data,
       success: function(data) {
         if (data.ok === true) {
-          var channels = data.channels;
-          for (var i in channels) channels[i].name = '#' + channels[i].name;
+
+          // Channels
+          var allChannels = data.channels;
+          var channels = [];
+          for (var i in allChannels) {
+            var channel = allChannels[i];
+            if (!channel.is_archived) {
+              channel.name = '#' + channel.name;
+              channels.push(channel);
+            }
+          }
           localStorage.setItem('clicky-channels', JSON.stringify(channels));
+
+          // Groups
+          var allGroups = data.groups;
+          var groups = [];
+          for (var i in allGroups) {
+            var group = allGroups[i];
+            if (!group.is_archived) {
+              groups.push(group);
+            }
+          }
+          localStorage.setItem('clicky-groups', JSON.stringify(groups));
+
+          // Users
+          var allUsers = data.users;
+          var users = [];
+          for (var i in allUsers) {
+            var user = allUsers[i];
+            if (!user.deleted && user.name != 'slackbot') {
+              user.name = '@' + user.name;
+              for (var j in data.ims) {
+                var im = data.ims[j];
+                if (im.user == user.id) {
+                  user.im_id = im.id;
+                  break;
+                }
+              }
+              users.push(user);
+            }
+          }
+          // Let's take a moment to thank Slack for this next mess of for loops and if statements
+          // Why is there no easy way to identify the current user's im_id!?
+          // This checks though all users, finds the one which doesn't have an im_id, which must be the authed user
+          // It then finds the im channel with user 'USLACKBOT' and set's it im_id to the current user
+          for (var k in users) {
+            var user = users[k];
+            if (!user.im_id) {
+              for (var l in data.ims) {
+                var im = data.ims[l];
+                if (im.user == 'USLACKBOT') {
+                  users[k].im_id = im.id;
+                  break;
+                }
+              }
+            }
+          }
+          localStorage.setItem('clicky-users', JSON.stringify(users));
+
           buildChannelList(channels);
+          buildGroupsList(groups);
+          buildUserList(users);
+
         } else {
-          console.error('[err] Error getting channels: ' + data.error);
+          console.error('[err] Error getting Slack data: ' + data.error);
         }
       }
+
     });
-  } else {
-    var channelsJson = localStorage.getItem('clicky-channels');
-    channels = JSON.parse(channelsJson);
-    buildChannelList(channels);
+
   }
+
 }
+
 
 
 // Builds channel list in main interface
@@ -63,46 +130,6 @@ function buildChannelList(channels) {
     html += channel.name + '</span></li>';
   });
   list.html(html);
-}
-
-
-// Gets list of all users
-function getUsers() {
-  var data = {
-    'token': slackToken
-  }
-
-  // Checks if users list exists in local storage
-  // If not it is fetched from the Slack API
-  // If it is, that is fetched instead
-  if (localStorage.getItem('clicky-users') === null) { 
-    $.ajax({
-      type: 'POST',
-      url: 'https://slack.com/api/users.list',
-      data: data,
-      success: function(data) {
-        if (data.ok === true) {
-          var allUsers = data.members;
-          var users = [];
-          for (var i in allUsers) {
-            var user = allUsers[i];
-            user.name = '@' + user.name;
-            if (!user.deleted) {
-              users.push(user);
-            }
-          }
-          localStorage.setItem('clicky-users', JSON.stringify(users));
-          buildUserList(users);
-        } else {
-          console.error('[err] Error getting users: ' + data.error);
-        }        
-      }
-    });
-  } else {
-    var usersJson = localStorage.getItem('clicky-users');
-    users = JSON.parse(usersJson);
-    buildUserList(users);
-  }
 }
 
 
@@ -130,40 +157,7 @@ function buildUserList(users) {
 }
 
 
-// Gets list of all groups
-function getGroups() {
-  var data = {
-    'token': slackToken,
-    'exclude_archived': 1    
-  }
-
-  // Checks if group list exists in local storage
-  // If not it is fetched from the Slack API
-  // If it is, that is fetched instead
-  if (localStorage.getItem('clicky-groups') === null) {
-    $.ajax({
-      type: 'POST',
-      url: 'https://slack.com/api/groups.list',
-      data: data,
-      success: function(data) {
-        if (data.ok === true) {
-          var groups = data.groups;
-          localStorage.setItem('clicky-groups', JSON.stringify(groups));
-          buildGroupsList(groups);
-        } else {
-          console.error('[err] Error getting groups: ' + data.error);
-        }
-      }
-    });
-  } else {
-    var groupsJson = localStorage.getItem('clicky-groups');
-    groups = JSON.parse(groupsJson);
-    buildGroupsList(groups);
-  }
-}
-
-
-// Builds user list in 'Channels' interface
+// Builds group list in main interface
 function buildGroupsList(groups) {
   var list = $('#groupList');
   var html = '';
@@ -205,53 +199,6 @@ function testAuth(token) {
 
   if (response.ok === true) {
     return response;
-  } else {
-    return false;
-  }
-}
-
-
-// Submits and tests entered API token
-function submitToken(token) {
-  var auth = testAuth(token);
-
-  if (auth === false) {
-    console.info('[info] Authenticated failed');
-    return false;
-  } else {
-    team = auth.team;
-    slackToken = token;
-    var user_id = auth.user_id;
-    var authUser = getUserData(user_id);
-    console.info('[info] Successfully authenticated as ' + authUser.profile.first_name + ' at ' + team);
-    localStorage.setItem('clicky-user', JSON.stringify(authUser));
-    localStorage.setItem('clicky-token', token);
-    localStorage.setItem('clicky-team', team);
-    loadView();
-    return true;
-  }
-}
-
-
-// Gets authenticated user data from API
-function getUserData(user) {
-  var data = {
-    token: slackToken,
-    user: user
-  };
-
-  var response = $.ajax({
-    type: 'POST',
-    url: 'https://slack.com/api/users.info',
-    data: data,
-    async: false,
-    success: function(data) {
-      return data;
-    }
-  }).responseJSON;
-
-  if (response.ok === true) {
-    return response.user;
   } else {
     return false;
   }
@@ -398,9 +345,7 @@ function loadView() {
     if (localStorage.getItem('clicky-user') !== null) {
       user = JSON.parse(localStorage.getItem('clicky-user'));
       $('#api-token-view').hide();
-      getChannels();
-      getUsers();
-      getGroups();
+      getSlackData();
       $('#main-view').show();
       localStorage.setItem('clicky-first-load', false);
       setTimeout(function() {
@@ -426,9 +371,7 @@ function refreshData() {
   $('#userList').html('Loading...');
   $('#channelList').html('Loading...');
   $('#groupList').html('Loading...');  
-  getChannels();
-  getUsers();
-  getGroups();
+  getSlackData();
   var token = localStorage.getItem('clicky-token');
   var auth = testAuth(token);
   if (auth == false) {
@@ -507,34 +450,6 @@ $(document).on('click', '#search-results-toggle', function() {
 });
 
 
-// Handles API token form submit on 'Go!' click
-$(document).on('click', '#clicky-token-submit', function() {
-  $(this).prop('disabled', true).addClass('disabled');
-  var token = $('#clicky-token-input').val();
-  var auth = submitToken(token);
-  if (!auth) {
-    $('#clicky-token-input').val('');
-    $('#invalidToken').slideDown();
-  }
-  $(this).prop('disabled', false).removeClass('disabled');
-});
-
-
-// Handles API token form submit on enter press
-$('#clicky-token-input').keypress(function(e) {
-  if (event.which == 13) {
-    $(this).prop('disabled', true).addClass('disabled');
-    var token = $('#clicky-token-input').val();
-    var auth = submitToken(token);
-    if (!auth) {
-      $('#clicky-token-input').val('');
-      $('#invalidToken').slideDown();
-    }
-    $(this).prop('disabled', false).removeClass('disabled');
-  }
-});
-
-
 // Handles link clicks
 $(document).on('click', 'a.linkable', function() {
   var href = $(this).attr('href');
@@ -577,13 +492,6 @@ $(document).on('click', '.share-link', function() {
     var search = $(this).hasClass('search') ? true : false;
     postCurrentTabTo(channel, search);
   }
-});
-
-
-// Handles invalid alert close
-$(document).on('click', '#invalidToken button.close', function() {
-  $('#invalidToken').slideUp();
-  $('#clicky-token-input').focus();
 });
 
 

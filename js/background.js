@@ -1,3 +1,6 @@
+var activePings = [];
+var socket;
+
 function getParams(url) {
   var paramsObj = {};
   var splitUrl = url.split('?');
@@ -110,6 +113,142 @@ function generateState() {
 }
 
 
+function beginStream() {
+
+  var token = localStorage.getItem('clicky-token');
+
+  $.ajax({
+    type: 'GET',
+    url: 'https://slack.com/api/rtm.start',
+    data: {
+      token: token
+    },
+    success: function(data) {
+      if (data.ok === true) {
+        connectToStream(data.url);
+      }
+    }
+  });
+
+}
+
+
+function connectToStream(url) {
+
+  socket = new WebSocket(url);
+
+  socket.onopen = function(event) {
+
+    console.log('Connected to stream');
+    sendMessage('Hello stream!');
+
+
+  }
+
+  socket.onmessage = function(event) {
+
+    var message = JSON.parse(event.data);
+    console.log(message);
+    if (message.type == 'pong') {
+
+      // Checks to see if unresolved pings exist
+      // And if pong is in response to one of them
+      if (activePings.length > 0 && activePings.indexOf(message.reply_to) > -1) {
+
+        // If pong is in response to an active ping, all active pings are cleared
+        activePings = [];
+        console.log('Pong!', message.reply_to);
+
+      }
+
+    } else if (message.type == 'message') {
+
+      // If the first 7 characters of a string match '#Clicky'
+      // The message is assumed to contain a #Clicky, and could display a notification
+      if (message.text.substring(0, 7) == '#Clicky') {
+        console.log('Incoming #Clicky!');
+      }
+
+    }
+
+  }
+
+  socket.onerror = function(error) {
+
+    console.log('Stream error: ', error);
+    sendPing();
+    
+  }
+
+  socket.onclose = function() {
+    console.log('Stream closed');
+  }
+
+}
+
+
+function sendMessage(message) {
+
+  var id = generateId();
+
+  var data = {
+    id: id,
+    type: 'message',
+    channel: 'D02HJV07K',
+    text: message
+  }
+
+  socket.send(JSON.stringify(data));
+
+}
+
+
+function sendPing() {
+
+  var id = generateId();
+  var data = {
+    id: id,
+    type: 'ping'
+  }
+
+  activePings.push(id);
+
+  console.log('Ping! ', id);
+
+  // Send ping
+  socket.send(JSON.stringify(data));
+
+  // Wait 10 seconds
+  setTimeout(function() {
+
+    if (activePings.length > 0 && activePings.length < 3) {
+
+      // If either 1 or 2 pings are still active, send another ping
+      sendPing(socket);
+
+    } else if (activePings.length >= 3) {
+
+      // If 3 pings are active stream is assume dead and is closed
+      socket.close();
+      //beginStream();
+
+    }
+
+    // If number of active pings is 0, that indicates a pong has been recieved
+    // In this case no further action is required
+
+  }, 10000);
+
+}
+
+
+function generateId() {
+  return Math.floor(Math.random() * 9000000) + 1000000;
+}
+
+
+beginStream();
+
 chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
   if (request.msg != 'beginOAuth') {
     return false;
@@ -129,6 +268,7 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
       var url = 'https://slack.com/oauth/authorize';
       url += '?client_id=' + d.client_id;
       url += '&state=' + state;
+      url += '&scope=identify,read,post,client';
 
       var options = {
         'interactive': true,
