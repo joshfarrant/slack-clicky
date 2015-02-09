@@ -25,7 +25,9 @@ function getSlackData() {
 
     var data = {
       token: token
-    }
+    };
+
+    var roomIds = {};
 
     $.ajax({
       type: 'GET',
@@ -40,6 +42,7 @@ function getSlackData() {
           for (var i in allChannels) {
             var channel = allChannels[i];
             if (!channel.is_archived) {
+              roomIds[channel.id] = channel.name;
               channel.name = '#' + channel.name;
               channels.push(channel);
             }
@@ -52,6 +55,7 @@ function getSlackData() {
           for (var i in allGroups) {
             var group = allGroups[i];
             if (!group.is_archived) {
+              roomIds[group.id] = group.name;
               groups.push(group);
             }
           }
@@ -68,6 +72,7 @@ function getSlackData() {
                 var im = data.ims[j];
                 if (im.user == user.id) {
                   user.im_id = im.id;
+                  roomIds[im.id] = user.name;
                   break;
                 }
               }
@@ -92,6 +97,8 @@ function getSlackData() {
           }
           localStorage.setItem('clicky-users', JSON.stringify(users));
 
+          localStorage.setItem('clicky-roomIds', JSON.stringify(roomIds));
+
           buildChannelList(channels);
           buildGroupsList(groups);
           buildUserList(users);
@@ -114,7 +121,7 @@ function buildChannelList(channels) {
   var list = $('#channelList');
   var html = '';
 
-  if (channels.length == 0) {
+  if (channels.length === 0) {
     console.info('[info] No channels available');
     $('div#channels').hide();
     return;
@@ -125,7 +132,7 @@ function buildChannelList(channels) {
   $.each(channels, function(i) {
     var channel = channels[i];
     rooms.push(channel);
-    prettyRooms[channel.id] = channel.name
+    prettyRooms[channel.id] = channel.name;
     html += '<li class="channel"><span data-type="channel" class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
     html += channel.name + '</span></li>';
   });
@@ -138,7 +145,7 @@ function buildUserList(users) {
   var list = $('#userList');
   var html = '';
 
-  if (users.length == 0) {
+  if (users.length === 0) {
     console.info('[info] No users available');
     $('div#users').hide();
     return;
@@ -149,7 +156,7 @@ function buildUserList(users) {
   $.each(users, function(i) {
     var user = users[i];
     rooms.push(user);
-    prettyRooms[user.id] = user.name
+    prettyRooms[user.id] = user.name;
     html += '<li class="user"><span data-type="user" class="share-link" id="' + user.id + '" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
     html += user.name + '</span></li>';
   });
@@ -162,7 +169,7 @@ function buildGroupsList(groups) {
   var list = $('#groupList');
   var html = '';
 
-  if (groups.length == 0) {
+  if (groups.length === 0) {
     console.info('[info] No groups available');
     $('div#groups').hide();
     return;
@@ -173,7 +180,7 @@ function buildGroupsList(groups) {
   $.each(groups, function(i) {
     var group = groups[i];
     rooms.push(group);
-    prettyRooms[group.id] = group.name
+    prettyRooms[group.id] = group.name;
     html += '<li class="group"><span data-type="group" id="' + group.id + '" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
     html += group.name + '</span></li>';
   });
@@ -223,7 +230,7 @@ function postMessage(message, channel, search) {
   var data = {
     'token': slackToken,
     'channel': channel,
-    'text' : formattedMessage,
+    'text' : '_#Clicky_: ' + formattedMessage,
     'username': '#Clicky from ' + user.name,
     'unfurl_links': true,
     'unfurl_media': true
@@ -238,7 +245,7 @@ function postMessage(message, channel, search) {
     success: function(data) {
       var badgeText = badge.text();
       badge.removeClass('share-error');
-      badge.width(badge.width()); // Fixes badge with to it's current width
+      badge.width(badge.width()); // Fixes badge width to it's current width
       if (data.ok === true) {      
         console.info('[info] Link shared');
         $('span#' + channel).addClass('share-success').removeClass('disabled');
@@ -251,7 +258,7 @@ function postMessage(message, channel, search) {
           url: message,
           to: prettyRooms[channel],
           timestamp: roundedTimestamp
-        }
+        };
         history.push(historyEntry);
         localStorage.setItem('clicky-history', JSON.stringify(history));
         badge.html('Sent!').delay(2000).queue(function(n) {
@@ -280,7 +287,7 @@ function postMessage(message, channel, search) {
         if (data.error == 'not_authed' || data.error == 'invalid_auth' || data.error == 'account_inactive') {
           localStorage.clear();
           loadView();
-        };
+        }
       }          
     }
   });
@@ -314,16 +321,17 @@ function deleteMessage(timestamp, channel) {
 // Loads correct view based on available data
 function loadView() {
   // Handles list hiding
+  var hiddenList;
   if (localStorage.getItem('clicky-hidden') === null) {
-    var hiddenList = {
+    hiddenList = {
       'channelList' : false,
       'userList' : false,
       'groupList' : false
-    }
+    };
     localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
 
   } else {
-    var hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
+    hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
     var keys = Object.keys(hiddenList);
     for (var i in keys) {
       if (hiddenList[keys[i]] === true) {
@@ -374,7 +382,7 @@ function refreshData() {
   getSlackData();
   var token = localStorage.getItem('clicky-token');
   var auth = testAuth(token);
-  if (auth == false) {
+  if (auth === false) {
     localStorage.clear();
     loadView();
   }
@@ -387,8 +395,8 @@ function filterRooms(str) {
   $('#resultList').html('');
 
   for (var i in rooms) {
-    var room = rooms[i]
-    if (room.name.indexOf(str) >= 0 && str != '') {
+    var room = rooms[i];
+    if (room.name.indexOf(str) >= 0 && str !== '') {
       matches.push(room);
     }
   }
@@ -411,11 +419,11 @@ function filterRooms(str) {
     }
 
     if (match.name[0] == '#') {
-      roomType = 'channel_search'
+      roomType = 'channel_search';
     } else if (match.name[0] == '@') {
-      roomType = 'user_search'
+      roomType = 'user_search';
     } else {
-      roomType = 'group_search'
+      roomType = 'group_search';
     }
 
     html += '<li class="result"><span data-type="' + roomType + '" id="' + match.id + '" class="' + classes + '" title="' + match.name + '" data-room="' + match.id + '">';
@@ -469,7 +477,7 @@ $(document).on('click', 'span#history', function() {
     html += '<span class="history-moment">'+time+'</span>';
     html += '<h4 class="list-group-item-heading">'+entry.to+'</h4>';
     html += '<p>'+prettyUrl+'</p>';
-    html += '</a>'
+    html += '</a>';
   }
   $('#history-list').html(html);
   $('#main-view').hide();
@@ -524,11 +532,11 @@ $(document).on('click', '.list-toggle', function() {
   var toggleId = icon.attr('data-toggle');
   var list = $('#' + toggleId);
 
-  var visible = room.attr('data-visible') === 'true' ? true : false;
+  visible = room.attr('data-visible') === 'true' ? true : false;
 
   var hiddenList = JSON.parse(localStorage.getItem('clicky-hidden'));
 
-  if (visible == true) {
+  if (visible === true) {
     list.slideUp(150);
 
     icon.addClass('icon-refresh-animate');

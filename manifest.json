@@ -12,6 +12,7 @@
     "https://slack.com/*",
     "https://ssl.google-analytics.com/*",
     "tabs",
+    "notifications",
     "identity"
   ],
   "content_security_policy": "script-src 'self' https://stats.g.doubleclick.net; object-src 'self'",
