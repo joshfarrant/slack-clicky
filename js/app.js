@@ -152,12 +152,12 @@ function buildUserList(users) {
   } else {
     $('div#users').show();
   }
-
+  console.log(users);
   $.each(users, function(i) {
     var user = users[i];
     rooms.push(user);
-    prettyRooms[user.id] = user.name;
-    html += '<li class="user"><span data-type="user" class="share-link" id="' + user.id + '" title="' + user.profile.real_name + '" data-room="' + user.id + '">';
+    prettyRooms[user.im_id] = user.name;
+    html += '<li class="user"><span data-type="user" class="share-link" id="' + user.im_id + '" title="' + user.profile.real_name + '" data-room="' + user.im_id + '">';
     html += user.name + '</span></li>';
   });
   list.html(html);
@@ -218,7 +218,14 @@ function postCurrentTabTo(channel,search) {
     var tab = tabs[0];
     var tabUrl = tab.url;
 
-    postMessage(tabUrl, channel, search);
+    // postMessage(tabUrl, channel, search);
+
+    chrome.extension.sendRequest({
+      msg: 'postMessage',
+      url: tabUrl,
+      channel: channel,
+      search: search
+    });
 
   });
 }
@@ -293,6 +300,56 @@ function postMessage(message, channel, search) {
   });
 }
 
+
+function setBadgeSuccess(id) {
+
+  var badge = $('#' + id);
+  var name = badge.text();
+
+  badge.width(badge.width()); // Fixes badge width to it's current width
+  badge.addClass('share-success').removeClass('share-error disabled');
+
+  badge.html('Sent!').delay(2000).queue(function(n) {
+    badge.html(name);
+    badge.addClass('share-success-no-animate').removeClass('share-success');
+    n();
+  });
+
+}
+
+
+function setBadgeError(id, error) {
+
+  var badge = $('#' + id);
+  var name = badge.text();
+
+  badge.width(badge.width()); // Fixes badge width to it's current width
+
+  console.error('[error] Error sharing link: ' + error);
+  badge.addClass('share-error').removeClass('disabled');
+  badge.html('Error :(').delay(2000).queue(function(n) {
+    badge.html(badgeText);
+    n();
+  });
+
+}
+
+
+function setBadgeDisabled(id) {
+
+  var badge = $('#' + id);
+  var name = badge.text();
+
+  badge.width(badge.width()); // Fixes badge width to it's current width
+  badge.addClass('share-success').removeClass('share-error disabled');
+
+  badge.html('Sent!').delay(2000).queue(function(n) {
+    badge.html(name);
+    badge.addClass('share-success-no-animate').removeClass('share-success');
+    n();
+  });
+
+}
 
 
 // Deletes link to user or channel using Slack API
@@ -497,6 +554,7 @@ $(document).on('click', 'span#history-back', function() {
 $(document).on('click', '.share-link', function() {
   var channel = $(this).attr('data-room');
   if (!$(this).hasClass('disabled')) {
+    $(this).addClass('disabled');
     var search = $(this).hasClass('search') ? true : false;
     postCurrentTabTo(channel, search);
   }
@@ -558,6 +616,23 @@ $(document).on('click', '.list-toggle', function() {
     room.attr('data-visible', true);
     hiddenList[toggleId] = false;    
     localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
+  }
+
+});
+
+
+// Listens for messages sent from app.js
+chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
+
+  switch (request.msg) {
+    case 'setBadgeSuccess':
+      setBadgeSuccess(request.id);
+      break;
+    case 'setBadgeError':
+      setBadgeError(request.id, request.error);
+      break;
+    default:
+      break;
   }
 
 });

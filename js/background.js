@@ -1,5 +1,6 @@
 var activePings = [];
 var socket;
+var firstMsgReceived = false;
 
 function getParams(url) {
   var paramsObj = {};
@@ -79,6 +80,7 @@ function submitToken(token) {
     localStorage.setItem('clicky-user', JSON.stringify(authUser));
     localStorage.setItem('clicky-token', token);
     localStorage.setItem('clicky-team', team);
+    beginStream();
     return true;
   }
 }
@@ -126,6 +128,9 @@ function beginStream() {
     success: function(data) {
       if (data.ok === true) {
         connectToStream(data.url);
+      } else {
+        console.log('Error starting rtm: ', data);
+        localStorage.removeItem('clicky-token');
       }
     }
   });
@@ -140,7 +145,8 @@ function connectToStream(url) {
   socket.onopen = function(event) {
 
     console.log('Connected to stream');
-    sendMessage('testing', 'D02HJV07K');
+    localStorage.setItem('clicky-pending-msgs', JSON.stringify({}) );
+    localStorage.setItem('clicky-errors', JSON.stringify({}) );
 
   };
 
@@ -148,6 +154,14 @@ function connectToStream(url) {
 
     var message = JSON.parse(event.data);
     console.log(message);
+
+    if (!firstMsgReceived && message.type == 'message') {
+      firstMsgReceived = true;
+      return;
+    }
+
+    var pendingMsgs = JSON.parse( localStorage.getItem('clicky-pending-msgs') );
+
     if (message.type == 'pong') {
 
       // Checks to see if unresolved pings exist
@@ -174,6 +188,36 @@ function connectToStream(url) {
 
       }
 
+    } else if (pendingMsgs[message.reply_to]) {
+
+      var channel = pendingMsgs[message.reply_to].channel;
+
+      if (message.ok === true) {
+        
+        chrome.extension.sendRequest({
+          msg: 'setBadgeSuccess',
+          id: channel
+        });
+
+        delete pendingMsgs[message.reply_to];
+        localStorage.setItem('clicky-pending-msgs', JSON.stringify(pendingMsgs));
+
+      } else {
+
+        chrome.extension.sendRequest({
+          msg: 'setBadgeError',
+          id: channel,
+          error: message.error.msg
+        });
+
+        var errors = JSON.parse( localStorage.getItem('clicky-errors') );
+
+        errors[message.reply_to] = message.error;
+
+        localStorage.setItem('clicky-errors', JSON.stringify(errors));
+
+      }
+
     }
 
   };
@@ -190,22 +234,6 @@ function connectToStream(url) {
     console.log('Stream closed');
 
   };
-
-}
-
-
-function sendMessage(message, channel) {
-
-  var id = generateId();
-
-  var data = {
-    id: id,
-    type: 'message',
-    channel: channel,
-    text: message
-  };
-
-  socket.send(JSON.stringify(data));
 
 }
 
@@ -280,30 +308,38 @@ function createNotification(link, user) {
   });
 }
 
-chrome.notifications.onButtonClicked.addListener(function(id) {
-  if ( localStorage.getItem(id) ) {
-    var json = localStorage.getItem(id);
-    var link = JSON.parse(json);
-    localStorage.removeItem(id);
-    chrome.tabs.create({'url': link});
+
+function postMessage(url, channel, search) {
+  
+  var formattedMessage = '_#Clicky_: ' + url;
+  var id = generateId();
+  var data = {
+    id: id,
+    type: 'message',
+    channel: channel,
+    text: formattedMessage
+  };
+
+  try {
+    socket.send(JSON.stringify(data));
   }
-});
+  catch(err) {
+    console.log('Error sending message: ', err);
+    beginStream();
 
-
-chrome.notifications.onClosed.addListener(function(id) {
-  localStorage.removeItem(id);
-  console.info('Notification closed: ' + id);
-});
-
-
-beginStream();
-createNotification('http://josh.farrant.me/redesign', 'D02HJV07K');
-
-
-chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
-  if (request.msg != 'beginOAuth') {
-    return false;
   }
+
+  var pendingMsgs = JSON.parse( localStorage.getItem('clicky-pending-msgs') );
+  pendingMsgs[id] = {
+    channel: channel,
+    text: formattedMessage
+  };
+  localStorage.setItem('clicky-pending-msgs', JSON.stringify(pendingMsgs));
+
+}
+
+
+function beginOAuth() {
 
   $.ajax({
     type: 'GET',
@@ -337,4 +373,64 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
     }
   });
 
+}
+
+function clearNotifications() {
+
+  var toDelete = [];
+
+  for (var i = 0; i < localStorage.length; i++){
+    var key = localStorage.key(i);
+    
+    if (key.substring(0, 6) !== 'clicky') {
+      toDelete.push(key);
+    }
+  }
+
+  for (var j in toDelete) {
+    var item = toDelete[j];
+    localStorage.removeItem(item);
+  }
+
+}
+
+// Listens for messages sent from app.js
+chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
+
+  switch (request.msg) {
+    case 'refresh':
+      beginStream();
+      break;
+    case 'beginOAuth':
+      beginOAuth();
+      break;
+    case 'postMessage':
+      postMessage(request.url, request.channel, request.search);
+      break;
+    default:
+      break;
+  }
+
 });
+
+
+chrome.notifications.onButtonClicked.addListener(function(id) {
+  if ( localStorage.getItem(id) ) {
+    var json = localStorage.getItem(id);
+    var link = JSON.parse(json);
+    localStorage.removeItem(id);
+    chrome.tabs.create({'url': link});
+  }
+});
+
+
+chrome.notifications.onClosed.addListener(function(id) {
+  localStorage.removeItem(id);
+  console.info('Notification closed: ' + id);
+});
+
+
+
+
+beginStream();
+clearNotifications();
