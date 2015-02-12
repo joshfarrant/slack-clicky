@@ -261,8 +261,6 @@ h4 {
 
   .share-success,
   .share-success:hover {
-    pointer-events: none;
-    cursor: default;
     -webkit-animation-name: share-success;
     -webkit-animation-duration: 0.2s;
     -webkit-animation-iteration-count: 1;
@@ -280,10 +278,9 @@ h4 {
 
   .share-success-no-animate,
   .share-success-no-animate:hover {
-    pointer-events: none;
     cursor: default;
     color: #FFF !important;
-    background-color: $success-color;
+    background-color: $success-color !important;
     border-color: $success-border-color !important;
   }
 
@@ -302,5 +299,25 @@ h4 {
     50%  { color: #FFF; }
     75%  { color: #FFF; }
     100% { color: #FFF; background-color: $error-color; border-color: $error-border-color }
+  }
+
+  .share-error-no-animate,
+  .share-error-no-animate:hover,
+  .share-undo,
+  .share-undo:hover {
+    cursor: default;
+    color: #FFF !important;
+    background-color: $error-color !important;
+    border-color: $error-border-color !important;
+  }
+
+  .share-undone,
+  .share-undone:hover,
+  .share-undone:focus {
+    background-color: #FFF !important;
+    border-color: #AAA !important;
+    color: #AAA !important;
+    pointer-events: none;
+    cursor: default;
   }
 }

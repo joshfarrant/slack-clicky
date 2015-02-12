@@ -36,14 +36,21 @@ function getSlackData() {
       success: function(data) {
         if (data.ok === true) {
 
+          var self = {
+            name: data.self.name,
+            id: data.self.id
+          };
+
+          console.log(self);
+
           // Channels
           var allChannels = data.channels;
           var channels = [];
           for (var i in allChannels) {
             var channel = allChannels[i];
             if (!channel.is_archived) {
-              roomIds[channel.id] = channel.name;
               channel.name = '#' + channel.name;
+              roomIds[channel.id] = channel.name;
               channels.push(channel);
             }
           }
@@ -68,17 +75,34 @@ function getSlackData() {
             var user = allUsers[i];
             if (!user.deleted && user.name != 'slackbot') {
               user.name = '@' + user.name;
-              for (var j in data.ims) {
-                var im = data.ims[j];
-                if (im.user == user.id) {
-                  user.im_id = im.id;
-                  roomIds[im.id] = user.name;
-                  break;
+              console.log(user);
+
+              if (user.name == ('@' + self.name)) {
+
+                for (var j in data.ims) {
+                  var im = data.ims[j];
+                  if (im.user == 'USLACKBOT') {
+                    user.im_id = im.id;
+                    roomIds[im.id] = user.name;
+                  }
+                }
+
+              } else {
+
+                for (var j in data.ims) {
+                  var im = data.ims[j];
+                  if (im.user == user.id) {
+                    user.im_id = im.id;
+                    roomIds[im.id] = user.name;
+                    break;
+                  }
                 }
               }
               users.push(user);
             }
           }
+          console.log('\n');
+          console.log(users);
           // Let's take a moment to thank Slack for this next mess of for loops and if statements
           // Why is there no easy way to identify the current user's im_id!?
           // This checks though all users, finds the one which doesn't have an im_id, which must be the authed user
@@ -133,7 +157,7 @@ function buildChannelList(channels) {
     var channel = channels[i];
     rooms.push(channel);
     prettyRooms[channel.id] = channel.name;
-    html += '<li class="channel"><span data-type="channel" class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" data-room="' + channel.id + '">';
+    html += '<li class="channel"><span data-type="channel" class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" room-name="' + channel.name + '" data-room="' + channel.id + '">';
     html += channel.name + '</span></li>';
   });
   list.html(html);
@@ -152,12 +176,12 @@ function buildUserList(users) {
   } else {
     $('div#users').show();
   }
-  console.log(users);
+
   $.each(users, function(i) {
     var user = users[i];
     rooms.push(user);
     prettyRooms[user.im_id] = user.name;
-    html += '<li class="user"><span data-type="user" class="share-link" id="' + user.im_id + '" title="' + user.profile.real_name + '" data-room="' + user.im_id + '">';
+    html += '<li class="user"><span data-type="user" class="share-link" id="' + user.im_id + '" title="' + user.profile.real_name + '" room-name="' + user.name + '" data-room="' + user.im_id + '">';
     html += user.name + '</span></li>';
   });
   list.html(html);
@@ -181,7 +205,7 @@ function buildGroupsList(groups) {
     var group = groups[i];
     rooms.push(group);
     prettyRooms[group.id] = group.name;
-    html += '<li class="group"><span data-type="group" id="' + group.id + '" class="share-link" title="' + group.name + '" data-room="' + group.id + '">';
+    html += '<li class="group"><span data-type="group" id="' + group.id + '" class="share-link" title="' + group.name + '" room-name="' + group.name + '" data-room="' + group.id + '">';
     html += group.name + '</span></li>';
   });
   list.html(html);
@@ -214,11 +238,10 @@ function testAuth(token) {
 
 // Gets active tab url
 function postCurrentTabTo(channel,search) {
+
   chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
     var tab = tabs[0];
     var tabUrl = tab.url;
-
-    // postMessage(tabUrl, channel, search);
 
     chrome.extension.sendRequest({
       msg: 'postMessage',
@@ -228,124 +251,46 @@ function postCurrentTabTo(channel,search) {
     });
 
   });
+
 }
 
 
-// Sends link to user or channel using Slack API
-function postMessage(message, channel, search) {
-  var formattedMessage = '<' + message + '>';
-  var data = {
-    'token': slackToken,
-    'channel': channel,
-    'text' : '_#Clicky_: ' + formattedMessage,
-    'username': '#Clicky from ' + user.name,
-    'unfurl_links': true,
-    'unfurl_media': true
-  };
-  var badge = search ? $('span.search#' + channel) : $('span#' + channel);
-  badge.addClass('disabled');
-
-  $.ajax({
-    type: 'POST',
-    url: 'https://slack.com/api/chat.postMessage',
-    data: data,
-    success: function(data) {
-      var badgeText = badge.text();
-      badge.removeClass('share-error');
-      badge.width(badge.width()); // Fixes badge width to it's current width
-      if (data.ok === true) {      
-        console.info('[info] Link shared');
-        $('span#' + channel).addClass('share-success').removeClass('disabled');
-        shared.push(channel);
-
-        var history = JSON.parse(localStorage.getItem('clicky-history'));
-        var timestamp = new Date().getTime() / 1000;
-        var roundedTimestamp = Math.floor(timestamp);
-        var historyEntry = {
-          url: message,
-          to: prettyRooms[channel],
-          timestamp: roundedTimestamp
-        };
-        history.push(historyEntry);
-        localStorage.setItem('clicky-history', JSON.stringify(history));
-        badge.html('Sent!').delay(2000).queue(function(n) {
-          badge.html(badgeText);
-          $('span#' + channel).addClass('share-success-no-animate').removeClass('share-success');
-          n();
-        });
-      } else {
-        var errorMsgs = {
-          'channel_not_found': 'Refresh and try again',
-          'is_archived': 'Refresh and try again',
-          'msg_too_long': 'Please try again',
-          'no_text': 'Please try again',
-          'rate_limited': 'Please try again',
-          'not_authed': 'Please re-login',
-          'invalid_auth': 'Please re-login',
-          'account_inactive': 'Please re-login'
-        };
-        errorMsg = errorMsgs[data.error];
-        console.error('[error] Error sharing link: ' + errorMsg);
-        badge.addClass('share-error').removeClass('disabled');
-        badge.html('Error :(').delay(2000).queue(function(n) {
-          badge.html(badgeText);
-          n();
-        });
-        if (data.error == 'not_authed' || data.error == 'invalid_auth' || data.error == 'account_inactive') {
-          localStorage.clear();
-          loadView();
-        }
-      }          
-    }
-  });
-}
-
-
-function setBadgeSuccess(id) {
+function setBadgeSuccess(id, ts) {
 
   var badge = $('#' + id);
   var name = badge.text();
 
-  badge.width(badge.width()); // Fixes badge width to it's current width
-  badge.addClass('share-success').removeClass('share-error disabled');
+  console.log(id, ts);
 
-  badge.html('Sent!').delay(2000).queue(function(n) {
+  badge.width(badge.width()); // Fixes badge width to it's current width
+
+  badge.addClass('share-success').removeClass('share-error');
+  badge.attr('data-ts', ts);
+
+  badge.html('Sent!').delay(800).queue(function(n) {
     badge.html(name);
     badge.addClass('share-success-no-animate').removeClass('share-success');
     n();
   });
+
+
 
 }
 
 
 function setBadgeError(id, error) {
 
-  var badge = $('#' + id);
-  var name = badge.text();
-
-  badge.width(badge.width()); // Fixes badge width to it's current width
-
   console.error('[error] Error sharing link: ' + error);
-  badge.addClass('share-error').removeClass('disabled');
-  badge.html('Error :(').delay(2000).queue(function(n) {
-    badge.html(badgeText);
-    n();
-  });
-
-}
-
-
-function setBadgeDisabled(id) {
 
   var badge = $('#' + id);
   var name = badge.text();
 
   badge.width(badge.width()); // Fixes badge width to it's current width
-  badge.addClass('share-success').removeClass('share-error disabled');
 
-  badge.html('Sent!').delay(2000).queue(function(n) {
-    badge.html(name);
-    badge.addClass('share-success-no-animate').removeClass('share-success');
+  badge.addClass('share-error').removeClass('disabled');
+
+  badge.html('Error :(').delay(1000).queue(function(n) {
+    badge.html(badgeText);
     n();
   });
 
@@ -365,13 +310,34 @@ function deleteMessage(timestamp, channel) {
     url: 'https://slack.com/api/chat.delete',
     data: data,
     success: function(data) {
-      if (data.ok === true) {      
+
+      var badge = $('#' + channel);
+      var name = badge.attr('room-name');
+
+      if (data.ok === true) {
+
         console.info('[info] Message deleted');
+
+        badge.removeAttr('data-ts');
+        badge.removeClass('share-success-no-animate share-undo').addClass('share-undone');
+
+        badge.text('Undone').delay(1000).queue(function(n) {
+          badge.text(name);
+          n();
+        });
+
+
       } else {
+
         console.error('[err] Error deleting message: ' + data.error);
-      }          
+
+        badge.text('Error :(');
+
+      }
+
     }
   });
+
 }
 
 
@@ -551,14 +517,67 @@ $(document).on('click', 'span#history-back', function() {
 
 // Handles click events on users, channels, and groups
 // Shares active tab to that user/channel/group
-$(document).on('click', '.share-link', function() {
+$(document).on('click', '.share-link', function(e) {
+
   var channel = $(this).attr('data-room');
-  if (!$(this).hasClass('disabled')) {
+
+  if ( $(this).attr('data-ts') && $(this).hasClass('share-undo') ) {
+
+    var ts = $(this).attr('data-ts');
+    deleteMessage(ts, channel);
+
+  } else if (!$(this).hasClass('disabled')) {
+
     $(this).addClass('disabled');
     var search = $(this).hasClass('search') ? true : false;
     postCurrentTabTo(channel, search);
+
+    // Google Analytics
+    var attributes = e.target.attributes;
+    var type = attributes["data-type"].value;
+    _gaq.push(['_trackEvent', 'shareTo_' + type, 'clicked']);
+
   }
+
 });
+
+
+$(document).on('mouseover', '.share-success-no-animate', function() {
+
+  var badge = $(this);
+
+  if (badge.attr('data-ts')) {
+
+    var text = 'Undo';
+
+    badge.width(badge.width()); // Fixes badge width to it's current width
+
+    badge.text(text);
+
+    badge.addClass('share-undo').removeClass('.share-success-no-animate');
+
+  }
+  
+});
+
+$(document).on('mouseout', '.share-undo', function() {
+
+  var badge = $(this);
+
+  if (badge.attr('data-ts')) {
+
+    var text = badge.attr('room-name');
+
+    badge.width(badge.width()); // Fixes badge width to it's current width
+
+    badge.text(text);
+
+    badge.addClass('share-success-no-animate').removeClass('share-undo');
+
+  }
+  
+});
+
 
 
 $(document).on('click', 'button#OAuth', function() {
@@ -626,7 +645,7 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
 
   switch (request.msg) {
     case 'setBadgeSuccess':
-      setBadgeSuccess(request.id);
+      setBadgeSuccess(request.id, request.ts);
       break;
     case 'setBadgeError':
       setBadgeError(request.id, request.error);
@@ -648,13 +667,6 @@ _gaq.push(['_trackPageview']);
   ga.src = 'https://stats.g.doubleclick.net/dc.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-
-$(document).on('click', '.share-link', function(e) {
-  var attributes = e.target.attributes;
-  var type = attributes["data-type"].value;
-  _gaq.push(['_trackEvent', 'shareTo_' + type, 'clicked']);
-});
-
 
 // Loads views when document is ready
 $(document).ready(function() {

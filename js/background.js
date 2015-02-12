@@ -178,7 +178,7 @@ function connectToStream(url) {
 
       // If the first 7 characters of a string match '#Clicky'
       // The message is assumed to contain a #Clicky, and could display a notification
-      if (message.text && message.text.substring(0, 9) == '_#Clicky_') {
+      if (message.text && message.text.substring(0, 5) == '<http') {
         console.log('Incoming #Clicky!');
 
         var text = message.text;
@@ -196,7 +196,8 @@ function connectToStream(url) {
         
         chrome.extension.sendRequest({
           msg: 'setBadgeSuccess',
-          id: channel
+          id: channel,
+          ts: message.ts
         });
 
         delete pendingMsgs[message.reply_to];
@@ -235,6 +236,11 @@ function connectToStream(url) {
 
   };
 
+}
+
+
+function addToHistory() {
+  
 }
 
 
@@ -311,7 +317,7 @@ function createNotification(link, user) {
 
 function postMessage(url, channel, search) {
   
-  var formattedMessage = '_#Clicky_: ' + url;
+  var formattedMessage = url;
   var id = generateId();
   var data = {
     id: id,
@@ -322,8 +328,25 @@ function postMessage(url, channel, search) {
 
   try {
     socket.send(JSON.stringify(data));
-  }
-  catch(err) {
+
+    var history = JSON.parse(localStorage.getItem('clicky-history'));
+    var rooms = JSON.parse(localStorage.getItem('clicky-roomIds'));
+
+    var timestamp = new Date().getTime() / 1000;
+    var roundedTimestamp = Math.floor(timestamp);
+
+    var historyEntry = {
+      id: id,
+      url: url,
+      to: rooms[channel],
+      timestamp: roundedTimestamp
+    };
+
+    history.push(historyEntry);
+    localStorage.setItem('clicky-history', JSON.stringify(history));
+
+  } catch(err) {
+
     console.log('Error sending message: ', err);
     beginStream();
 

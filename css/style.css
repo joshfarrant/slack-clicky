@@ -223,8 +223,6 @@ h4 {
     transform: scale(1) rotate(360deg); } }
 #main-view .share-success,
 #main-view .share-success:hover {
-  pointer-events: none;
-  cursor: default;
   -webkit-animation-name: share-success;
   -webkit-animation-duration: 0.2s;
   -webkit-animation-iteration-count: 1;
@@ -244,10 +242,9 @@ h4 {
     border-color: #4cae4c; } }
 #main-view .share-success-no-animate,
 #main-view .share-success-no-animate:hover {
-  pointer-events: none;
   cursor: default;
   color: #FFF !important;
-  background-color: #5cb85c;
+  background-color: #5cb85c !important;
   border-color: #4cae4c !important; }
 #main-view .share-error,
 #main-view .share-error:hover {
@@ -268,5 +265,21 @@ h4 {
     color: #FFF;
     background-color: #d9534f;
     border-color: #d43f3a; } }
+#main-view .share-error-no-animate,
+#main-view .share-error-no-animate:hover,
+#main-view .share-undo,
+#main-view .share-undo:hover {
+  cursor: default;
+  color: #FFF !important;
+  background-color: #d9534f !important;
+  border-color: #d43f3a !important; }
+#main-view .share-undone,
+#main-view .share-undone:hover,
+#main-view .share-undone:focus {
+  background-color: #FFF !important;
+  border-color: #AAA !important;
+  color: #AAA !important;
+  pointer-events: none;
+  cursor: default; }
 
 /*# sourceMappingURL=style.css.map */
