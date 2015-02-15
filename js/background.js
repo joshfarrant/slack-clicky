@@ -175,7 +175,6 @@ function connectToStream(url) {
       }
 
     } else if (message.type == 'message') {
-
       // If the first 7 characters of a string match '#Clicky'
       // The message is assumed to contain a #Clicky, and could display a notification
       if (message.text && message.text.substring(0, 5) == '<http') {
@@ -184,7 +183,7 @@ function connectToStream(url) {
         var text = message.text;
         var link = text.substring(text.lastIndexOf("<") + 1, text.lastIndexOf(">"));
 
-        createNotification(link, message.channel);
+        createNotification(link, message.channel, message.ts);
 
       }
 
@@ -293,7 +292,7 @@ function getChannelName(id) {
 }
 
 
-function createNotification(link, user) {
+function createNotification(link, user, ts) {
 
   var title = '#Clicky from ' + getChannelName(user);
 
@@ -309,8 +308,14 @@ function createNotification(link, user) {
     ]
   };
 
+  var notificationData = {
+    link: link,
+    channel: user,
+    ts: ts
+  }
+
   chrome.notifications.create(notificationId='', options=options, function(id) {
-    localStorage.setItem(id, JSON.stringify(link));
+    localStorage.setItem(id, JSON.stringify(notificationData));
   });
 }
 
@@ -398,6 +403,50 @@ function beginOAuth() {
 
 }
 
+
+function markMessageRead(room, ts) {
+
+  var token = localStorage.getItem('clicky-token');
+  var roomIds = JSON.parse( localStorage.getItem('clicky-roomIds') );
+  var roomName = roomIds[room];
+
+  var url;
+
+  switch (roomName.substring(0,1)) {
+    case '@':
+      url = 'https://slack.com/api/im.mark';
+      break;
+    case '#':
+      url = 'https://slack.com/api/channels.mark';
+      break;
+    default:
+      url = 'https://slack.com/api/groups.mark';
+      break;
+  }
+
+  var data = {
+    token: token,
+    channel: room,
+    ts: ts
+  }
+
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: data,
+    async: false,
+    success: function(data) {
+
+      if (data.ok) {
+        console.info('Messaged marked as read');
+      }
+
+    }
+  });
+
+}
+
+
 function clearNotifications() {
 
   var toDelete = [];
@@ -438,12 +487,21 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
 
 
 chrome.notifications.onButtonClicked.addListener(function(id) {
+
   if ( localStorage.getItem(id) ) {
+
     var json = localStorage.getItem(id);
-    var link = JSON.parse(json);
+    var data = JSON.parse(json);
+    var link = data.link;
+    var ts = data.ts;
+    var room = data.channel;
+    
     localStorage.removeItem(id);
     chrome.tabs.create({'url': link});
+    markMessageRead(room, ts);
+
   }
+
 });
 
 
