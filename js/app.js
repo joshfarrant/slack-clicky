@@ -48,7 +48,7 @@ function getSlackData() {
           var channels = [];
           for (var i in allChannels) {
             var channel = allChannels[i];
-            if (!channel.is_archived) {
+            if (!channel.is_archived && channel.is_member) {
               channel.name = '#' + channel.name;
               roomIds[channel.id] = channel.name;
               channels.push(channel);
@@ -157,6 +157,7 @@ function buildChannelList(channels) {
     var channel = channels[i];
     rooms.push(channel);
     prettyRooms[channel.id] = channel.name;
+    var title = channel.purpose.value || '';
     html += '<li class="channel"><span data-type="channel" class="share-link" id="' + channel.id + '" title="' + channel.purpose.value + '" room-name="' + channel.name + '" data-room="' + channel.id + '">';
     html += channel.name + '</span></li>';
   });

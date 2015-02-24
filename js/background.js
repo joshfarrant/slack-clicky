@@ -177,13 +177,13 @@ function connectToStream(url) {
     } else if (message.type == 'message') {
       // If the first 7 characters of a string match '#Clicky'
       // The message is assumed to contain a #Clicky, and could display a notification
-      if (message.text && message.text.substring(0, 5) == '<http') {
+      if (message.text && message.text.substring(0, 4) == '<http') {
         console.log('Incoming #Clicky!');
 
-        var text = message.text;
-        var link = text.substring(text.lastIndexOf("<") + 1, text.lastIndexOf(">"));
+        // var text = message.text;
+        // var link = text.substring(text.lastIndexOf("<") + 1, text.lastIndexOf(">"));
 
-        createNotification(link, message.channel, message.ts);
+        // createNotification(link, message.channel, message.ts);
 
       }
 
@@ -288,7 +288,7 @@ function generateId() {
 
 
 function getChannelName(id) {
-  return localStorage.getItem('clicky-roomIds').id;
+  return JSON.parse(localStorage.getItem('clicky-roomIds'))[id];
 }
 
 
@@ -299,7 +299,7 @@ function createNotification(link, user, ts) {
   var options = {
     type: 'basic',
     iconUrl: 'assets/icon128.png',
-    title: '#Clicky from joshfarrant',
+    title: title,
     message: '',
     contextMessage: link,
     isClickable: true,
@@ -312,7 +312,7 @@ function createNotification(link, user, ts) {
     link: link,
     channel: user,
     ts: ts
-  }
+  };
 
   chrome.notifications.create(notificationId='', options=options, function(id) {
     localStorage.setItem(id, JSON.stringify(notificationData));
@@ -428,7 +428,7 @@ function markMessageRead(room, ts) {
     token: token,
     channel: room,
     ts: ts
-  }
+  };
 
   $.ajax({
     type: 'POST',
@@ -465,6 +465,7 @@ function clearNotifications() {
   }
 
 }
+
 
 // Listens for messages sent from app.js
 chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
@@ -509,8 +510,6 @@ chrome.notifications.onClosed.addListener(function(id) {
   localStorage.removeItem(id);
   console.info('Notification closed: ' + id);
 });
-
-
 
 
 beginStream();
