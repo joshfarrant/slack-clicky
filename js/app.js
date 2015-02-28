@@ -101,8 +101,6 @@ function getSlackData() {
               users.push(user);
             }
           }
-          console.log('\n');
-          console.log(users);
           // Let's take a moment to thank Slack for this next mess of for loops and if statements
           // Why is there no easy way to identify the current user's im_id!?
           // This checks though all users, finds the one which doesn't have an im_id, which must be the authed user
@@ -238,7 +236,9 @@ function testAuth(token) {
 
 
 // Gets active tab url
-function postCurrentTabTo(channel,search) {
+function postCurrentTabTo(channel, search) {
+
+  var text = $('#message-input').val() || false;
 
   chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
     var tab = tabs[0];
@@ -246,6 +246,7 @@ function postCurrentTabTo(channel,search) {
 
     chrome.extension.sendRequest({
       msg: 'postMessage',
+      text: text,
       url: tabUrl,
       channel: channel,
       search: search
@@ -262,8 +263,8 @@ function setBadgeSuccess(id, ts) {
   var name = badge.text();
 
   console.log(id, ts);
-
-  badge.width(badge.width()); // Fixes badge width to it's current width
+  console.log(badge);
+  badge.width(badge.width() + 1); // Fixes badge width to it's current width
 
   badge.addClass('share-success').removeClass('share-error');
   badge.attr('data-ts', ts);
@@ -286,7 +287,7 @@ function setBadgeError(id, error) {
   var badge = $('#' + id);
   var name = badge.text();
 
-  badge.width(badge.width()); // Fixes badge width to it's current width
+  badge.width(badge.width() + 1); // Fixes badge width to it's current width
 
   badge.addClass('share-error').removeClass('disabled');
 
@@ -361,7 +362,7 @@ function loadView() {
       if (hiddenList[keys[i]] === true) {
         var list = $('ul#' + keys[i]);
         list.hide();
-        list.siblings('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        list.siblings('i').removeClass('glyphicon-menu-up').addClass('glyphicon-menu-down');
         list.parent('div').attr('data-visible', false);
       } 
     }
@@ -378,6 +379,15 @@ function loadView() {
       user = JSON.parse(localStorage.getItem('clicky-user'));
       $('#api-token-view').hide();
       getSlackData();
+
+      var active = localStorage.getItem('clicky-active-info') || 'message';
+      if (active === 'message') {
+        $('#message-form').show();
+        $('#search-form').hide();
+      } else if (active === 'search') {
+        $('#search-form').show();
+        $('#message-form').hide();
+      }
       $('#main-view').show();
       localStorage.setItem('clicky-first-load', false);
       setTimeout(function() {
@@ -394,15 +404,13 @@ function loadView() {
 
 // Deletes data in local storage and fetches new data from the Slack API
 function refreshData() {
+  chrome.extension.sendRequest({msg: 'refresh'});
   console.info('[info] Refreshing data');
   localStorage.removeItem('clicky-users');
   localStorage.removeItem('clicky-channels');
   localStorage.removeItem('clicky-groups');
   rooms = [];
   console.info('[info] Local storage items removed');
-  $('#userList').html('Loading...');
-  $('#channelList').html('Loading...');
-  $('#groupList').html('Loading...');  
   getSlackData();
   var token = localStorage.getItem('clicky-token');
   var auth = testAuth(token);
@@ -449,8 +457,9 @@ function filterRooms(str) {
     } else {
       roomType = 'group_search';
     }
-
-    html += '<li class="result"><span data-type="' + roomType + '" id="' + match.id + '" class="' + classes + '" title="' + match.name + '" data-room="' + match.id + '">';
+    console.log('match: ', match);
+    var id = match.im_id || match.id
+    html += '<li class="result"><span data-type="' + roomType + '" id="' + id + '" class="' + classes + '" title="' + match.name + '" data-room="' + id + '">';
     html += match.name + '</span></li>';
     $('#resultList').append(html);
   }
@@ -490,7 +499,7 @@ $(document).on('click', 'a.linkable', function() {
 
 
 // Handles history button clicks
-$(document).on('click', 'span#history', function() {
+$(document).on('click', '.history-button', function() {
   var history = JSON.parse(localStorage.getItem('clicky-history'));
   var html = '';
   for (var i = history.length - 1; i >= 0; i--) {
@@ -508,6 +517,10 @@ $(document).on('click', 'span#history', function() {
   $('#history-view').show();
 });
 
+$(document).on('click', '#logout', function() {
+  localStorage.clear();
+  loadView();
+});
 
 // Handles history view 'back' button clicks
 $(document).on('click', 'span#history-back', function() {
@@ -521,6 +534,7 @@ $(document).on('click', 'span#history-back', function() {
 $(document).on('click', '.share-link', function(e) {
 
   var channel = $(this).attr('data-room');
+
 
   if ( $(this).attr('data-ts') && $(this).hasClass('share-undo') ) {
 
@@ -536,7 +550,13 @@ $(document).on('click', '.share-link', function(e) {
     // Google Analytics
     var attributes = e.target.attributes;
     var type = attributes["data-type"].value;
-    _gaq.push(['_trackEvent', 'shareTo_' + type, 'clicked']);
+
+    if ( $('#message-input').val() ) {
+      _gaq.push(['_trackEvent', 'share - ' + type + ' - message', 'clicked']);
+    } else {
+      _gaq.push(['_trackEvent', 'share - ' + type, 'clicked']);
+
+    }
 
   }
 
@@ -551,7 +571,7 @@ $(document).on('mouseover', '.share-success-no-animate', function() {
 
     var text = 'Undo';
 
-    badge.width(badge.width()); // Fixes badge width to it's current width
+    badge.width(badge.width() + 1); // Fixes badge width to it's current width
 
     badge.text(text);
 
@@ -569,7 +589,7 @@ $(document).on('mouseout', '.share-undo', function() {
 
     var text = badge.attr('room-name');
 
-    badge.width(badge.width()); // Fixes badge width to it's current width
+    badge.width(badge.width() + 1); // Fixes badge width to it's current width
 
     badge.text(text);
 
@@ -579,6 +599,19 @@ $(document).on('mouseout', '.share-undo', function() {
   
 });
 
+
+$(document).on('click', '.message-button', function() {
+  localStorage.setItem('clicky-active-info', 'message');
+  $('#search-form').hide();
+  $('#message-form').show();
+});
+
+
+$(document).on('click', '.search-button', function() {
+  localStorage.setItem('clicky-active-info', 'search');
+  $('#message-form').hide();
+  $('#search-form').show();
+});
 
 
 $(document).on('click', 'button#OAuth', function() {
@@ -619,7 +652,7 @@ $(document).on('click', '.list-toggle', function() {
 
     icon.addClass('icon-refresh-animate');
     window.setTimeout( function() {
-      icon.removeClass('icon-refresh-animate glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+      icon.removeClass('icon-refresh-animate glyphicon-menu-up').addClass('glyphicon-menu-down');
     }, 250 );
 
     room.attr('data-visible', false);
@@ -630,7 +663,7 @@ $(document).on('click', '.list-toggle', function() {
 
     icon.addClass('icon-refresh-animate');
     window.setTimeout( function() {
-      icon.removeClass('icon-refresh-animate glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+      icon.removeClass('icon-refresh-animate glyphicon-menu-down').addClass('glyphicon-menu-up');
     }, 250 );
 
     room.attr('data-visible', true);

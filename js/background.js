@@ -320,9 +320,12 @@ function createNotification(link, user, ts) {
 }
 
 
-function postMessage(url, channel, search) {
+function postMessage(url, channel, search, text) {
   
-  var formattedMessage = url;
+  var formattedMessage;
+
+  formattedMessage = text ? (text + ' ' + url) : url;
+
   var id = generateId();
   var data = {
     id: id,
@@ -478,7 +481,7 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
       beginOAuth();
       break;
     case 'postMessage':
-      postMessage(request.url, request.channel, request.search);
+      postMessage(request.url, request.channel, request.search, request.text);
       break;
     default:
       break;

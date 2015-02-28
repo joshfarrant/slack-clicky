@@ -28,20 +28,22 @@ h4 {
     float: right;
     font-weight: 300; }
 
-#api-token-view button#OAuth {
-  width: 100%;
-  margin: 15px 0 20px 0;
-  background-color: #2AB27B;
-  color: #fff;
-  letter-spacing: 1px;
-  font-size: 20px;
-  font-weight: 400; }
+#api-token-view {
+  width: 100%; }
+  #api-token-view button#OAuth {
+    width: 100%;
+    margin: 15px 0 20px 0;
+    background-color: #2AB27B;
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 20px;
+    font-weight: 400; }
 
 #history-view #title {
   margin: 10px 0px 20px 0px; }
 #history-view span#history-back {
   position: absolute;
-  top: 22px;
+  top: 14px;
   right: 10px;
   font-weight: 300;
   font-size: 14px;
@@ -96,12 +98,18 @@ h4 {
   cursor: pointer; }
   .corner-button span {
     margin-top: 3px; }
+  .corner-button.search-button {
+    right: 70px; }
+  .corner-button.message-button {
+    right: 98px; }
+  .corner-button.history-button {
+    right: 42px; }
 
 #main-view #title {
   margin: 10px 0px; }
 #main-view #instructions {
   display: none; }
-#main-view span#history {
+#main-view span#logout {
   margin: 10px 0px 0px 0px;
   float: left;
   position: relative;
@@ -113,29 +121,38 @@ h4 {
   color: #428bca;
   border-radius: 5px;
   padding: 0px 2px; }
-  #main-view span#history:hover {
+  #main-view span#logout:hover {
     color: #FFF;
     border-color: #428bca;
     background-color: #428bca; }
-#main-view #search-form {
+#main-view #search-form,
+#main-view #message-form {
   border: 1px solid #bbbbbe;
   border-radius: 50px; }
-  #main-view #search-form > * {
+  #main-view #search-form > *,
+  #main-view #message-form > * {
     background-color: transparent;
     border: none;
     box-shadow: none;
     height: auto; }
-  #main-view #search-form input {
+  #main-view #search-form input,
+  #main-view #message-form input {
     padding: 4px 8px 4px 4px; }
-  #main-view #search-form span.search {
+  #main-view #search-form span.search,
+  #main-view #search-form span.message,
+  #main-view #message-form span.search,
+  #main-view #message-form span.message {
     padding: 4px 4px 4px 8px; }
-  #main-view #search-form span.clear {
+  #main-view #search-form span.clear,
+  #main-view #message-form span.clear {
     display: none;
     -webkit-user-select: none;
     cursor: pointer; }
-  #main-view #search-form i {
+  #main-view #search-form i,
+  #main-view #message-form i {
     color: #bbbbbe; }
-  #main-view #search-form + hr {
+  #main-view #search-form + hr,
+  #main-view #message-form + hr {
     margin-top: 10px; }
 #main-view #search {
   display: none; }

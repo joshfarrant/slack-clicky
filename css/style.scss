@@ -42,6 +42,7 @@ h4 {
 }
 
 #api-token-view {
+  width: 100%;
   button#OAuth {
     width: 100%;
     margin: 15px 0 20px 0;
@@ -59,7 +60,7 @@ h4 {
   }
   span#history-back {
     position: absolute;
-    top: 22px;
+    top: 14px;
     right: 10px;
     font-weight: 300;
     font-size: 14px;
@@ -126,6 +127,15 @@ h4 {
   span {
     margin-top: 3px;
   }
+  &.search-button {
+    right: 70px;
+  }
+  &.message-button {
+    right: 98px;
+  }
+  &.history-button {
+    right: 42px;
+  }
 }
 
 #main-view {
@@ -135,7 +145,7 @@ h4 {
   #instructions {
     display: none;
   }
-  span#history {
+  span#logout {
     margin: 10px 0px 0px 0px;
     float: left;
     position: relative;
@@ -153,7 +163,8 @@ h4 {
       background-color: $link;;
     }
   }
-  #search-form {
+  #search-form,
+  #message-form {
     border: 1px solid $light-black;
     border-radius: 50px;
     // margin-top: 15px;
@@ -166,7 +177,8 @@ h4 {
     input {
       padding: 4px 8px 4px 4px;
     }
-    span.search {
+    span.search,
+    span.message {
       padding: 4px 4px 4px 8px;
     }
     span.clear {
