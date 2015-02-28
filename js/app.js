@@ -571,7 +571,7 @@ $(document).on('mouseover', '.share-success-no-animate', function() {
 
     var text = 'Undo';
 
-    badge.width(badge.width() + 1); // Fixes badge width to it's current width
+    badge.width(badge.width()); // Fixes badge width to it's current width
 
     badge.text(text);
 
@@ -589,7 +589,7 @@ $(document).on('mouseout', '.share-undo', function() {
 
     var text = badge.attr('room-name');
 
-    badge.width(badge.width() + 1); // Fixes badge width to it's current width
+    badge.width(badge.width()); // Fixes badge width to it's current width
 
     badge.text(text);
 
