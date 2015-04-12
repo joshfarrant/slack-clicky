@@ -41,6 +41,29 @@ function getUserData(user, token) {
   }
 }
 
+// Gets authenticated team data from API
+function getTeamData(token) {
+
+  var response = $.ajax({
+    type: 'GET',
+    url: 'https://slack.com/api/team.info',
+    data: {
+      token: token
+    },
+    async: false,
+    success: function(data) {
+      return data;
+    }
+  }).responseJSON;
+
+  if (response.ok === true) {
+    return response.team;
+  } else {
+    return false;
+  }
+}
+
+
 
 // Checks that provided API key is valid
 function testAuth(token) {
@@ -77,7 +100,9 @@ function submitToken(token) {
     var team = auth.team;
     var user_id = auth.user_id;
     var authUser = getUserData(user_id, token);
+    var authTeam = getTeamData(token);
     localStorage.setItem('clicky-user', JSON.stringify(authUser));
+    localStorage.setItem('clicky-team-info', JSON.stringify(authTeam));
     localStorage.setItem('clicky-token', token);
     localStorage.setItem('clicky-team', team);
     beginStream();
@@ -119,6 +144,14 @@ function beginStream() {
 
   var token = localStorage.getItem('clicky-token');
 
+  if (!localStorage.getItem('clicky-team-info')) {
+
+    var team = getTeamData(token);
+    localStorage.setItem('clicky-team-info', JSON.stringify(team));
+
+  }
+
+
   $.ajax({
     type: 'GET',
     url: 'https://slack.com/api/rtm.start',
@@ -147,6 +180,8 @@ function connectToStream(url) {
     console.log('Connected to stream');
     localStorage.setItem('clicky-pending-msgs', JSON.stringify({}) );
     localStorage.setItem('clicky-errors', JSON.stringify({}) );
+
+    // buildContextMenus();
 
   };
 
@@ -192,7 +227,7 @@ function connectToStream(url) {
       var channel = pendingMsgs[message.reply_to].channel;
 
       if (message.ok === true) {
-        
+
         chrome.extension.sendRequest({
           msg: 'setBadgeSuccess',
           id: channel,
@@ -226,12 +261,13 @@ function connectToStream(url) {
 
     console.log('Stream error: ', error);
     sendPing();
-    
+
   };
 
   socket.onclose = function() {
 
     console.log('Stream closed');
+    chrome.contextMenus.removeAll();
 
   };
 
@@ -239,7 +275,7 @@ function connectToStream(url) {
 
 
 function addToHistory() {
-  
+
 }
 
 
@@ -291,6 +327,25 @@ function getChannelName(id) {
   return JSON.parse(localStorage.getItem('clicky-roomIds'))[id];
 }
 
+function getChannelType(id) {
+  var name = getChannelName(id);
+  var type;
+
+  switch (name[0]) {
+    case '@':
+      type = 'user'
+      break;
+    case '#':
+      type = 'channel';
+      break;
+    default:
+      type = 'group';
+      break;
+  }
+
+  return type;
+}
+
 
 function createNotification(link, user, ts) {
 
@@ -321,8 +376,9 @@ function createNotification(link, user, ts) {
 
 
 function postMessage(url, channel, search, text) {
-  
+
   var formattedMessage;
+  var metadata;
 
   formattedMessage = text ? (text + ' ' + url) : url;
 
@@ -456,7 +512,7 @@ function clearNotifications() {
 
   for (var i = 0; i < localStorage.length; i++){
     var key = localStorage.key(i);
-    
+
     if (key.substring(0, 6) !== 'clicky') {
       toDelete.push(key);
     }
@@ -465,6 +521,41 @@ function clearNotifications() {
   for (var j in toDelete) {
     var item = toDelete[j];
     localStorage.removeItem(item);
+  }
+
+}
+
+function buildContextMenus() {
+
+  var rooms = JSON.parse(localStorage.getItem('clicky-roomIds'));
+
+  var ids = Object.keys(rooms);
+
+  for (var i in ids) {
+
+    var id = ids[i];
+    var room = rooms[id];
+
+    var title = room;
+
+    chrome.contextMenus.create({
+      'id': id,
+      'title': title,
+      'contexts': ['selection'],
+      'onclick': function(info, tab) {
+
+        var clickedId = info.menuItemId;
+        var selected = info.selectionText;
+
+        var url = tab.url;
+
+        var message = '>_"' + selected + '"_ - ' + url;
+
+        postMessage(message, clickedId);
+
+      }
+    });
+
   }
 
 }
@@ -499,7 +590,7 @@ chrome.notifications.onButtonClicked.addListener(function(id) {
     var link = data.link;
     var ts = data.ts;
     var room = data.channel;
-    
+
     localStorage.removeItem(id);
     chrome.tabs.create({'url': link});
     markMessageRead(room, ts);
@@ -517,3 +608,8 @@ chrome.notifications.onClosed.addListener(function(id) {
 
 beginStream();
 clearNotifications();
+
+if (!localStorage.getItem('clicky-created')) {
+  var timestamp = Math.floor(Date.now() / 1000);
+  localStorage.setItem('clicky-created', timestamp);
+}

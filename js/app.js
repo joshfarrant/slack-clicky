@@ -236,13 +236,24 @@ function testAuth(token) {
 
 
 // Gets active tab url
-function postCurrentTabTo(channel, search) {
+function postCurrentTabTo(channel, search, type) {
 
   var text = $('#message-input').val() || false;
 
   chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},function(tabs) {
     var tab = tabs[0];
     var tabUrl = tab.url;
+
+    var metadata = {
+      'room type': type,
+    }
+
+    if (text) {
+      Intercom('trackEvent', 'shared-link-with-message', metadata);
+    } else {
+      Intercom('trackEvent', 'shared-link-without-message', metadata);
+    }
+
 
     chrome.extension.sendRequest({
       msg: 'postMessage',
@@ -364,7 +375,7 @@ function loadView() {
         list.hide();
         list.siblings('i').removeClass('glyphicon-menu-up').addClass('glyphicon-menu-down');
         list.parent('div').attr('data-visible', false);
-      } 
+      }
     }
   }
 
@@ -545,11 +556,12 @@ $(document).on('click', '.share-link', function(e) {
 
     $(this).addClass('disabled');
     var search = $(this).hasClass('search') ? true : false;
-    postCurrentTabTo(channel, search);
 
     // Google Analytics
     var attributes = e.target.attributes;
     var type = attributes["data-type"].value;
+
+    postCurrentTabTo(channel, search, type);
 
     if ( $('#message-input').val() ) {
       _gaq.push(['_trackEvent', 'share - ' + type + ' - message', 'clicked']);
@@ -578,7 +590,7 @@ $(document).on('mouseover', '.share-success-no-animate', function() {
     badge.addClass('share-undo').removeClass('.share-success-no-animate');
 
   }
-  
+
 });
 
 $(document).on('mouseout', '.share-undo', function() {
@@ -596,7 +608,7 @@ $(document).on('mouseout', '.share-undo', function() {
     badge.addClass('share-success-no-animate').removeClass('share-undo');
 
   }
-  
+
 });
 
 
@@ -631,7 +643,7 @@ $(document).on('click', '#refresh-data', function() {
   icon.addClass(animateClass);
   window.setTimeout( function() {
     icon.removeClass( animateClass );
-  }, 1000 );  
+  }, 1000 );
 });
 
 
@@ -667,7 +679,7 @@ $(document).on('click', '.list-toggle', function() {
     }, 250 );
 
     room.attr('data-visible', true);
-    hiddenList[toggleId] = false;    
+    hiddenList[toggleId] = false;
     localStorage.setItem('clicky-hidden', JSON.stringify(hiddenList));
   }
 
@@ -702,7 +714,67 @@ _gaq.push(['_trackPageview']);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 
-// Loads views when document is ready
 $(document).ready(function() {
+
+  // Loads views when document is ready
   loadView();
+
+  try {
+
+    var user = JSON.parse(localStorage.getItem('clicky-user'));
+
+    var team = JSON.parse(localStorage.getItem('clicky-team-info')) || null;
+
+    var timestamp = localStorage.getItem('clicky-created');
+
+    var user_id = user.id;
+
+    var name = user.profile.real_name_normalized || user.real_name || user.name;
+
+    var username = user.name;
+
+    var title = user.profile.title || null;
+
+    var user_img = user.profile.image_192 || user.profile.image_72 || null;
+
+    var team_id = team.id;
+
+    var team_name = team.name || null;
+
+    var team_email_domain = team.email_domain || null;
+
+    var team_img = team.icon.image_original || null;
+
+    var total_users = JSON.parse(localStorage.getItem('clicky-users')).length || null;
+
+    // Intercom config
+    window.intercomSettings = {
+
+      name: name,
+      email: user.profile.email,
+      user_id: user_id,
+      app_id: "conjr0rg",
+
+      "title": title,
+      "username": username,
+      "user_image": user_img,
+      company: {
+        id: team_id,
+        name: team_name,
+        "team_email_domain": team_email_domain,
+        "team_image": team_img,
+        "total_users": total_users
+      }
+    };
+
+
+    console.log(window.intercomSettings);
+
+    // Intercom analytics
+    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/conjr0rg';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+
+  } catch (err) {
+    console.error('Caught Error: ', err);
+  }
+
 });
