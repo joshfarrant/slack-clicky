@@ -442,47 +442,39 @@ function filterRooms(str) {
     }
   }
 
-  $('#rooms').hide();
-  $('#search').show();
-  // $('#search-form span.clear').show();
-  for (var i in matches) {
-    var match = matches[i];
-    var html = '';
-    var roomType;
-    var sharedTo;
-    var classes = 'share-link search';
+  if (str.length !== 0) {
 
-    if ($.inArray(match.id, shared) != -1) {
-      sharedTo = true;
-      classes += ' share-success-no-animate';
-    } else {
-      sharedTo = false;
-    }
+    $('.share-link').parent().hide();
 
-    if (match.name[0] == '#') {
-      roomType = 'channel_search';
-    } else if (match.name[0] == '@') {
-      roomType = 'user_search';
-    } else {
-      roomType = 'group_search';
-    }
-    console.log('match: ', match);
-    var id = match.im_id || match.id
-    html += '<li class="result"><span data-type="' + roomType + '" id="' + id + '" class="' + classes + '" title="' + match.name + '" data-room="' + id + '">';
-    html += match.name + '</span></li>';
-    $('#resultList').append(html);
+    for (var i in matches) {
+
+      var match = matches[i];
+
+      if (match.name[0] === '@') {
+
+        // If type is user
+
+        $('#' + match.im_id).parent().show();
+
+      } else {
+
+        // If type is group or channel
+
+        $('#' + match.id).parent().show();
+
+      }
+
+    };
+
+  } else {
+
+    $('.share-link').parent().show();
+    $('#channels').show();
+    $('#users').show();
+    $('#groups').show();
+
   }
 
-  if (matches.length === 0) {
-    var noResultsMsg = '<li class="result"><span id="noMatches">No results found</span></li>';
-    $('#resultList').append(noResultsMsg);
-    if (str === '') {
-      $('#rooms').show();
-      $('#search').hide();
-      $('#search-form span.clear').hide();
-      $('#resultList').html(null);
-    }
-  }
 }
 
 

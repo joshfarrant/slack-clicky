@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <link href="/css/scrollbar.css" rel="stylesheet" media="screen" type="text/css">  
+    <link href="/css/scrollbar.css" rel="stylesheet" media="screen" type="text/css">
     <link href="/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css">
     <link href="/css/lato.css" rel="stylesheet" media="screen" type="text/css">
     <link href="/css/style.css" rel="stylesheet" media="screen" type="text/css">
@@ -15,7 +15,7 @@
       <h3>Welcome to #Clicky!</h3>
       <hr />
       <h4>First thing's first...</h4>
-      
+
       <button class="btn btn-default" id="OAuth">Authorize with Slack</button>
 
       <p>Once you've authorized #Clicky with Slack, come back here to get started!</p>
@@ -36,12 +36,12 @@
     <!-- Main view -->
     <div id="main-view">
 
-<!--       <a id="search-data" class="corner-button search-button">
+      <a id="search-data" class="corner-button search-button">
         <i class="glyphicon glyphicon-search"></i>
       </a>
       <a id="message-data" class="corner-button message-button">
         <i class="glyphicon glyphicon-comment"></i>
-      </a> -->
+      </a>
       <a id="history-data" class="corner-button history-button">
         <i class="glyphicon glyphicon-time"></i>
       </a>
@@ -50,18 +50,18 @@
       </a>
 
       <h2 id="title">#Clicky</h2>
-      
+
       <div id="instructions">
         <p>Great, you're in! Select a channel, user, or group below to share a link!</p>
       </div>
 
 
-<!--       <div id="search-form" class="input-group">
+      <div id="search-form" class="input-group">
         <span class="input-group-addon search"><i class="glyphicon glyphicon-search"></i></span>
         <input id="search-input" class="form-control" placeholder="Search">
         <span class="input-group-addon clear"><i class="glyphicon glyphicon-remove-circle"></i></span>
       </div>
- -->
+
 
       <div id="message-form" class="input-group">
         <span class="input-group-addon message"><i class="glyphicon glyphicon-comment"></i></span>
@@ -72,23 +72,23 @@
       <div id="rooms">
 
         <div id="channels" class="room" data-visible="true">
-          <i class="glyphicon glyphicon-menu-up list-toggle" data-toggle="channelList"></i>      
+          <i class="glyphicon glyphicon-menu-up list-toggle" data-toggle="channelList"></i>
           <h4 class="list-title">Channels</h4>
           <ul id="channelList" class="roomList"><li>Loading...</li></ul>
         </div>
 
         <div id="users" class="room" data-visible="true">
-          <i class="glyphicon glyphicon-menu-up list-toggle" id="user-toggle" data-toggle="userList"></i>      
+          <i class="glyphicon glyphicon-menu-up list-toggle" id="user-toggle" data-toggle="userList"></i>
           <h4 class="list-title">Users</h4>
           <ul id="userList" class="roomList"><li>Loading...</li></ul>
         </div>
 
         <div id="groups" class="room" data-visible="true">
-          <i class="glyphicon glyphicon-menu-up list-toggle" id="group-toggle" data-toggle="groupList"></i>      
+          <i class="glyphicon glyphicon-menu-up list-toggle" id="group-toggle" data-toggle="groupList"></i>
           <h4 class="list-title">Groups</h4>
           <ul id="groupList" class="roomList"><li>Loading...</li></ul>
         </div>
-        
+
       </div>
 
       <div id="search">
@@ -110,7 +110,7 @@
 
       <h2 id="title">History</h2>
       <span id="history-back">Back</span>
-      
+
       <div id="history-list">
         <div class="list-group" id="history-list"></div>
       </div>
