@@ -140,9 +140,11 @@ function generateState() {
 }
 
 
-function beginStream() {
+function beginStream(callback) {
 
   var token = localStorage.getItem('clicky-token');
+
+  console.log('Connecting to stream');
 
   if (!localStorage.getItem('clicky-team-info')) {
 
@@ -160,7 +162,7 @@ function beginStream() {
     },
     success: function(data) {
       if (data.ok === true) {
-        connectToStream(data.url);
+        connectToStream(data.url, callback);
       } else {
         console.log('Error starting rtm: ', data);
         localStorage.removeItem('clicky-token');
@@ -171,7 +173,7 @@ function beginStream() {
 }
 
 
-function connectToStream(url) {
+function connectToStream(url, callback) {
 
   socket = new WebSocket(url);
 
@@ -180,6 +182,10 @@ function connectToStream(url) {
     console.log('Connected to stream');
     localStorage.setItem('clicky-pending-msgs', JSON.stringify({}) );
     localStorage.setItem('clicky-errors', JSON.stringify({}) );
+
+    if (callback) {
+      callback();
+    }
 
     // buildContextMenus();
 
@@ -268,6 +274,7 @@ function connectToStream(url) {
 
     console.log('Stream closed');
     chrome.contextMenus.removeAll();
+    beginStream();
 
   };
 
@@ -304,9 +311,11 @@ function sendPing() {
 
     } else if (activePings.length >= 3) {
 
+      console.log('Uh oh ping-y-oh');
+
       // If 3 pings are active stream is assume dead and is closed
       socket.close();
-      //beginStream();
+      beginStream();
 
     }
 
@@ -333,7 +342,7 @@ function getChannelType(id) {
 
   switch (name[0]) {
     case '@':
-      type = 'user'
+      type = 'user';
       break;
     case '#':
       type = 'channel';
@@ -379,6 +388,17 @@ function postMessage(url, channel, search, text) {
 
   var formattedMessage;
   var metadata;
+
+  console.log('');
+  console.log('socket: ', socket);
+  console.log('');
+
+  if (socket.readyState !== 1) {
+    console.log('Socket not open: ', socket);
+    beginStream(function() {
+      postMessage(url, channel, search, text);
+    });
+  }
 
   formattedMessage = text ? (text + ' ' + url) : url;
 
