@@ -17,6 +17,11 @@ h2 {
 h4 {
   font-weight: 700; }
 
+p.attention {
+  color: #d9534f; }
+  p.attention.bold {
+    font-weight: 700; }
+
 #api-token-view,
 #main-view,
 #history-view {

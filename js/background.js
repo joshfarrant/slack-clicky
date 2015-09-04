@@ -106,6 +106,10 @@ function submitToken(token) {
     localStorage.setItem('clicky-token', token);
     localStorage.setItem('clicky-team', team);
     beginStream();
+
+    chrome.extension.sendRequest({
+      msg: 'refreshView'
+    });
     return true;
   }
 }
@@ -593,6 +597,9 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
       break;
     case 'postMessage':
       postMessage(request.url, request.channel, request.search, request.text);
+      break;
+    case 'submitToken':
+      submitToken(request.token);
       break;
     default:
       break;

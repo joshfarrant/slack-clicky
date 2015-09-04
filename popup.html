@@ -14,7 +14,22 @@
     <div id="api-token-view">
       <h3>Welcome to #Clicky!</h3>
       <hr />
-      <h4>First thing's first...</h4>
+      <h4>Read me first...</h4>
+
+      <p class="attention">Slack are aware of ongoing issues affecting user authorization.</p>
+
+      <p class="attention bold">If the button below doesn't work, visit <a id="slack-api" class="linkable" href="https://api.slack.com/web">this page on Slack's website</a>, scroll to the bottom, click 'Create token', and paste the given token below.</p>
+
+      <div id="clicky-token-form" class="input-group">
+        <input type="text" id="clicky-token-input" class="form-control" placeholder="Enter Slack token here">
+        <span class="input-group-btn">
+          <button class="btn btn-default" id="clicky-token-submit" type="button">Go!</button>
+        </span>
+      </div>
+
+      <hr />
+
+      <h4>Let's get going...</h4>
 
       <button class="btn btn-default" id="OAuth">Authorize with Slack</button>
 

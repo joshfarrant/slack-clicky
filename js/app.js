@@ -478,6 +478,23 @@ function filterRooms(str) {
 }
 
 
+// Submits Slack token
+$(document).on('click', '#clicky-token-submit', function() {
+
+  var token = $('#clicky-token-input').val();
+
+  console.log('');
+  console.log('token: ', token);
+  console.log('');
+
+  chrome.extension.sendRequest({
+    msg: 'submitToken',
+    token: token
+  });
+
+});
+
+
 // Searches all rooms on keyup
 $('#search-input').keyup(function() {
   var str = $('#search-input').val();
@@ -685,6 +702,9 @@ chrome.extension.onRequest.addListener(function(request,sender,sendResponse) {
       break;
     case 'setBadgeError':
       setBadgeError(request.id, request.error);
+      break;
+    case 'refreshView':
+      loadView();
       break;
     default:
       break;
