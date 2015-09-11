@@ -191,7 +191,8 @@ function connectToStream(url, callback) {
       callback();
     }
 
-    // buildContextMenus();
+    // Remove context menus, then rebuild them
+    chrome.contextMenus.removeAll(buildContextMenus);
 
   };
 
@@ -222,13 +223,19 @@ function connectToStream(url, callback) {
     } else if (message.type == 'message') {
       // If the first 7 characters of a string match '#Clicky'
       // The message is assumed to contain a #Clicky, and could display a notification
-      if (message.text && message.text.substring(0, 4) == '<http') {
-        console.log('Incoming #Clicky!');
 
-        // var text = message.text;
-        // var link = text.substring(text.lastIndexOf("<") + 1, text.lastIndexOf(">"));
+      if (message.text && message.text.substring(0, 5) == '<http') {
 
-        // createNotification(link, message.channel, message.ts);
+        if (message.user !== JSON.parse(localStorage.getItem('clicky-user')).id) {
+
+          console.log('Incoming #Clicky!');
+
+          var text = message.text;
+          var link = text.substring(text.lastIndexOf("<") + 1, text.lastIndexOf(">"));
+
+          createNotification(link, message.channel, message.ts);
+
+        }
 
       }
 
@@ -554,6 +561,10 @@ function buildContextMenus() {
   var rooms = JSON.parse(localStorage.getItem('clicky-roomIds'));
 
   var ids = Object.keys(rooms);
+
+  if (ids.length > 20) {
+    return;
+  }
 
   for (var i in ids) {
 
