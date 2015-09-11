@@ -39,7 +39,8 @@ p.attention {
 
 #api-token-view,
 #main-view,
-#history-view {
+#history-view,
+#settings-view {
   display: none;
   #me-promo {
     margin: 10px 0px 0px 0px;
@@ -61,11 +62,12 @@ p.attention {
   }
 }
 
-#history-view {
-  #title {
+#history-view,
+#settings-view {
+  .title {
     margin: 10px 0px 20px 0px;
   }
-  span#history-back {
+  span.back {
     position: absolute;
     top: 14px;
     right: 10px;
@@ -121,6 +123,25 @@ p.attention {
   }
 }
 
+#settings-view {
+  .setting-name {
+    color: $off-black;
+    font-weight: 400;
+    font-size: 14px;
+    width: 200px;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+  .setting-toggle {
+    display: inline-block;
+    width: 60px;
+    input {
+      position: relative;
+      top: 1px;
+    }
+  }
+}
+
 .corner-button {
   color: $off-black;
   font-size: 16px;
@@ -135,12 +156,15 @@ p.attention {
     margin-top: 3px;
   }
   &.search-button {
-    right: 70px;
-  }
-  &.message-button {
     right: 98px;
   }
+  &.message-button {
+    right: 126px;
+  }
   &.history-button {
+    right: 70px;
+  }
+  &.settings-button {
     right: 42px;
   }
 }

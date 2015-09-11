@@ -60,6 +60,9 @@
       <a id="history-data" class="corner-button history-button">
         <i class="glyphicon glyphicon-time"></i>
       </a>
+      <a id="settings-data" class="corner-button settings-button">
+        <i class="glyphicon glyphicon-cog"></i>
+      </a>
       <a id="refresh-data" class="corner-button refresh-button">
         <i class="glyphicon glyphicon-refresh"></i>
       </a>
@@ -123,11 +126,36 @@
     <!-- History view -->
     <div id="history-view">
 
-      <h2 id="title">History</h2>
-      <span id="history-back">Back</span>
+      <h2 class="title">History</h2>
+      <span id="history-back" class="back">Back</span>
 
       <div id="history-list">
         <div class="list-group" id="history-list"></div>
+      </div>
+
+    </div>
+    <!-- /History view -->
+
+    <!-- History view -->
+    <div id="settings-view">
+
+      <h2 class="title">Settings</h2>
+      <span id="settings-back" class="back">Back</span>
+
+      <div id="settings-list">
+        <div class="list-group" id="history-list">
+
+          <div class="settings-item">
+            <label for="setting-notifications" class="setting-name">Show notifications</label>
+            <div class="setting-toggle"><input id="setting-notifications" type="checkbox"></div>
+          </div>
+
+          <!-- <div class="settings-item">
+            <label for="setting-context" class="setting-name">Show right-click menu</label>
+            <div class="setting-toggle"><input id="setting-context" type="checkbox"></div>
+          </div> -->
+
+        </div>
       </div>
 
     </div>

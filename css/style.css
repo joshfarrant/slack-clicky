@@ -24,11 +24,13 @@ p.attention {
 
 #api-token-view,
 #main-view,
-#history-view {
+#history-view,
+#settings-view {
   display: none; }
   #api-token-view #me-promo,
   #main-view #me-promo,
-  #history-view #me-promo {
+  #history-view #me-promo,
+  #settings-view #me-promo {
     margin: 10px 0px 0px 0px;
     float: right;
     font-weight: 300; }
@@ -44,9 +46,11 @@ p.attention {
     font-size: 20px;
     font-weight: 400; }
 
-#history-view #title {
+#history-view .title,
+#settings-view .title {
   margin: 10px 0px 20px 0px; }
-#history-view span#history-back {
+#history-view span.back,
+#settings-view span.back {
   position: absolute;
   top: 14px;
   right: 10px;
@@ -57,24 +61,30 @@ p.attention {
   color: #428bca;
   border-radius: 5px;
   padding: 0px 2px; }
-  #history-view span#history-back:hover {
+  #history-view span.back:hover,
+  #settings-view span.back:hover {
     color: #FFF;
     border-color: #428bca;
     background-color: #428bca; }
-#history-view #history-list a {
+#history-view #history-list a,
+#settings-view #history-list a {
   color: #428bca;
   margin: 15px 0px; }
-  #history-view #history-list a:hover {
+  #history-view #history-list a:hover,
+  #settings-view #history-list a:hover {
     text-decoration: none;
     color: #2a6496; }
-  #history-view #history-list a .list-group-item-heading {
+  #history-view #history-list a .list-group-item-heading,
+  #settings-view #history-list a .list-group-item-heading {
     color: #555459;
     font-weight: 400;
     font-size: 15px; }
-    #history-view #history-list a .list-group-item-heading:hover {
+    #history-view #history-list a .list-group-item-heading:hover,
+    #settings-view #history-list a .list-group-item-heading:hover {
       text-decoration: none;
       color: #2a6496; }
-  #history-view #history-list a p {
+  #history-view #history-list a p,
+  #settings-view #history-list a p {
     font-weight: 300;
     font-size: 14px;
     white-space: nowrap;
@@ -83,13 +93,28 @@ p.attention {
     border-bottom: 1px solid #eee;
     margin-bottom: 10px;
     padding-bottom: 10px; }
-  #history-view #history-list a .history-moment {
+  #history-view #history-list a .history-moment,
+  #settings-view #history-list a .history-moment {
     color: #bbbbbe;
     font-size: 14px;
     font-weight: 300;
     float: right;
     position: relative;
     bottom: 1px; }
+
+#settings-view .setting-name {
+  color: #555459;
+  font-weight: 400;
+  font-size: 14px;
+  width: 200px;
+  margin-bottom: 20px;
+  display: inline-block; }
+#settings-view .setting-toggle {
+  display: inline-block;
+  width: 60px; }
+  #settings-view .setting-toggle input {
+    position: relative;
+    top: 1px; }
 
 .corner-button {
   color: #555459;
@@ -104,10 +129,12 @@ p.attention {
   .corner-button span {
     margin-top: 3px; }
   .corner-button.search-button {
-    right: 70px; }
-  .corner-button.message-button {
     right: 98px; }
+  .corner-button.message-button {
+    right: 126px; }
   .corner-button.history-button {
+    right: 70px; }
+  .corner-button.settings-button {
     right: 42px; }
 
 #main-view #title {

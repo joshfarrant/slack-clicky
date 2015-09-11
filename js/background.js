@@ -233,7 +233,9 @@ function connectToStream(url, callback) {
           var text = message.text;
           var link = text.substring(text.lastIndexOf("<") + 1, text.lastIndexOf(">"));
 
-          createNotification(link, message.channel, message.ts);
+          if (JSON.parse(localStorage.getItem('clicky-settings')).notifications) {
+            createNotification(link, message.channel, message.ts);
+          }
 
         }
 

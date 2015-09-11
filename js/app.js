@@ -381,6 +381,32 @@ function loadView() {
 
   if (localStorage.getItem('clicky-history') === null) localStorage.setItem('clicky-history', JSON.stringify([]));
 
+  var settings = JSON.parse(localStorage.getItem('clicky-settings'));
+
+  if (!settings) {
+
+    settings = {
+      notifications: true,
+      contextMenu: true
+    };
+
+    localStorage.setItem('clicky-settings', JSON.stringify(settings));
+
+    $('#setting-notifications').prop('checked', true);
+    $('#setting-context').prop('checked', true);
+
+  } else {
+
+    if (settings.notifications) {
+      $('#setting-notifications').prop('checked', true);
+    }
+
+    if (settings.contextMenu) {
+      $('#setting-context').prop('checked', true);
+    }
+
+  }
+
   if (localStorage.getItem('clicky-token') !== null) {
     slackToken = localStorage.getItem('clicky-token');
     user = JSON.parse(localStorage.getItem('clicky-user'));
@@ -534,6 +560,30 @@ $(document).on('click', '.history-button', function() {
   $('#main-view').hide();
   $('#history-view').show();
 });
+
+// Handles settings button clicks
+$(document).on('click', '.settings-button', function() {
+  $('#main-view').hide();
+  $('#settings-view').show();
+});
+
+$(document).on('click', 'span#settings-back', function() {
+  $('#settings-view').hide();
+  $('#main-view').show();
+});
+
+$(document).on('change', '#setting-notifications', function() {
+  var settings = JSON.parse(localStorage.getItem('clicky-settings'));
+  settings.notifications = $(this).is(':checked');
+  localStorage.setItem('clicky-settings', JSON.stringify(settings));
+});
+
+$(document).on('change', '#setting-context', function() {
+  var settings = JSON.parse(localStorage.getItem('clicky-settings'));
+  settings.contextMenu = $(this).is(':checked');
+  localStorage.setItem('clicky-settings', JSON.stringify(settings));
+});
+
 
 $(document).on('click', '#logout', function() {
   localStorage.clear();
