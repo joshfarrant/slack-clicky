@@ -386,14 +386,14 @@ function loadView() {
   if (!settings) {
 
     settings = {
-      notifications: true,
+      notifications: false,
       contextMenu: true
     };
 
     localStorage.setItem('clicky-settings', JSON.stringify(settings));
 
-    $('#setting-notifications').prop('checked', true);
-    $('#setting-context').prop('checked', true);
+    $('#setting-notifications').prop('checked', settings.notifications);
+    $('#setting-context').prop('checked', settings.contextMenu);
 
   } else {
 
