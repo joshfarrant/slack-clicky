@@ -166,6 +166,7 @@ function beginStream(callback) {
     },
     success: function(data) {
       if (data.ok === true) {
+        if (socket) socket.close();
         connectToStream(data.url, callback);
       } else {
         console.log('Error starting rtm: ', data);
@@ -287,7 +288,6 @@ function connectToStream(url, callback) {
 
     console.log('Stream closed');
     chrome.contextMenus.removeAll();
-    beginStream();
 
   };
 
