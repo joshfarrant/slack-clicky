@@ -61,7 +61,7 @@ function getSlackData() {
           var groups = [];
           for (var i in allGroups) {
             var group = allGroups[i];
-            if (!group.is_archived) {
+            if (!group.is_archived && group.is_open) {
               roomIds[group.id] = group.name;
               groups.push(group);
             }
