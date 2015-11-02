@@ -1,8 +1,7 @@
-$spooky: orange;
-$off-black: $spooky;
-$light-black: $spooky;
-$link: $spooky;
-$link-hover: $spooky;
+$off-black: #555459;
+$light-black: lighten($off-black, 40%);
+$link: #428bca;
+$link-hover: #2a6496;
 $success-color: #5cb85c;
 $success-border-color: #4cae4c;
 $error-color: #d9534f;
@@ -21,33 +20,6 @@ body {
   font-family: "Lato", sans-serif;
   font-weight: 400;
   color: $off-black;
-  background-color: #1d1d1d;
-}
-
-a,
-a:hover,
-a:focus {
-  color: $spooky;
-}
-
-::-webkit-input-placeholder {
-   color: $spooky !important;
-}
-
-:-moz-placeholder { /* Firefox 18- */
-   color: $spooky !important;
-}
-
-::-moz-placeholder {  /* Firefox 19+ */
-   color: $spooky !important;
-}
-
-:-ms-input-placeholder {
-   color: $spooky !important;
-}
-
-* {
-  border-color: $spooky !important;
 }
 
 h2 {
