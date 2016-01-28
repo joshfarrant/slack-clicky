@@ -204,10 +204,11 @@ function buildGroupsList(groups) {
     var group = groups[i];
     if (group.name.substr(0, 4) === 'mpdm') {
       var name = group.name;
-      name = group.name.split('--');
-      name[0] = name[0].split('-')[1];
-      name[name.length - 1] = name[name.length - 1].split('-')[0];
-      group.name = name.join(', ');
+      var nameArray = name.split('-');
+      // Remove first and last element
+      nameArray.shift();
+      nameArray.pop();
+      group.name = nameArray.join('-').split('--').join(', ');
     }
     rooms.push(group);
     prettyRooms[group.id] = group.name;
