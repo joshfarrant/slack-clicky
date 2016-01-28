@@ -202,6 +202,13 @@ function buildGroupsList(groups) {
 
   $.each(groups, function(i) {
     var group = groups[i];
+    if (group.name.substr(0, 4) === 'mpdm') {
+      var name = group.name;
+      name = group.name.split('--');
+      name[0] = name[0].split('-')[1];
+      name[name.length - 1] = name[name.length - 1].split('-')[0];
+      group.name = name.join(', ');
+    }
     rooms.push(group);
     prettyRooms[group.id] = group.name;
     html += '<li class="group"><span data-type="group" id="' + group.id + '" class="share-link" title="' + group.name + '" room-name="' + group.name + '" data-room="' + group.id + '">';
