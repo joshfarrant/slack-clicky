@@ -178,6 +178,9 @@ function buildUserList(users) {
 
   $.each(users, function(i) {
     var user = users[i];
+    if (JSON.parse(localStorage.getItem('clicky-settings')).hideBots && user.is_bot) {
+      return;
+    }
     rooms.push(user);
     prettyRooms[user.im_id] = user.name;
     html += '<li class="user"><span data-type="user" class="share-link" id="' + user.im_id + '" title="' + user.profile.real_name + '" room-name="' + user.name + '" data-room="' + user.im_id + '">';
@@ -202,6 +205,9 @@ function buildGroupsList(groups) {
 
   $.each(groups, function(i) {
     var group = groups[i];
+    if (!group.is_open) {
+      return;
+    }
     if (group.name.substr(0, 4) === 'mpdm') {
       var name = group.name;
       var nameArray = name.split('-');
@@ -395,13 +401,15 @@ function loadView() {
 
     settings = {
       notifications: false,
-      contextMenu: true
+      contextMenu: true,
+      hideBots: false
     };
 
     localStorage.setItem('clicky-settings', JSON.stringify(settings));
 
     $('#setting-notifications').prop('checked', settings.notifications);
     $('#setting-context').prop('checked', settings.contextMenu);
+    $('#setting-hideBots').prop('checked', settings.hideBots);
 
   } else {
 
@@ -411,6 +419,10 @@ function loadView() {
 
     if (settings.contextMenu) {
       $('#setting-context').prop('checked', true);
+    }
+
+    if (settings.hideBots) {
+      $('#setting-hideBots').prop('checked', true);
     }
 
   }
@@ -590,6 +602,13 @@ $(document).on('change', '#setting-context', function() {
   var settings = JSON.parse(localStorage.getItem('clicky-settings'));
   settings.contextMenu = $(this).is(':checked');
   localStorage.setItem('clicky-settings', JSON.stringify(settings));
+});
+
+$(document).on('change', '#setting-hideBots', function() {
+  var settings = JSON.parse(localStorage.getItem('clicky-settings'));
+  settings.hideBots = $(this).is(':checked');
+  localStorage.setItem('clicky-settings', JSON.stringify(settings));
+  buildUserList( JSON.parse( localStorage.getItem('clicky-users') ) );
 });
 
 

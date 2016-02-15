@@ -346,7 +346,20 @@ function generateId() {
 
 
 function getChannelName(id) {
-  return JSON.parse(localStorage.getItem('clicky-roomIds'))[id];
+
+  var channelName = JSON.parse(localStorage.getItem('clicky-roomIds'))[id];
+
+  if (channelName.substr(0, 4) === 'mpdm') {
+    var name = channelName;
+    var nameArray = name.split('-');
+    // Remove first and last element
+    nameArray.shift();
+    nameArray.pop();
+    return nameArray.join('-').split('--').join(', ');
+  } else {
+    return channelName;
+  }
+
 }
 
 function getChannelType(id) {
@@ -371,7 +384,17 @@ function getChannelType(id) {
 
 function createNotification(link, user, ts) {
 
-  var title = '#Clicky from ' + getChannelName(user);
+  var channelName = getChannelName(user);
+  var title;
+
+  if (channelName) {
+    title = '#Clicky from ' + getChannelName(user);
+    beginStream();
+  } else {
+    title = '#Clicky';
+    // The channel doesn't exist so restart the stream and refresh the data
+    beginStream();
+  }
 
   var options = {
     type: 'basic',
@@ -564,7 +587,7 @@ function buildContextMenus() {
 
   var ids = Object.keys(rooms);
 
-  if (ids.length > 20) {
+  if (ids.length > 100) {
     return;
   }
 
@@ -573,7 +596,18 @@ function buildContextMenus() {
     var id = ids[i];
     var room = rooms[id];
 
-    var title = room;
+    var title;
+
+    if (room.substr(0, 4) === 'mpdm') {
+      var name = room;
+      var nameArray = name.split('-');
+      // Remove first and last element
+      nameArray.shift();
+      nameArray.pop();
+      title = nameArray.join('-').split('--').join(', ');
+    } else {
+      title = room;
+    }
 
     chrome.contextMenus.create({
       'id': id,
