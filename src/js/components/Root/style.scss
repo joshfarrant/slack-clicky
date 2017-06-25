@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900');
+
+:global {
+  body {
+    width: 304px; /* Based on 8 images, 34px wide with 4px margin */
+    margin: 0;
+    padding: 0;
+  }
+
+  * {
+    transition: color 0.2s ease;
+    transition: background-color 0.2s ease;
+  }
+}
+
+.info-action {
+  color: var(--main-highlight-color);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  position: relative;
+  top: 32px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+}
+
+%base {
+  width: 100%;
+  min-height: 400px;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: var(--main-bg-color);
+  color: var(--main-copy-color);
+  font-size: var(--font-size-regular);
+  font-family: var(--font-family);
+
+  /*
+   * Colors
+   * Not to be used directly anywhere but this file
+   * Prefixed with -p- to denote that they are private
+   */
+  --p-red-color: #e5183e;
+  --p-pink-color: #e51870;
+  --p-yellow-color: #edb725;
+  --p-green-color: #2ab27b;
+  --p-blue-color: #2d9ee0;
+  --p-purple-color: #253039;
+  --p-dark-pink-color: #9b215b; /* 62% #e51870, 38% #253039 */
+  --p-dark-yellow-color: #a0832d; /* 62% #edb725, 38% #253039 */
+  --p-dark-green-color: #288061; /* 62% #2ab27b, 38% #253039 */
+  --p-dark-blue-color: #2A73A0; /* 62% #2d9ee0, 38% #253039 */
+  --p-white-color: #ffffff;
+  --p-black-color: #2c2d31;
+  --p-light-grey-color: #e3e4e5;
+  --p-medium-grey-color: #b2b8bf;
+  --p-dark-grey-color: #808b98;
+  --p-copy-color: var(--p-purple-color);
+
+  /*
+   * Font styles
+   */
+  --font-family: 'Lato', sans-serif;
+  --font-size-small: 12px;
+  --font-size-regular: 14px;
+  --font-size-large: 16px;
+  --font-size-larger: 24px;
+  --font-size-largest: 32px;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  /*
+   * Other styles
+   */
+  --inset-box-shadow: inset 0 -3px rgba(0, 0, 0, 0.2);
+
+}
+
+.base-theme {
+  @extend %base;
+  --main-bg-color: var(--p-white-color);
+  --main-copy-color: var(--p-copy-color);
+  --main-highlight-color: var(--p-pink-color);
+  --main-danger-bg-color: var(--p-red-color);
+  --main-danger-color: var(--p-white-color);
+
+  /*
+   * Announcement component styles
+   */
+  --announcement-bg-color: var(--p-blue-color);
+  --announcement-color: var(--p-white-color);
+
+  /*
+   * Chat component styles
+   */
+  --chat-default-color: var(--p-blue-color);
+  --chat-default-hover-copy-color: var(--p-white-color);
+  --chat-error-color: var(--main-danger-bg-color);
+  --chat-error-copy-color: var(--p-white-color);
+  --chat-success-color: var(--p-green-color);
+  --chat-success-copy-color: var(--p-white-color);
+
+  /*
+   * Checkbox component styles
+   */
+  --checkbox-active-color: var(--main-highlight-color);
+  --checkbox-inactive-color: var(--p-medium-grey-color);
+  --checkbox-handle-color: var(--p-white-color);
+
+  /*
+   * InfoMessage component styles
+   */
+  --info-message-color: var(--p-copy-color);
+  --info-message-icon-color: var(--p-medium-grey-color);
+  --info-message-overlay-color: var(--p-white-color);
+
+  /*
+   * MessageBox component styles
+   */
+  --message-box-color: var(--p-copy-color);
+  --message-box-placeholder-color: var(--p-medium-grey-color);
+  --message-box-cursor-color: var(--p-black-color);
+
+  /*
+   * Swatch component styles
+   */
+  --swatch-active-color: var(--main-bg-color);
+
+  /*
+   * TeamSelect component styles
+   */
+  --add-team-color: var(--p-green-color);
+
+}
+
+.dark-theme {
+  @extend .base-theme;
+  --main-bg-color: var(--p-purple-color);
+  --main-copy-color: var(--p-dark-grey-color);
+
+  /*
+   * Announcement component styles
+   */
+  --announcement-bg-color: var(--p-dark-blue-color);
+  --announcement-color: var(--p-white-color);
+
+  /*
+   * Chat component styles
+   */
+  --chat-default-color: var(--p-dark-grey-color);
+  --chat-default-hover-copy-color: var(--p-light-grey-color);
+  --chat-error-color: var(--main-danger-bg-color);
+  --chat-error-copy-color: var(--p-white-color);
+  --chat-success-color: var(--p-dark-green-color);
+  --chat-success-copy-color: var(--p-white-color);
+
+  /*
+   * InfoMessage component styles
+   */
+  --info-message-color: var(--p-light-grey-color);
+  --info-message-icon-color: var(--p-dark-grey-color);
+  --info-message-overlay-color: var(--p-black-color);
+
+  /*
+   * MessageBox component styles
+   */
+  --message-box-color: var(--p-light-grey-color);
+  --message-box-placeholder-color: var(--p-dark-grey-color);
+  --message-box-cursor-color: var(--p-medium-grey-color);
+
+  /*
+   * TeamSelect component styles
+   */
+  --add-team-color: var(--p-dark-green-color);
+}

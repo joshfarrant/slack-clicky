@@ -1,0 +1,24 @@
+{
+  "parser" : "babel-eslint",
+  "extends": "airbnb",
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "rules": {
+    "import/extensions": 0,
+    "import/no-mutable-exports": 0,
+    "import/prefer-default-export": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }]
+  },
+  "globals": {
+    "chrome": true,
+    "document": true,
+    "version": true,
+    "window": true
+  }
+}

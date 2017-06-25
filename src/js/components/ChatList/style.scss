@@ -1,0 +1,11 @@
+.container {
+  width: 100%;
+}
+
+.list {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

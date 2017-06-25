@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+  color: var(--info-message-color);
+  text-align: center;
+
+  a {
+    color: var(--main-highlight-color);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+  }
+
+}
+
+.container-full {
+  @extend .container;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--info-message-overlay-color);
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.icon {
+  color: var(--info-message-icon-color);
+  font-size: 80px;
+}
+
+.title {
+  padding: 2px 0 16px 0;
+  font-size: var(--font-size-larger);
+  font-weight: var(--font-weight-light);
+}
+
+.body {
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-light);
+}

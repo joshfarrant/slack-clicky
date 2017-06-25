@@ -1,0 +1,100 @@
+.container {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.team-container {
+  position: relative;
+  margin-right: 4px;
+}
+
+%icon {
+  padding-bottom: 4px;
+  transition: opacity 0.3s ease, border-bottom-color 0.3s ease;
+  border-bottom: 4px solid transparent;
+}
+
+.icon {
+  @extend %icon;
+  opacity: 0.5;
+}
+
+.selected-icon {
+  @extend %icon;
+  border-bottom-color: var(--main-highlight-color);
+}
+
+.refresh-icon-container {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 34px;
+  transition: opacity 0.3s ease;
+  background-color: var(--main-bg-color);
+  cursor: pointer;
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.refreshing-icon-container {
+  @extend .refresh-icon-container;
+  opacity: 1;
+}
+
+.refresh-icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 26px;
+  height: 26px;
+  color: var(--main-highlight-color);
+}
+
+.refreshing-icon {
+  @extend .refresh-icon;
+  @keyframes spin {
+    100% { transform: rotate(360deg); }
+  }
+
+  opacity: 1;
+  animation: spin 1s linear infinite;
+}
+
+.add-container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  height: 34px;
+  color: var(--add-team-color);
+  cursor: pointer;
+}
+
+.add-team {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--add-team-color);
+  border-radius: 2px;
+  font-size: 24px;
+  box-sizing: border-box;
+}
+
+.add-message {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: 8px;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+}

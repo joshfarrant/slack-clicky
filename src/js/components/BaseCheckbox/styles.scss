@@ -1,0 +1,149 @@
+@import '../../styles/utils';
+$height: 20px;
+
+.container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+%inner-container {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+%input {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+.info-icon {
+  margin-left: 4px;
+  font-size: var(--font-size-large);
+}
+
+.label {
+  @extend %no-select;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: $height;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+/**
+ * Switch styles
+ */
+
+$k: 1.75;
+
+$switchBorderWidth: 2px;
+$switchHandleDiameter: $height;
+$switchContainerHeight: $switchHandleDiameter;
+$switchContainerWidth: $switchContainerHeight * $k;
+
+$switchHandleInitialX: $switchBorderWidth;
+$switchHandleFinalX: ($k - 1) * $switchHandleDiameter + $switchBorderWidth;
+
+$switchTotalSize: $switchHandleDiameter;
+
+.switch-base {
+  @extend %inner-container;
+  position: relative;
+  left: $switchBorderWidth;
+  height: $switchTotalSize;
+}
+
+.switch-input {
+  @extend %input;
+}
+
+.switch-input-checked {
+  @extend .switch-input;
+}
+
+.switch-label {
+  position: relative;
+  width: $switchContainerWidth;
+  height: $switchContainerHeight;
+  transition: background-color 0.2s ease,
+              border-color 0.2s ease;
+  border: $switchBorderWidth solid var(--checkbox-inactive-color);
+  border-radius: $switchHandleDiameter;
+  border-color: var(--checkbox-inactive-color);
+  background-color: var(--checkbox-inactive-color);
+  cursor: pointer;
+}
+
+.switch-input-checked ~ .switch-label {
+  border-color: var(--checkbox-active-color);
+  background-color: var(--checkbox-active-color);
+
+  & ~ .switch-handle {
+    left: $switchHandleFinalX;
+  }
+
+}
+
+.switch-handle {
+  position: absolute;
+  top: 0;
+  left: $switchHandleInitialX;
+  width: $switchHandleDiameter;
+  height: $switchHandleDiameter;
+  transition: left 0.2s ease;
+  border-radius: $switchHandleDiameter;
+  background-color: var(--checkbox-handle-color);
+  cursor: pointer;
+}
+
+/**
+ * Checkbox styles
+ */
+
+$checkboxSize: $height;
+$checkboxBorderWidth: 2px;
+
+.checkbox-base {
+  @extend %inner-container;
+  width: $checkboxSize;
+  height: $checkboxSize;
+  box-sizing: border-box;
+}
+
+.checkbox-icon {
+  color: var(--checkbox-active-color);
+  font-size: $checkboxSize;
+  fill: var(--checkbox-active-color);
+}
+
+.checkbox-input {
+  @extend %input;
+}
+
+.checkbox-input-checked {
+  @extend .checkbox-input;
+}
+
+.checkbox-label {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $checkboxSize;
+  height: $checkboxSize;
+  border: $checkboxBorderWidth solid var(--checkbox-inactive-color);
+  border-radius: 3px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.checkbox-input-checked ~ .checkbox-label {
+  border-color: var(--checkbox-active-color);
+}

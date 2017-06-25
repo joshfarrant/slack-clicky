@@ -1,0 +1,28 @@
+$swatchSize: 20px;
+$dotSize: 10px;
+
+.swatch {
+  position: relative;
+  width: $swatchSize;
+  height: $swatchSize;
+  margin-left: 4px;
+  border-radius: $swatchSize;
+  cursor: pointer;
+}
+
+.swatch-selected {
+  @extend .swatch;
+
+  &::after {
+    display: block;
+    position: absolute;
+    top: ($swatchSize - $dotSize) / 2;
+    left: ($swatchSize - $dotSize) / 2;
+    width: $dotSize;
+    height: $dotSize;
+    border-radius: $dotSize;
+    background-color: var(--swatch-active-color);
+    content: '';
+  }
+
+}

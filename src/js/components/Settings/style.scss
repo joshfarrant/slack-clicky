@@ -1,0 +1,23 @@
+.option-container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  height: 20px;
+}
+
+.swatch-container {
+  @extend .option-container;
+  padding-top: 6px;
+}
+
+.option {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+.clear-container {
+  margin: 0;
+}

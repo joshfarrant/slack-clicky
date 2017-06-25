@@ -1,0 +1,24 @@
+.paragraph {
+  margin: 0;
+  padding: 0 0 8px 0;
+  line-height: 18px;
+}
+
+.link-list {
+  margin: 0;
+  padding: 0;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+  line-height: 28px;
+}
+
+.icon {
+  margin-right: 4px;
+  font-size: 28px;
+}

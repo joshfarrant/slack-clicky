@@ -1,0 +1,45 @@
+.chat {
+  margin: 2px 4px 2px 0;
+  padding: 0 4px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: 1px solid var(--chat-default-color);
+  border-radius: 4px;
+  color: var(--chat-default-color);
+  font-size: var(--font-size-large);
+  line-height: 24px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--chat-default-color);
+    color: var(--chat-default-hover-copy-color);
+  }
+
+}
+
+.chat-sending {
+  @extend .chat;
+}
+
+.chat-error {
+  @extend .chat;
+
+  &,
+  &:hover {
+    border-color: var(--chat-error-color);
+    background-color: var(--chat-error-color);
+    color: var(--chat-error-copy-color);
+  }
+
+}
+
+.chat-success {
+  @extend .chat;
+
+  &,
+  &:hover {
+    border-color: var(--chat-success-color);
+    background-color: var(--chat-success-color);
+    color: var(--chat-success-copy-color);
+  }
+
+}

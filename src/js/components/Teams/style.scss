@@ -1,0 +1,20 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list-item {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.team-icon {
+  margin-right: 8px;
+}
+
+.team-name {
+  flex: 1;
+}

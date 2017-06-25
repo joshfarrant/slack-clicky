@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.product {
+  flex: 1;
+  font-size: var(--font-size-largest);
+  font-weight: var(--font-weight-light);
+  cursor: pointer;
+}
+
+%icon {
+  margin-left: 4px;
+  color: var(--main-copy-color);
+  font-size: 25px;
+  text-decoration: none;
+}
+
+.icon {
+  @extend %icon;
+}
+
+.icon-active {
+  @extend %icon;
+  color: var(--main-highlight-color);
+}

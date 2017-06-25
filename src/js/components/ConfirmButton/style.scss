@@ -1,0 +1,19 @@
+@import '../../styles/utils';
+
+.container {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.container-clicked {
+  @extend .container;
+  color: var(--main-danger-bg-color);
+}
+
+.confirm {
+  @extend %no-select;
+  position: relative;
+  top: -1px;
+  font-size: var(--font-size-regular);
+  font-weight: var(--font-weight-bold);
+}

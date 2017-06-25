@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  margin: 12px 0 8px 0;
+  padding: 8px 4px;
+  border-radius: 4px;
+  background-color: var(--announcement-bg-color);
+  color: var(--announcement-color);
+  box-sizing: border-box;
+  position: relative;
+}
+
+.title {
+  margin-bottom: 4px;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+}
+
+.message {
+  margin: 0;
+}
+
+.close {
+  position: absolute;
+  right: 4px;
+  top: 1.1px;
+  font-size: 22px;
+  cursor: pointer;
+}
