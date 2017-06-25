@@ -1,7 +1,3 @@
-# NOTICE
-
-Development has now moved to [GitHub](github.com/joshfarrant/slack-clicky).
-
 # #Clicky for Slack
 
 \#Clicky is a Chrome Extension designed to make sharing a link to Slack as quick and easy as possible. Share your current page to a Slack channel or user in a single click!
