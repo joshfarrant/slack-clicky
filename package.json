@@ -6,7 +6,8 @@
     "build": "NODE_ENV=production node utils/build.js",
     "lint": "eslint --ext .js --ext .jsx src/js",
     "start": "node utils/webserver.js",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "deep-equal": "^1.0.1",
