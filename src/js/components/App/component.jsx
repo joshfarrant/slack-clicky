@@ -112,7 +112,7 @@ const App = ({
       </p>
       <p>
         {`
-          Better notifications, support for themeing, a dark mode,
+          Better notifications, support for theming, a dark mode,
           as well as the long-awaited (and much requested)
           multi-team support, to name a few!
         `}
