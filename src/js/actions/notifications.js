@@ -13,3 +13,11 @@ export const notification = {
   open: (...args) => action(OPEN_NOTIFICATION_LINK, ...args),
   mark: (...args) => action(MARK_NOTIFICATION_LINK_READ, ...args),
 };
+
+export const DISABLE_NOTIFICATIONS = 'DISABLE_NOTIFICATIONS';
+export const ENABLE_NOTIFICATIONS = 'ENABLE_NOTIFICATIONS';
+
+export const notifications = {
+  disable: (...args) => action(DISABLE_NOTIFICATIONS, ...args),
+  enable: (...args) => action(ENABLE_NOTIFICATIONS, ...args),
+};

@@ -11,8 +11,11 @@ import { CHAT_LISTS, THEMES, THEME_COLORS } from '../../helpers/constants';
 
 const Settings = ({
   clearState,
+  disableNotifications,
+  enableNotifications,
   hideSection,
   location,
+  notificationsEnabled,
   setTheme,
   showSection,
   theme,
@@ -42,14 +45,25 @@ const Settings = ({
         {sectionToggles}
 
         <SectionTitle title="Preferences" />
-        <Switch
-          checked={theme === THEMES.DARK}
-          label="Dark mode"
-          onChange={(checked) => {
-            const nextTheme = checked ? THEMES.DARK : THEMES.DEFAULT;
-            setTheme(nextTheme);
-          }}
-        />
+        <div styleName="switch-container">
+          <Switch
+            checked={theme === THEMES.DARK}
+            label="Dark mode"
+            onChange={(checked) => {
+              const nextTheme = checked ? THEMES.DARK : THEMES.DEFAULT;
+              setTheme(nextTheme);
+            }}
+          />
+        </div>
+        <div styleName="switch-container">
+          <Switch
+            checked={notificationsEnabled}
+            label="Show Notifications"
+            onChange={checked => (
+              checked ? enableNotifications() : disableNotifications()
+            )}
+          />
+        </div>
         <div styleName="swatch-container">
           <div>Theme colour</div>
           <div styleName="option">
@@ -79,10 +93,13 @@ const Settings = ({
 
 Settings.propTypes = {
   clearState: PropTypes.func.isRequired,
+  disableNotifications: PropTypes.func.isRequired,
+  enableNotifications: PropTypes.func.isRequired,
   hideSection: PropTypes.func.isRequired,
   location: PropTypes.objectOf(
     PropTypes.string,
   ).isRequired,
+  notificationsEnabled: PropTypes.bool.isRequired,
   setTheme: PropTypes.func.isRequired,
   showSection: PropTypes.func.isRequired,
   theme: PropTypes.oneOf(Object.values(THEMES)).isRequired,

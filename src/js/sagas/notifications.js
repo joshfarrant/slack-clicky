@@ -95,9 +95,15 @@ function* createNotification(action) {
    * Use the ID of the passed team to retreive the full team
    * object from the store, which includes custom properties
    */
-  const { teams } = yield select(state => ({
+  const { teams, notificationsEnabled } = yield select(state => ({
     teams: state.teams.data,
+    notificationsEnabled: state.notifications.notificationsEnabled,
   }));
+
+  if (!notificationsEnabled) {
+    return;
+  }
+
   const team = teams[basicTeam.team.id];
 
   // Get the userArray and build map

@@ -6,6 +6,12 @@
   height: 20px;
 }
 
+.switch-container {
+  @extend .option-container;
+  width: 100%;
+  height: 28px;
+}
+
 .swatch-container {
   @extend .option-container;
   padding-top: 6px;
