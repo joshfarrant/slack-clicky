@@ -157,7 +157,7 @@ const createContextMenu = (title, id, ...args) => (
       id,
       parentId,
       type: 'normal',
-      contexts: ['selection'],
+      contexts: ['link', 'selection'],
       onclick: onClick,
     }, resolve);
   })
@@ -170,15 +170,30 @@ function* buildContextMenus() {
 
   const onClick = (info, tab) => {
     const {
+      linkUrl,
       menuItemId: channel,
       parentMenuItemId: teamId,
       selectionText,
     } = info;
 
-    const { url } = tab;
-
-    const text = `>_"${selectionText}"_ - ${url}`;
+    let text;
     const team = teams[teamId];
+
+    /**
+     * If we've got selectionText, it means text was highlighted
+     * and right-clicked. If not, a link was right-clicked.
+     */
+    if (selectionText) {
+      // If not, format the message appropriately
+      const { url } = tab;
+      text = `>_"${selectionText || ''}"_ - ${url}`;
+    } else if (linkUrl) {
+      text = linkUrl;
+    } else {
+      // Shouldn't happen, but hey
+      text = tab.url;
+    }
+
     customChannel.put(teamActions.stream.sendCurrentTab({ channel, team, text }));
   };
 
