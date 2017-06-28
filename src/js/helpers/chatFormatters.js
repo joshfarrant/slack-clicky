@@ -158,11 +158,17 @@ export const formatStarredGroups = (team) => {
   });
 };
 
-
 export const formatStarredChats = team => (
   [
     ...formatStarredChannels(team),
     ...formatStarredIms(team),
     ...formatStarredGroups(team),
+  ]
+);
+
+export const formatAllChats = team => (
+  [
+    ...formatChannels(team),
+    ...formatDms(team),
   ]
 );
