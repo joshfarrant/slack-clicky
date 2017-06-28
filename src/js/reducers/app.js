@@ -9,11 +9,16 @@ const {
   SET_MESSAGE,
   SHOW_SECTION,
   HIDE_ANNOUNCEMENT,
+  SET_QUICK_SEND,
 } = appActions;
 
 export const defaultState = {
   hiddenAnnouncements: [],
   message: '',
+  quickSendChat: {
+    id: null,
+    team: null,
+  },
   theme: THEMES.DEFAULT,
   themeColor: THEME_COLORS.PINK,
   visibleSections: [
@@ -81,6 +86,14 @@ const hideAnnouncement = (state, { payload }) => {
   };
 };
 
+const setQuickSend = (state, { payload }) => {
+  const { id, team } = payload;
+  return {
+    ...state,
+    quickSendChat: { id, team },
+  };
+};
+
 const reducer = (
   state,
   action,
@@ -96,6 +109,7 @@ const reducer = (
     case HIDE_SECTION: return reduce(hideSection);
     case SHOW_SECTION: return reduce(showSection);
     case HIDE_ANNOUNCEMENT: return reduce(hideAnnouncement);
+    case SET_QUICK_SEND: return reduce(setQuickSend);
     default: return state;
   }
 };

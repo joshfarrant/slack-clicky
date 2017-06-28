@@ -12,7 +12,8 @@
     "identity",
     "notifications",
     "tabs",
-    "https://slack.com/*"
+    "https://slack.com/*",
+    "commands"
   ],
   "browser_action": {
     "default_popup": "popup.html",
@@ -26,5 +27,14 @@
     "48": "assets/icon-purple-48.png",
     "128": "assets/icon-purple-128.png"
   },
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApiicSJBbR70+BZOk3y2orfv5cyZXg1+ZmxnxjTscEClGZ9Q8+zbedBuxh9WqJuGQON1RN2tXDUJtGvPjhsl8196BFnRpXFygfGSByq/ku93KafG7chpafE/KXQg9CrYBvEk5CsAB8rgooT+yZib0cDOkFtkNehdFfuxcwt0bDYXOdrlH3ZS5pDLGlHarpoBThs7lm1Tt/DjCTB65YmHL8I4ui7pn+v6GUFsrYcLxvzAgN1XkmLl9mvu7mU9D9DgAszFq9a5UYP15CxW32NQRDigkOhFh3SyCliBvZjSn9jGCyiPwzjQqy3wBiV1ieuQNsFDO/qRzCZDUKDQ4S6Za8QIDAQAB"
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApiicSJBbR70+BZOk3y2orfv5cyZXg1+ZmxnxjTscEClGZ9Q8+zbedBuxh9WqJuGQON1RN2tXDUJtGvPjhsl8196BFnRpXFygfGSByq/ku93KafG7chpafE/KXQg9CrYBvEk5CsAB8rgooT+yZib0cDOkFtkNehdFfuxcwt0bDYXOdrlH3ZS5pDLGlHarpoBThs7lm1Tt/DjCTB65YmHL8I4ui7pn+v6GUFsrYcLxvzAgN1XkmLl9mvu7mU9D9DgAszFq9a5UYP15CxW32NQRDigkOhFh3SyCliBvZjSn9jGCyiPwzjQqy3wBiV1ieuQNsFDO/qRzCZDUKDQ4S6Za8QIDAQAB",
+  "commands": {
+    "QUICK_SEND": {
+      "suggested_key": {
+        "default": "Alt+Shift+C",
+        "mac": "Alt+Shift+C"
+      },
+      "description": "Quick-send current tab"
+    }
+  }
 }
