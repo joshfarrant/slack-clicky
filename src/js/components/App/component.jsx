@@ -96,46 +96,25 @@ const App = ({
     };
   }
 
-  const announcementId = 'v3-welcome';
-  const announcementTitle = 'The new and improved #Clicky!';
+  const announcementId = 'v3.0.2';
+  const announcementTitle = 'New in #Clicky 3.0.2!';
   const announcementMessage = (
     <span>
       <p>
-        {`
-          Hey there!
-        `}
+        Fixed bug causing multiple notifications to be sent when receiving a #Clicky
+        (reported by joe_kuzma and DKatri).
       </p>
       <p>
-        {`
-          This version of #Clicky has been completely rebuilt
-          from the ground up, and brings with it a load of new
-          great features.
-        `}
+        Added an option to disable notifications altogether
+        (suggested by Tsury).
       </p>
       <p>
-        {`
-          Better notifications, support for theming, a dark mode,
-          as well as the long-awaited (and much requested)
-          multi-team support, to name a few!
-        `}
+        Added a section for starred chats
+        (suggested by wwb).
       </p>
       <p>
-        {`
-          I've done my best to make sure this is the most stable
-          and reliable version of #Clicky yet. If, however, you
-          do spot any bugs or weird behaviour, or if you just
-          want to request a feature, then please do let me know.
-        `}
-      </p>
-      <p>
-        {`
-          Happy #Clicking!
-        `}
-      </p>
-      <p>
-        {`
-          Josh
-        `}
+        When you right-click a link on a page you now get an option to send a #Clicky to that link
+        (suggested by TamirL).
       </p>
     </span>
   );
