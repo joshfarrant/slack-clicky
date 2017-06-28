@@ -12,6 +12,8 @@ const {
   notification: notificationActions,
 } = notificationsActions;
 
+let recentNotifications = [];
+
 const buildNotification = (title, url) => (
   new Promise((resolve, reject) => {
     try {
@@ -118,9 +120,26 @@ function* createNotification(action) {
     const { text } = message;
     const url = extractLink(text);
 
+    // If we've recently sent a notification for that url, don't do so again
+    if (recentNotifications.includes(url)) {
+      return;
+    }
 
     const id = yield call(buildNotification, title, url);
     yield put(notificationActions.created({ id, message, url }));
+
+    // Temporary fix to multiple stream/notification bug (not a hack...)
+    recentNotifications = [
+      ...recentNotifications,
+      url,
+    ];
+
+    // After 3 seconds, remove from recentNotifications
+    setTimeout(() => {
+      recentNotifications = [
+        ...recentNotifications.filter(x => x !== url),
+      ];
+    }, 3000);
   } catch (error) {
     // If something goes wrong, just drop it
   }
