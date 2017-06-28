@@ -1,4 +1,9 @@
 export const CHAT_LISTS = {
+  STARRED_CHAT_LIST: {
+    DESCRIPTION: 'All starred chats',
+    NAME: 'STARRED_CHAT_LIST',
+    TITLE: 'Starred',
+  },
   CHANNEL_LIST: {
     DESCRIPTION: 'All public and private channels',
     NAME: 'CHANNEL_LIST',

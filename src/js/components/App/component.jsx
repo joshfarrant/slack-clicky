@@ -12,6 +12,7 @@ import MessageBox from '../MessageBox';
 import MpimList from '../MpimList';
 import PrivateChannelList from '../PrivateChannelList';
 import PublicChannelList from '../PublicChannelList';
+import StarredChatList from '../StarredChatList';
 import RouteWrapper from '../RouteWrapper';
 import SectionTitle from '../SectionTitle';
 import TeamSelect from '../TeamSelect';
@@ -33,6 +34,7 @@ const App = ({
 }) => {
   // Map sections to their components
   const sectionMap = {
+    [CHAT_LISTS.STARRED_CHAT_LIST.NAME]: StarredChatList,
     [CHAT_LISTS.CHANNEL_LIST.NAME]: ChannelList,
     [CHAT_LISTS.DM_LIST.NAME]: DmList,
     [CHAT_LISTS.IM_LIST.NAME]: ImList,
