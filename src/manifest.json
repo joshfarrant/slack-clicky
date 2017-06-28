@@ -2,7 +2,7 @@
   "name": "#Clicky for Slack",
   "short_name": "#Clicky",
   "description": "Post links to Slack with a single click!",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "options_page": "options.html",
   "background": {
     "page": "background.html"
