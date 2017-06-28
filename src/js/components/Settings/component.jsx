@@ -63,8 +63,8 @@ const Settings = ({
 
   dropdownOptions = [
     {
-      id: null,
-      team: null,
+      id: '',
+      team: {},
       label: 'None',
     },
     ...dropdownOptions,
@@ -75,6 +75,22 @@ const Settings = ({
       <div>
         <SectionTitle title="Show Sections" />
         {sectionToggles}
+
+        <SectionTitle title="Quick-Send Chat" />
+        <Select
+          value={quickSendChat.id}
+          valueKey="id"
+          options={dropdownOptions}
+          placeholder="Press Ctrl+Alt+C to send to this chat"
+          onChange={({ id, team }) => {
+            setQuickSend(id, team);
+          }}
+        />
+        <p>
+          Press Alt+Shift+C from anywhere in Chrome to immediately send your
+          current page to this chat.
+          You can change this shortcut from the bottom of the chrome://extensions page.
+        </p>
 
         <SectionTitle title="Preferences" />
         <div styleName="switch-container">
@@ -104,16 +120,6 @@ const Settings = ({
             ))}
           </div>
         </div>
-
-        <SectionTitle title="Quick-Send Chat" />
-        <Select
-          value={quickSendChat.id}
-          valueKey="id"
-          options={dropdownOptions}
-          onChange={({ id, team }) => {
-            setQuickSend(id, team);
-          }}
-        />
 
         <SectionTitle title="Other" />
         <div styleName="option-container">
