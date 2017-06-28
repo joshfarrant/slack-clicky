@@ -11,5 +11,4 @@
 - Testing
 - Comments!
 - Keyboard shortcuts?
-- Favourites and hiding
 
