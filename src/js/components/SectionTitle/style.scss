@@ -1,6 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
 .section-title {
   padding: 12px 0 8px 0;
   font-size: var(--font-size-regular);
   font-weight: var(--font-weight-bold);
   text-transform: uppercase;
+}
+
+.icon-container {
+  display: flex;
+  position: relative;
+  top: 2px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.info-icon {
+  margin-left: 4px;
+  font-size: var(--font-size-large);
 }
