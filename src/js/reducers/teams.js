@@ -156,14 +156,6 @@ const refreshedTeam = (state, { payload, error }) => {
   const { stream, team, token } = payload;
   const { id } = team.team;
 
-  if (state.data[id]) {
-    try {
-      state.data[id].clicky.stream.stream.close();
-    } catch (err) {
-      // Meh
-    }
-  }
-
   return {
     ...state,
     data: {
@@ -195,12 +187,12 @@ const refreshedTeam = (state, { payload, error }) => {
 
 const removeTeam = (state, { payload }) => {
   const { id } = payload;
-  const team = state.data[id];
 
   try {
-    team.clicky.stream.stream.close();
+    const windowStream = window.clickyStreams[id];
+    windowStream.close();
   } catch (err) {
-    // Meh
+    // Annoying, but not sure what I can do
   }
 
   const nextData = { ...state.data };
