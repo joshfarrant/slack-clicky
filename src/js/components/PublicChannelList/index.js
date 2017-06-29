@@ -1,1 +1,1 @@
-export default from './component.jsx';
+export default from './container';

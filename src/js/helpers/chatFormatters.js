@@ -21,10 +21,11 @@ export const getUserDisplayName = (user) => {
   return displayName;
 };
 
-export const formatIms = (team) => {
+export const formatIms = (team, hideStarred) => {
   const userMap = buildUserMap(team);
   return team.ims
   .filter(im => im.is_open && im.user !== SLACK.SLACKBOT_USER)
+  .filter(im => hideStarred && !im.is_starred)
   .map((im) => {
     const user = userMap.get(im.user);
     const label = getUserDisplayName(user);
@@ -36,10 +37,11 @@ export const formatIms = (team) => {
   });
 };
 
-export const formatMpims = (team) => {
+export const formatMpims = (team, hideStarred) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => group.is_mpim && !group.is_archived && group.is_open)
+  .filter(im => hideStarred && !im.is_starred)
   .map((group) => { // Build pretty label composed of group member names
     const label = group.members
     .filter(member => member !== team.self.id) // Filter yourself out of the list of members
@@ -55,10 +57,11 @@ export const formatMpims = (team) => {
   });
 };
 
-export const formatGroups = (team) => {
+export const formatGroups = (team, hideStarred) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => !group.is_archived && group.is_open)
+  .filter(im => hideStarred && !im.is_starred)
   .map((group) => {
     let label = group.name;
 
@@ -79,35 +82,37 @@ export const formatGroups = (team) => {
   });
 };
 
-export const formatPublicChannels = team => (
+export const formatPublicChannels = (team, hideStarred) => (
   team.channels
   .filter(channel => !channel.is_archived && channel.is_member)
+  .filter(im => hideStarred && !im.is_starred)
   .map(channel => ({
     id: channel.id,
     label: `#${channel.name}`,
   }))
 );
 
-export const formatPrivateChannels = team => (
+export const formatPrivateChannels = (team, hideStarred) => (
   team.groups
   .filter(group => !group.is_mpim && !group.is_archived && group.is_open)
+  .filter(im => hideStarred && !im.is_starred)
   .map(group => ({
     id: group.id,
     label: group.name,
   }))
 );
 
-export const formatChannels = team => (
+export const formatChannels = (team, hideStarred) => (
   [
-    ...formatPublicChannels(team),
-    ...formatPrivateChannels(team),
+    ...formatPublicChannels(team, hideStarred),
+    ...formatPrivateChannels(team, hideStarred),
   ]
 );
 
-export const formatDms = team => (
+export const formatDms = (team, hideStarred) => (
   [
-    ...formatIms(team),
-    ...formatMpims(team),
+    ...formatIms(team, hideStarred),
+    ...formatMpims(team, hideStarred),
   ]
 );
 
@@ -166,9 +171,9 @@ export const formatStarredChats = team => (
   ]
 );
 
-export const formatAllChats = team => (
+export const formatAllChats = (team, hideStarred) => (
   [
-    ...formatChannels(team),
-    ...formatDms(team),
+    ...formatChannels(team, hideStarred),
+    ...formatDms(team, hideStarred),
   ]
 );
