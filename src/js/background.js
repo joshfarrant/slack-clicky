@@ -74,18 +74,3 @@ chrome.runtime.onConnect.addListener((port) => {
     }
   });
 });
-
-const COMMANDS = {
-  QUICK_SEND: {
-    NAME: 'QUICK_SEND',
-    ACTION: () => {
-      const { id, team } = getState().app.quickSendChat;
-      dispatch(teamActions.stream.sendCurrentTab({ channel: id, team }));
-    },
-  },
-};
-
-chrome.commands.onCommand.addListener((commandName) => {
-  const command = COMMANDS[commandName];
-  command.ACTION();
-});

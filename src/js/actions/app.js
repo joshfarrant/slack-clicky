@@ -28,8 +28,3 @@ export const announcement = {
   hide: (...args) => action(HIDE_ANNOUNCEMENT, ...args),
 };
 
-export const SET_QUICK_SEND = 'SET_QUICK_SEND';
-
-export const quickSend = {
-  set: (...args) => action(SET_QUICK_SEND, ...args),
-};

@@ -4,12 +4,10 @@ import styles from './style.scss';
 import Button from '../Button';
 import Checkbox from '../Checkbox';
 import SectionTitle from '../SectionTitle';
-import Select from '../Select';
 import Swatch from '../Swatch';
 import Switch from '../Switch';
 import RouteWrapper from '../RouteWrapper';
 import { CHAT_LISTS, THEMES, THEME_COLORS } from '../../helpers/constants';
-import { formatAllChats } from '../../helpers/chatFormatters';
 
 const Settings = ({
   clearState,
@@ -18,11 +16,8 @@ const Settings = ({
   hideSection,
   location,
   notificationsEnabled,
-  quickSendChat,
-  setQuickSend,
   setTheme,
   showSection,
-  teams,
   theme,
   visibleSections,
 }) => {
@@ -42,33 +37,6 @@ const Settings = ({
   ));
 
   const swatches = Object.values(THEME_COLORS);
-
-  let dropdownOptions = [];
-
-  const formattedTeams = teams
-  .map(team => (
-    formatAllChats(team).map(x => ({
-      id: x.id,
-      team,
-      label: x.label,
-    }))
-  ));
-
-  formattedTeams.forEach((x) => {
-    dropdownOptions = [
-      ...dropdownOptions,
-      ...x,
-    ];
-  });
-
-  dropdownOptions = [
-    {
-      id: null,
-      team: null,
-      label: 'None',
-    },
-    ...dropdownOptions,
-  ];
 
   return (
     <RouteWrapper location={location}>
@@ -105,16 +73,6 @@ const Settings = ({
           </div>
         </div>
 
-        <SectionTitle title="Quick-Send Chat" />
-        <Select
-          value={quickSendChat.id}
-          valueKey="id"
-          options={dropdownOptions}
-          onChange={({ id, team }) => {
-            setQuickSend(id, team);
-          }}
-        />
-
         <SectionTitle title="Other" />
         <div styleName="option-container">
           <div>Clear local data</div>
@@ -142,16 +100,8 @@ Settings.propTypes = {
     PropTypes.string,
   ).isRequired,
   notificationsEnabled: PropTypes.bool.isRequired,
-  quickSendChat: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    team: PropTypes.object.isRequired,
-  }).isRequired,
-  setQuickSend: PropTypes.func.isRequired,
   setTheme: PropTypes.func.isRequired,
   showSection: PropTypes.func.isRequired,
-  teams: PropTypes.arrayOf(
-    PropTypes.object,
-  ).isRequired,
   theme: PropTypes.oneOf(Object.values(THEMES)).isRequired,
   visibleSections: PropTypes.arrayOf(
     PropTypes.oneOf(Object.values(CHAT_LISTS).map(x => x.NAME)),
