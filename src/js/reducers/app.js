@@ -16,8 +16,8 @@ export const defaultState = {
   hiddenAnnouncements: [],
   message: '',
   quickSendChat: {
-    id: '',
-    team: {},
+    id: null,
+    team: null,
   },
   theme: THEMES.DEFAULT,
   themeColor: THEME_COLORS.PINK,

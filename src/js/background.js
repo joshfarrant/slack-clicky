@@ -75,20 +75,12 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
-const defaultIconPath = 'assets/icon-purple-32.png';
-const successIconPath = 'assets/icon-green-32.png';
-
 const COMMANDS = {
   QUICK_SEND: {
     NAME: 'QUICK_SEND',
     ACTION: () => {
       const { id, team } = getState().app.quickSendChat;
-      if (id === '' || Object.values(team).length === 0) return;
       dispatch(teamActions.stream.sendCurrentTab({ channel: id, team }));
-      chrome.browserAction.setIcon({ path: successIconPath });
-      setTimeout(() => {
-        chrome.browserAction.setIcon({ path: defaultIconPath });
-      }, 3000);
     },
   },
 };
