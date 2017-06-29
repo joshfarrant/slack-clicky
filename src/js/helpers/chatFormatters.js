@@ -25,7 +25,7 @@ export const formatIms = (team, hideStarred) => {
   const userMap = buildUserMap(team);
   return team.ims
   .filter(im => im.is_open && im.user !== SLACK.SLACKBOT_USER)
-  .filter(im => hideStarred && !im.is_starred)
+  .filter(im => (hideStarred ? !im.is_starred : true))
   .map((im) => {
     const user = userMap.get(im.user);
     const label = getUserDisplayName(user);
@@ -41,7 +41,7 @@ export const formatMpims = (team, hideStarred) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => group.is_mpim && !group.is_archived && group.is_open)
-  .filter(im => hideStarred && !im.is_starred)
+  .filter(group => (hideStarred ? !group.is_starred : true))
   .map((group) => { // Build pretty label composed of group member names
     const label = group.members
     .filter(member => member !== team.self.id) // Filter yourself out of the list of members
@@ -61,7 +61,7 @@ export const formatGroups = (team, hideStarred) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => !group.is_archived && group.is_open)
-  .filter(im => hideStarred && !im.is_starred)
+  .filter(group => (hideStarred ? !group.is_starred : true))
   .map((group) => {
     let label = group.name;
 
@@ -85,7 +85,7 @@ export const formatGroups = (team, hideStarred) => {
 export const formatPublicChannels = (team, hideStarred) => (
   team.channels
   .filter(channel => !channel.is_archived && channel.is_member)
-  .filter(im => hideStarred && !im.is_starred)
+  .filter(channel => (hideStarred ? !channel.is_starred : true))
   .map(channel => ({
     id: channel.id,
     label: `#${channel.name}`,
@@ -95,7 +95,7 @@ export const formatPublicChannels = (team, hideStarred) => (
 export const formatPrivateChannels = (team, hideStarred) => (
   team.groups
   .filter(group => !group.is_mpim && !group.is_archived && group.is_open)
-  .filter(im => hideStarred && !im.is_starred)
+  .filter(group => (hideStarred ? !group.is_starred : true))
   .map(group => ({
     id: group.id,
     label: group.name,
