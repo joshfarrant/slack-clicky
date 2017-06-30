@@ -100,6 +100,16 @@ function* createNotification(action) {
     notificationsEnabled: state.notifications.notificationsEnabled,
   }));
 
+  if (window.clickyIsNotifying) {
+    return;
+  }
+
+  window.clickyIsNotifying = true;
+
+  setTimeout(() => {
+    window.clickyIsNotifying = false;
+  }, 3000);
+
   if (!notificationsEnabled) {
     return;
   }

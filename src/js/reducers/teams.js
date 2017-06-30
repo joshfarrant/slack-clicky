@@ -188,13 +188,6 @@ const refreshedTeam = (state, { payload, error }) => {
 const removeTeam = (state, { payload }) => {
   const { id } = payload;
 
-  try {
-    const windowStream = window.clickyStreams[id];
-    windowStream.close();
-  } catch (err) {
-    // Annoying, but not sure what I can do
-  }
-
   const nextData = { ...state.data };
   delete nextData[id];
 

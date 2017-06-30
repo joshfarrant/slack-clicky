@@ -101,36 +101,6 @@ const connectToStream = token => (
         }
       });
 
-      /**
-       * We're gonna store the streams on the window object
-       * because anything put into the store is serialized
-       * into json, which screws up functions.
-       */
-
-      // Initialize window.clickyStreams to an empty object
-      if (!window.clickyStreams) {
-        window.clickyStreams = {};
-      }
-
-      const { id } = team.team;
-
-      // See if we've got a stream for this team already
-      const teamStream = window.clickyStreams[id];
-      if (teamStream) {
-        // If we do, close it
-        teamStream.close();
-      }
-
-      // Add this stream to clickyStreams
-      window.clickyStreams = {
-        ...window.clickyStreams,
-        [id]: {
-          close: () => {
-            stream.close();
-          },
-        },
-      };
-
       // Resolve with stream and team as returned from rtm.start
       resolve({ stream, team });
     });
