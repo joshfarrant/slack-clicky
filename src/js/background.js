@@ -22,7 +22,7 @@ const {
 } = store;
 
 const state = getState();
-let refreshLoop;
+// let refreshLoop;
 
 const refreshTeams = () => {
   Object.values(state.teams.data).forEach((team) => {
@@ -32,11 +32,11 @@ const refreshTeams = () => {
 };
 
 refreshTeams();
-if (refreshLoop) {
-  clearInterval(refreshLoop);
-}
+// if (refreshLoop) {
+//   clearInterval(refreshLoop);
+// }
 
-refreshLoop = setInterval(refreshTeams, 5 * 60 * 1000); // Refresh every 5 mins
+// refreshLoop = setInterval(refreshTeams, 5 * 60 * 1000); // Refresh every 5 mins
 
 chrome.notifications.onClicked.addListener((id) => {
   dispatch(notificationActions.open({ id }));
