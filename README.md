@@ -36,8 +36,8 @@ Once installed, launch the extension in Chrome and follow the instructions to ge
 
 ## BrowserStack
 
-BrowsersStack gives you instant access to all real mobile and desktop browsers completely within your web browser. #Clicky is proud to use BrowserStack to test functionality in older versions of Chrome, as well as Opera and Firefox. We are also looking at the possibility of porting #Clicky to Safari. BrowserStack will make this much easier by giving us the ability to test in multiple versions of Safari as we're developing.
+BrowserStack gives you instant access to all real mobile and desktop browsers completely within your web browser. #Clicky is proud to use BrowserStack to test functionality in older versions of Chrome, as well as Opera and Firefox. We are also looking at the possibility of porting #Clicky to Safari. BrowserStack will make this much easier by giving us the ability to test in multiple versions of Safari as we're developing.
 
-If you've never tried BrowserStack then I definitely recommend giving it a try at [browserstack.com](https://www.browserstack.com/).
+If you've never tried BrowserStack then I definitely recommend giving it a go at [browserstack.com](https://www.browserstack.com/).
 
 ![BrowserStack](./assets/browserstack.png)
