@@ -40,4 +40,4 @@ BrowsersStack gives you instant access to all real mobile and desktop browsers c
 
 If you've never tried BrowserStack then I definitely recommend giving it a try at [browserstack.com](https://www.browserstack.com/).
 
-[![BrowserStack](assets/browserstack.svg)](https://www.browserstack.com/)
+![BrowserStack](./assets/browserstack.png)
