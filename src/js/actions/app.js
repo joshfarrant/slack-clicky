@@ -28,3 +28,10 @@ export const announcement = {
   hide: (...args) => action(HIDE_ANNOUNCEMENT, ...args),
 };
 
+
+export const SET_USE_DISPLAY_NAMES = 'SET_USE_DISPLAY_NAMES';
+
+export const chat = {
+  setuseDisplayNames: (...args) => action(SET_USE_DISPLAY_NAMES, ...args),
+};
+

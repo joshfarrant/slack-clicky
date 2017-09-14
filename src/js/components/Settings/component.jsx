@@ -17,8 +17,10 @@ const Settings = ({
   location,
   notificationsEnabled,
   setTheme,
+  setuseDisplayNames,
   showSection,
   theme,
+  useDisplayNames,
   visibleSections,
 }) => {
   // Build toggles for sections
@@ -64,6 +66,13 @@ const Settings = ({
             )}
           />
         </div>
+        <div styleName="switch-container">
+          <Switch
+            checked={useDisplayNames}
+            label="Use Display Names"
+            onChange={setuseDisplayNames}
+          />
+        </div>
         <div styleName="swatch-container">
           <div>Theme colour</div>
           <div styleName="option">
@@ -101,8 +110,10 @@ Settings.propTypes = {
   ).isRequired,
   notificationsEnabled: PropTypes.bool.isRequired,
   setTheme: PropTypes.func.isRequired,
+  setuseDisplayNames: PropTypes.func.isRequired,
   showSection: PropTypes.func.isRequired,
   theme: PropTypes.oneOf(Object.values(THEMES)).isRequired,
+  useDisplayNames: PropTypes.bool.isRequired,
   visibleSections: PropTypes.arrayOf(
     PropTypes.oneOf(Object.values(CHAT_LISTS).map(x => x.NAME)),
   ).isRequired,

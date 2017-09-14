@@ -9,6 +9,7 @@ const {
   SET_MESSAGE,
   SHOW_SECTION,
   HIDE_ANNOUNCEMENT,
+  SET_USE_DISPLAY_NAMES,
 } = appActions;
 
 export const defaultState = {
@@ -20,6 +21,7 @@ export const defaultState = {
     CHAT_LISTS.CHANNEL_LIST.NAME,
     CHAT_LISTS.DM_LIST.NAME,
   ],
+  useDisplayNames: false,
 };
 
 const setMessage = (state, { payload }) => {
@@ -81,6 +83,14 @@ const hideAnnouncement = (state, { payload }) => {
   };
 };
 
+const setuseDisplayNames = (state, { payload }) => {
+  const { useDisplayNames } = payload;
+  return {
+    ...state,
+    useDisplayNames,
+  };
+};
+
 const reducer = (
   state,
   action,
@@ -96,6 +106,7 @@ const reducer = (
     case HIDE_SECTION: return reduce(hideSection);
     case SHOW_SECTION: return reduce(showSection);
     case HIDE_ANNOUNCEMENT: return reduce(hideAnnouncement);
+    case SET_USE_DISPLAY_NAMES: return reduce(setuseDisplayNames);
     default: return state;
   }
 };

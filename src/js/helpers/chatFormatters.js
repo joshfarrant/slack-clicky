@@ -2,33 +2,41 @@ import { SLACK } from './constants';
 
 const buildUserMap = team => new Map(team.clicky.userArray);
 
-export const getUserDisplayName = (user) => {
-  const { first_name: firstName, last_name: lastName } = user.profile;
-  let displayName;
+export const getUserDisplayName = (user, useDisplayNames) => {
+  const {
+    display_name: displayName,
+    first_name: firstName,
+    last_name: lastName,
+  } = user.profile;
+  let name;
+
+  if (useDisplayNames && displayName) {
+    return displayName;
+  }
 
   if (firstName) {
     if (lastName) {
-      displayName = `${firstName} ${lastName}`;
+      name = `${firstName} ${lastName}`;
     } else {
-      displayName = firstName;
+      name = firstName;
     }
   } else if (user.name) {
-    displayName = user.name;
+    name = user.name;
   } else {
-    displayName = user.id;
+    name = user.id;
   }
 
-  return displayName;
+  return name;
 };
 
-export const formatIms = (team, hideStarred) => {
+export const formatIms = (team, hideStarred, useDisplayNames) => {
   const userMap = buildUserMap(team);
   return team.ims
   .filter(im => im.is_open && im.user !== SLACK.SLACKBOT_USER)
   .filter(im => (hideStarred ? !im.is_starred : true))
   .map((im) => {
     const user = userMap.get(im.user);
-    const label = getUserDisplayName(user);
+    const label = getUserDisplayName(user, useDisplayNames);
 
     return {
       id: im.id,
@@ -37,7 +45,7 @@ export const formatIms = (team, hideStarred) => {
   });
 };
 
-export const formatMpims = (team, hideStarred) => {
+export const formatMpims = (team, hideStarred, useDisplayNames) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => group.is_mpim && !group.is_archived && group.is_open)
@@ -47,7 +55,7 @@ export const formatMpims = (team, hideStarred) => {
     .filter(member => member !== team.self.id) // Filter yourself out of the list of members
     .map((member) => {
       const user = userMap.get(member);
-      return user.profile.first_name || user.name;
+      return useDisplayNames ? user.profile.display_name : (user.profile.first_name || user.name);
     })
     .join(', ');
     return {
@@ -57,7 +65,7 @@ export const formatMpims = (team, hideStarred) => {
   });
 };
 
-export const formatGroups = (team, hideStarred) => {
+export const formatGroups = (team, hideStarred, useDisplayNames) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => !group.is_archived && group.is_open)
@@ -70,7 +78,7 @@ export const formatGroups = (team, hideStarred) => {
       .filter(member => member !== team.self.id) // Filter yourself out of the list of members
       .map((member) => {
         const user = userMap.get(member);
-        return user.profile.first_name || user.name;
+        return useDisplayNames ? user.profile.display_name : (user.profile.first_name || user.name);
       })
       .join(', ');
     }
@@ -109,10 +117,10 @@ export const formatChannels = (team, hideStarred) => (
   ]
 );
 
-export const formatDms = (team, hideStarred) => (
+export const formatDms = (team, hideStarred, useDisplayNames) => (
   [
-    ...formatIms(team, hideStarred),
-    ...formatMpims(team, hideStarred),
+    ...formatIms(team, hideStarred, useDisplayNames),
+    ...formatMpims(team, hideStarred, useDisplayNames),
   ]
 );
 
@@ -125,13 +133,13 @@ export const formatStarredChannels = team => (
   }))
 );
 
-export const formatStarredIms = (team) => {
+export const formatStarredIms = (team, useDisplayNames) => {
   const userMap = buildUserMap(team);
   return team.ims
   .filter(im => !im.is_archived && im.is_starred)
   .map((im) => {
     const user = userMap.get(im.user);
-    const label = getUserDisplayName(user);
+    const label = getUserDisplayName(user, useDisplayNames);
     return {
       id: im.id,
       label,
@@ -139,7 +147,7 @@ export const formatStarredIms = (team) => {
   });
 };
 
-export const formatStarredGroups = (team) => {
+export const formatStarredGroups = (team, useDisplayNames) => {
   const userMap = buildUserMap(team);
   return team.groups
   .filter(group => !group.is_archived && group.is_starred)
@@ -151,7 +159,7 @@ export const formatStarredGroups = (team) => {
       .filter(member => member !== team.self.id) // Filter yourself out of the list of members
       .map((member) => {
         const user = userMap.get(member);
-        return user.profile.first_name || user.name;
+        return useDisplayNames ? user.profile.display_name : (user.profile.first_name || user.name);
       })
       .join(', ');
     }
@@ -163,11 +171,11 @@ export const formatStarredGroups = (team) => {
   });
 };
 
-export const formatStarredChats = team => (
+export const formatStarredChats = (team, useDisplayNames) => (
   [
     ...formatStarredChannels(team),
-    ...formatStarredIms(team),
-    ...formatStarredGroups(team),
+    ...formatStarredIms(team, useDisplayNames),
+    ...formatStarredGroups(team, useDisplayNames),
   ]
 );
 

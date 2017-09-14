@@ -6,15 +6,16 @@ import {
   notifications as notificationsActions,
 } from '../../actions';
 
-const { section, theme } = appActions;
+const { chat, section, theme } = appActions;
 
 const { notifications } = notificationsActions;
 
 const mapStateToProps = (state) => {
-  const { theme: appTheme, visibleSections } = state.app;
+  const { theme: appTheme, useDisplayNames, visibleSections } = state.app;
   const { notificationsEnabled } = state.notifications;
   return {
     theme: appTheme,
+    useDisplayNames,
     visibleSections,
     notificationsEnabled,
   };
@@ -38,6 +39,9 @@ const mapDispatchToProps = dispatch => ({
   },
   showSection: (sectionName) => {
     dispatch(section.show({ section: sectionName }));
+  },
+  setuseDisplayNames: (useDisplayNames) => {
+    dispatch(chat.setuseDisplayNames({ useDisplayNames }));
   },
 });
 
