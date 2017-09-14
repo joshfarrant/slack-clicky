@@ -96,25 +96,13 @@ const App = ({
     };
   }
 
-  const announcementId = 'v3.0.2';
-  const announcementTitle = 'New in #Clicky 3.0.2!';
+  const announcementId = 'v3.0.9';
+  const announcementTitle = 'New in #Clicky 3.0.9!';
   const announcementMessage = (
     <span>
       <p>
-        Fixed bug causing multiple notifications to be sent when receiving a #Clicky
-        (reported by joe_kuzma and DKatri).
-      </p>
-      <p>
-        Added an option to disable notifications altogether
-        (suggested by Tsury).
-      </p>
-      <p>
-        Added a section for starred chats
-        (suggested by wwb).
-      </p>
-      <p>
-        When you right-click a link on a page you now get an option to send a #Clicky to that link
-        (suggested by TamirL).
+        Added an option to the Settings page to use display names for labels,
+        instead of a combination of first name and last name.
       </p>
     </span>
   );
