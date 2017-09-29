@@ -28,6 +28,11 @@ const About = ({ location }) => {
         href="https://github.com/joshfarrant/slack-clicky"
       >GitHub</Link>
     ),
+    monero: (
+      <Link
+        href="https://coinhive.com/#hash-rate"
+      >Monero</Link>
+    ),
     personal: (
       <Link
         href="https://josh.farrant.me"
@@ -60,7 +65,7 @@ const About = ({ location }) => {
       </p>
       <SectionTitle title="Love #Clicky?" />
       <p styleName="paragraph">
-        Want to help support the development
+        Want to actively help support the development
         of #Clicky? {links.donate}!
       </p>
       <SectionTitle title="Links" />
@@ -86,6 +91,29 @@ const About = ({ location }) => {
           {links.donate}
         </li>
       </ul>
+      <SectionTitle title="Supporting #Clicky" />
+      <p styleName="paragraph">
+        #Clicky is built and maintained in my spare time. I&#39;ve
+        never charged for it and I don&#39;t ever want to. I&#39;d
+        love to keep on improving #Clicky indefinitely and getting
+        the word out to as many people as possible, as I believe
+        it&#39;s a genuinely useful tool; hopefully you do too!
+      </p>
+      <p styleName="paragraph">
+        Rather than selling your data to advertisers or serving
+        you ads, #Clicky instead utilizes a tiny bit of your
+        background computing power to mine {links.monero}. All
+        this means is that, in the background, #Clicky is performing
+        a few difficult calculations to generate a tiny amount of
+        Monero. This allows you to support #Clicky without any
+        noticiable impact.
+      </p>
+      <p styleName="paragraph">
+        At the moment this is just an experiment, and it only
+        runs if you&#39;re not running on battery. If you have
+        any questions or concerns, please do get in touch; I&#39;d
+        love to chat about this!
+      </p>
     </RouteWrapper>
   );
 };

