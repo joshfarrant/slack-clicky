@@ -1,6 +1,6 @@
 {
   "name": "clicky-for-slack",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "description": "A Chrome Extension designed to make sharing a link to Slack as quick and easy as possible.",
   "scripts": {
     "build": "NODE_ENV=production node utils/build.js",
