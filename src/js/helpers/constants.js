@@ -43,7 +43,7 @@ export const ENVIRONMENT = {
 };
 
 export const INTERCOM = {
-  APP_ID: 'yhk1af5z',
+  APP_ID: ENVIRONMENT.PRODUCTION ? 'conjr0rg' : 'yhk1af5z',
 };
 
 export const MESSAGE_STATES = {
