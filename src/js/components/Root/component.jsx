@@ -80,9 +80,6 @@ class Root extends Component {
             This permission will help to reduce
             <br />
             #Clicky&#39;s overall CPU usage!
-            <br />
-            <br />
-            Click below to review and accept.
           </p>
           <p
             styleName="info-action"
@@ -100,7 +97,7 @@ class Root extends Component {
               });
             }}
           >
-            Review permissions
+            Continue
           </p>
         </InfoMessage>
       );
