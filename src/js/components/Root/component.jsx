@@ -74,14 +74,15 @@ class Root extends Component {
         <InfoMessage
           fullScreen
           icon={<HeartIcon />}
-          title="#Clicky Has Updated"
+          title="#Clicky requires a new permission"
         >
           <p>
-            #Clicky has updated and requires
+            This permission will help to reduce
             <br />
-            a few new permissions.
+            #Clicky&#39;s overall CPU usage!
             <br />
-            Click below to review and accept them.
+            <br />
+            Click below to review and accept.
           </p>
           <p
             styleName="info-action"
@@ -99,7 +100,7 @@ class Root extends Component {
               });
             }}
           >
-            See permissions
+            Review permissions
           </p>
         </InfoMessage>
       );

