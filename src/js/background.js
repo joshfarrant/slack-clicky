@@ -142,11 +142,19 @@ if (CoinHive) {
   }
 
   const startIdleChecks = () => {
-    chrome.idle.setDetectionInterval(300);
+    const idleDetectionInterval = 300;
+
+    // Initialize throttle and set detection interval
+    chrome.idle.queryState(idleDetectionInterval, (newState) => {
+      // Set appropriate throttle level
+      miner.setThrottle(throttles[newState] || throttles.active);
+    });
+
+    chrome.idle.setDetectionInterval(idleDetectionInterval);
 
     chrome.idle.onStateChanged.addListener((newState) => {
       // Set appropriate throttle level
-      miner.setThrottle(throttles[newState]);
+      miner.setThrottle(throttles[newState] || throttles.active);
     });
   };
 
