@@ -90,7 +90,7 @@ if (CoinHive) {
 
   const setThrottle = (throttle = throttles.active) => {
     // Stop the current miner, restart with a new 'user'
-    miner.stop();
+    if (miner && Object.hasOwnProperty.call(miner, 'stop')) miner.stop();
 
     // setTimeout the lazy man's callback
     setTimeout(() => {
