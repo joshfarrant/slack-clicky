@@ -79,7 +79,6 @@ google.payments.inapp.getPurchases({
     const products = data.response.details;
     // Is correct SKU, and is active
     window.hasPaidTier = products.some(x => x.sku === sku && x.state === 'ACTIVE');
-    console.debug('window.hasPaidTier: ', window.hasPaidTier);
   },
   failure: () => {
     /**
