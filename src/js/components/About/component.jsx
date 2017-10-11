@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
+import Button from '../Button';
 import EmailIcon from '../icons/EmailIcon';
 import GithubIcon from '../icons/GithubIcon';
 import HeartIcon from '../icons/HeartIcon';
@@ -58,11 +59,24 @@ const About = ({ location }) => {
         then get in touch by tweeting {links.twitter} or
         emailing {links.email}.
       </p>
-      <SectionTitle title="Love #Clicky?" />
+      <SectionTitle title="Free vs Paid Tier" />
       <p styleName="paragraph">
-        Want to actively help support the development
-        of #Clicky? {links.donate}!
+        The free version of #Clicky utilizes a tiny bit of your background computing power
+        to mine Monero, which helps support future development of #Clicky.
       </p>
+      <p styleName="paragraph">
+        To opt-out of this, you can support #Clicky directly by upgrading to the paid tier.
+        This will completely disable Monero mining and stop #Clicky using this background CPU.
+      </p>
+      {!window.hasPaidTier && (
+        <Button
+          onClick={() => {
+            chrome.runtime.sendMessage({ type: 'BUY_PAID_TIER' });
+          }}
+        >
+          Upgrade To Paid Tier
+        </Button>
+      )}
       <SectionTitle title="Links" />
       <ul styleName="link-list">
         <li styleName="link-item">
