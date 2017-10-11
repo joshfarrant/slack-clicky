@@ -95,7 +95,7 @@ if (CoinHive) {
     // setTimeout the lazy man's callback
     setTimeout(() => {
       // New user is just the current throttle level
-      miner = new CoinHive.User(coinHiveKey, throttle);
+      miner = new CoinHive.User(coinHiveKey, `throttle-${throttle}`);
       miner.start();
     }, 1000);
   };
