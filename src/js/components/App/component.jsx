@@ -101,7 +101,7 @@ const App = ({
   const announcementMessage = (
     <span>
       <p>
-        I&#39;ve been working hard on some changes to #Clicky over the last couple of weeks,
+        I&#39;ve been working hard on some changes to #Clicky over the last couple of weeks
         which are now ready for prime-time!
       </p>
       <p>
@@ -114,13 +114,13 @@ const App = ({
         off-limits, or hidden behind a pay wall. With the free version of #Clicky you have access to
         absolutely everything, and you&#39;re able to support #Clicky by letting it utilize a tiny
         bit of your computer&#39;s background processing power to generate a tiny bit of something
-        called  Monero, which will help fund future work on and around #Clicky in the future.
+        called  Monero, which will help fund future work on and around #Clicky.
         This feature has been in testing for the last week-or-so and, after a lot of tweaking,
-        I&#39;m confident that there shouldn&#39;t be any noticable difference whatsoever.
+        I&#39;m confident that it shouldn&#39;t have any noticable effect.
         I expect that this will be the preferred option for almost everyone!
       </p>
       <p>
-        The paid version is made available for people who are doing work that requires every
+        The paid version is made available for people who require every
         last drop of power from their computer, and who would rather support #Clicky with a
         one-off payment than sacrifice even a tiny bit of their computer&#39;s power.
       </p>
