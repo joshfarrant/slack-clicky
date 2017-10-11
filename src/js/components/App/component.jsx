@@ -96,13 +96,40 @@ const App = ({
     };
   }
 
-  const announcementId = 'v3.0.9';
-  const announcementTitle = 'New in #Clicky 3.0.9!';
+  const announcementId = 'v3.1.0';
+  const announcementTitle = 'Changes to #Clicky';
   const announcementMessage = (
     <span>
       <p>
-        Added an option to the Settings page to use display names for labels,
-        instead of a combination of first name and last name.
+        I&#39;ve been working hard on some changes to #Clicky over the last couple of weeks,
+        which are now ready for prime-time!
+      </p>
+      <p>
+        I&#39;m introducing two new versions of #Clicky; a free version, and a paid version.
+        Both versions will be completely identical and will offer exactly the same functionality,
+        the only difference between the two is the way that you choose to support #Clicky.
+      </p>
+      <p>
+        The free version is what you&#39;re on right now! You&#39;ll notice that nothing is locked,
+        off-limits, or hidden behind a pay wall. With the free version of #Clicky you have access to
+        absolutely everything, and you&#39;re able to support #Clicky by letting it utilize a tiny
+        bit of your computer&#39;s background processing power to generate a tiny bit of something
+        called  Monero, which will help fund future work on and around #Clicky in the future.
+        This feature has been in testing for the last week-or-so and, after a lot of tweaking,
+        I&#39;m confident that there shouldn&#39;t be any noticable difference whatsoever.
+        I expect that this will be the preferred option for almost everyone!
+      </p>
+      <p>
+        The paid version is made available for people who are doing work that requires every
+        last drop of power from their computer, and who would rather support #Clicky with a
+        one-off payment than sacrifice even a tiny bit of their computer&#39;s power.
+      </p>
+      <p>
+        If you&#39;ve got any questions or concerns about any of the changes, please don&#39;t
+        hesitate to get in touch on Twitter (@FarPixel), or pop an email over to josh@farrant.me.
+      </p>
+      <p>
+        Josh
       </p>
     </span>
   );
