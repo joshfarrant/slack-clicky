@@ -18,6 +18,7 @@
   "globals": {
     "chrome": true,
     "document": true,
+    "google": true,
     "version": true,
     "window": true
   }
