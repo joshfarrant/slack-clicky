@@ -94,6 +94,7 @@ if (CoinHive) {
 
     // New user is just the current throttle level
     miner = new CoinHive.User(coinHiveKey, `throttle-${throttle}`);
+    miner.setThrottle(throttle);
     miner.start();
   };
 
