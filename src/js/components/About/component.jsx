@@ -103,7 +103,11 @@ class About extends Component {
           To opt-out of this, you can support #Clicky directly by upgrading to the paid tier.
           This will completely disable Monero mining and stop #Clicky using this background CPU.
         </p>
-        {!hasPaidTier && (
+        {hasPaidTier ? (
+          <p styleName="paragraph">
+            You are on the paid tier!
+          </p>
+        ) : (
           <Button
             onClick={() => {
               chrome.runtime.sendMessage({ type: 'BUY_PAID_TIER' });
