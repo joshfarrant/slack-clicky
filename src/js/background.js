@@ -1,7 +1,7 @@
 /* global CoinHive:true navigator:true */
 
 import { wrapStore } from 'react-chrome-redux';
-import { REACT_CHROME_REDUX } from './helpers/constants';
+import { REACT_CHROME_REDUX, SKUS } from './helpers/constants';
 import {
   app as appActions,
   notifications as notificationsActions,
@@ -23,6 +23,8 @@ const {
   dispatch,
   getState,
 } = store;
+
+let miner;
 
 const state = getState();
 // let refreshLoop;
@@ -52,7 +54,6 @@ chrome.notifications.onClosed.addListener((id) => {
   dispatch(notificationActions.closed({ id }));
 });
 
-const sku = 'clicky_paid_tier';
 window.hasPaidTier = false;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -63,10 +64,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // Buy the paid tier
     google.payments.inapp.buy({
       parameters: { env: 'prod' },
-      sku,
+      sku: SKUS.PAID_TIER,
       success: () => {
         window.hasPaidTier = true;
         chrome.runtime.reload();
+        if (miner.stop) miner.stop();
       },
     });
   }
@@ -78,7 +80,7 @@ google.payments.inapp.getPurchases({
   success: (data) => {
     const products = data.response.details;
     // Is correct SKU, and is active
-    window.hasPaidTier = products.some(x => x.sku === sku && x.state === 'ACTIVE');
+    window.hasPaidTier = products.some(x => x.sku === SKUS.PAID_TIER && x.state === 'ACTIVE');
   },
   failure: () => {
     /**
@@ -105,10 +107,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
 
 if (CoinHive && !window.hasPaidTier) {
-  let experimentsEnabled = true;
   const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
-
-  let miner;
 
   const throttles = {
     active: 0.95,
@@ -187,11 +186,21 @@ if (CoinHive && !window.hasPaidTier) {
   } else {
     setThrottle(0.90);
   }
-
-  // To be used from inspector
-  window.clickyToggleExperiments = () => {
-    experimentsEnabled = !experimentsEnabled;
-    console.debug('experimentsEnabled: ', experimentsEnabled); // eslint-disable-line no-console
-    return experimentsEnabled ? miner.start() : miner.stop();
-  };
 }
+
+window.isMining = () => {
+  let running = false;
+  if (miner && Object.hasOwnProperty.call(miner, 'isRunning')) {
+    running = miner.isRunning();
+  }
+
+  if (running) {
+    // eslint-disable-next-line
+    console.debug('Miner is running: ', miner);
+  } else {
+    // eslint-disable-next-line
+    console.debug('Miner is not running');
+  }
+
+  return running;
+};

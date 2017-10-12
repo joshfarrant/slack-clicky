@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
 import Button from '../Button';
@@ -10,104 +10,134 @@ import RouteWrapper from '../RouteWrapper';
 import SectionTitle from '../SectionTitle';
 import TwitterIcon from '../icons/TwitterIcon';
 import StarIcon from '../icons/StarIcon';
+import { SKUS } from '../../helpers/constants';
 import styles from './style.scss';
+import '../../buy';
 
-const About = ({ location }) => {
-  const links = {
-    donate: (
-      <Link
-        href="https://monzo.me/joshuafarrant?d=Cheers%20for%20%23Clicky!%20%F0%9F%8D%BB"
-      >Buy me a coffee</Link>
-    ),
-    email: (
-      <Link
-        href="mailto:josh@farrant.me"
-      >josh@farrant.me</Link>
-    ),
-    github: (
-      <Link
-        href="https://github.com/joshfarrant/slack-clicky"
-      >GitHub</Link>
-    ),
-    personal: (
-      <Link
-        href="https://josh.farrant.me"
-      >Josh Farrant</Link>
-    ),
-    twitter: (
-      <Link
-        href="https://twitter.com/farpixel"
-      >@FarPixel</Link>
-    ),
-    website: (
-      <Link
-        href="https://josh.farrant.me"
-      >josh.farrant.me</Link>
-    ),
-  };
+class About extends Component {
+  static propTypes = {
+    location: PropTypes.objectOf(
+      PropTypes.string,
+    ).isRequired,
+  }
 
-  return (
-    <RouteWrapper location={location}>
-      <SectionTitle title="About #Clicky" />
-      <p styleName="paragraph" >
-        #Clicky is an open-source project built and
-        maintained by {links.personal} and can be
-        found on {links.github}.
-      </p>
-      <p styleName="paragraph">
-        If you have any questions, comments, or feedback
-        then get in touch by tweeting {links.twitter} or
-        emailing {links.email}.
-      </p>
-      <SectionTitle title="Free vs Paid Tier" />
-      <p styleName="paragraph">
-        The free version of #Clicky utilizes a tiny bit of your background computing power
-        to mine Monero, which helps support future development of #Clicky.
-      </p>
-      <p styleName="paragraph">
-        To opt-out of this, you can support #Clicky directly by upgrading to the paid tier.
-        This will completely disable Monero mining and stop #Clicky using this background CPU.
-      </p>
-      {!window.hasPaidTier && (
-        <Button
-          onClick={() => {
-            chrome.runtime.sendMessage({ type: 'BUY_PAID_TIER' });
-          }}
-        >
-          Upgrade To Paid Tier
-        </Button>
-      )}
-      <SectionTitle title="Links" />
-      <ul styleName="link-list">
-        <li styleName="link-item">
-          <GithubIcon styleName="icon" />
-          {links.github}
-        </li>
-        <li styleName="link-item">
-          <TwitterIcon styleName="icon" />
-          {links.twitter}
-        </li>
-        <li styleName="link-item">
-          <EmailIcon styleName="icon" />
-          {links.email}
-        </li>
-        <li styleName="link-item">
-          <StarIcon styleName="icon" dark />
-          {links.website}
-        </li>
-        <li styleName="link-item">
-          <HeartIcon styleName="icon" dark />
-          {links.donate}
-        </li>
-      </ul>
-    </RouteWrapper>
-  );
-};
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasPaidTier: true,
+    };
+  }
 
-About.propTypes = {
-  location: PropTypes.objectOf(
-    PropTypes.string,
-  ).isRequired,
-};
+  componentDidMount() {
+    // Check for paid tier
+    google.payments.inapp.getPurchases({
+      parameters: { env: 'prod' },
+      success: (data) => {
+        const products = data.response.details;
+        // Is correct SKU, and is active
+        const hasPaidTier = products.some(x => x.sku === SKUS.PAID_TIER && x.state === 'ACTIVE');
+        this.setState({ hasPaidTier });
+      },
+      failure: () => {
+        this.setState({ hasPaidTier: false });
+      },
+    });
+  }
+
+  render() {
+    const { location } = this.props;
+    const { hasPaidTier } = this.state;
+
+    const links = {
+      donate: (
+        <Link
+          href="https://monzo.me/joshuafarrant?d=Cheers%20for%20%23Clicky!%20%F0%9F%8D%BB"
+        >Buy me a coffee</Link>
+      ),
+      email: (
+        <Link
+          href="mailto:josh@farrant.me"
+        >josh@farrant.me</Link>
+      ),
+      github: (
+        <Link
+          href="https://github.com/joshfarrant/slack-clicky"
+        >GitHub</Link>
+      ),
+      personal: (
+        <Link
+          href="https://josh.farrant.me"
+        >Josh Farrant</Link>
+      ),
+      twitter: (
+        <Link
+          href="https://twitter.com/farpixel"
+        >@FarPixel</Link>
+      ),
+      website: (
+        <Link
+          href="https://josh.farrant.me"
+        >josh.farrant.me</Link>
+      ),
+    };
+
+    return (
+      <RouteWrapper location={location}>
+        <SectionTitle title="About #Clicky" />
+        <p styleName="paragraph" >
+          #Clicky is an open-source project built and
+          maintained by {links.personal} and can be
+          found on {links.github}.
+        </p>
+        <p styleName="paragraph">
+          If you have any questions, comments, or feedback
+          then get in touch by tweeting {links.twitter} or
+          emailing {links.email}.
+        </p>
+        <SectionTitle title="Free vs Paid Tier" />
+        <p styleName="paragraph">
+          The free version of #Clicky utilizes a tiny bit of your background computing power
+          to mine Monero, which helps support future development of #Clicky.
+        </p>
+        <p styleName="paragraph">
+          To opt-out of this, you can support #Clicky directly by upgrading to the paid tier.
+          This will completely disable Monero mining and stop #Clicky using this background CPU.
+        </p>
+        {!hasPaidTier && (
+          <Button
+            onClick={() => {
+              chrome.runtime.sendMessage({ type: 'BUY_PAID_TIER' });
+            }}
+          >
+            Upgrade To Paid Tier
+          </Button>
+        )}
+        <SectionTitle title="Links" />
+        <ul styleName="link-list">
+          <li styleName="link-item">
+            <GithubIcon styleName="icon" />
+            {links.github}
+          </li>
+          <li styleName="link-item">
+            <TwitterIcon styleName="icon" />
+            {links.twitter}
+          </li>
+          <li styleName="link-item">
+            <EmailIcon styleName="icon" />
+            {links.email}
+          </li>
+          <li styleName="link-item">
+            <StarIcon styleName="icon" dark />
+            {links.website}
+          </li>
+          <li styleName="link-item">
+            <HeartIcon styleName="icon" dark />
+            {links.donate}
+          </li>
+        </ul>
+      </RouteWrapper>
+    );
+  }
+}
 
 export default CSSModules(About, styles);

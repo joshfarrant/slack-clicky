@@ -83,6 +83,10 @@ export const SENTRY = {
   DSN: 'https://20681ca538f3415d907d8d56f0fe8d40@sentry.io/155158',
 };
 
+export const SKUS = {
+  PAID_TIER: 'clicky_paid_tier',
+};
+
 export const SLACK = {
   SLACKBOT_USER: 'USLACKBOT',
   AUTHORIZE_URL: 'https://slack.com/oauth/authorize',
