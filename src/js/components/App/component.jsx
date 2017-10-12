@@ -96,13 +96,26 @@ const App = ({
     };
   }
 
-  const announcementId = 'v3.0.9';
-  const announcementTitle = 'New in #Clicky 3.0.9!';
+  const announcementId = 'v3.0.29';
+  const announcementTitle = 'A bug in #Clicky';
   const announcementMessage = (
     <span>
       <p>
-        Added an option to the Settings page to use display names for labels,
-        instead of a combination of first name and last name.
+        For about 2 hours yesterday the version of #Clicky available in the
+        Chrome Store (v3.0.27) contained a bug which caused #Clicky&#39;s CPU
+        usage to skyrocket. The issue has since been fixed in v3.0.28.
+      </p>
+      <p>
+        The issue was caused by some refactoring I was working on behind the
+        scenes and an oversight on my part. As soon as I was alerted to the issue
+        I found and fixed the bug and a new version was published within a few minutes.
+      </p>
+      <p>
+        I&#39;m very sorry if you were affected by this, and I can assure you I&#39;ll do
+        everything possible to prevent this from happening again in the future.
+      </p>
+      <p>
+        Josh
       </p>
     </span>
   );
