@@ -105,7 +105,7 @@ class About extends Component {
         </p>
         {hasPaidTier ? (
           <p styleName="paragraph">
-            You are on the paid tier!
+            You&#39;re on the paid tier!
           </p>
         ) : (
           <Button

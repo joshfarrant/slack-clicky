@@ -111,7 +111,7 @@ const App = ({
       </p>
       <p>
         The free version is what you&#39;re on right now! You&#39;ll notice that nothing is locked,
-        off-limits, or hidden behind a pay wall. With the free version of #Clicky you have access to
+        off-limits, or hidden behind a paywall. With the free version of #Clicky you have access to
         absolutely everything, and you&#39;re able to support #Clicky by letting it utilize a tiny
         bit of your computer&#39;s background processing power to generate a tiny bit of something
         called  Monero, which will help fund future work on and around #Clicky.
