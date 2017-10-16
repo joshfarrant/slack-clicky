@@ -10,6 +10,8 @@ const {
   SHOW_SECTION,
   HIDE_ANNOUNCEMENT,
   SET_USE_DISPLAY_NAMES,
+  GET_CURRENT_TAB_URL,
+  GOT_CURRENT_TAB_URL,
 } = appActions;
 
 export const defaultState = {
@@ -22,6 +24,8 @@ export const defaultState = {
     CHAT_LISTS.DM_LIST.NAME,
   ],
   useDisplayNames: false,
+  currentTabUrl: '',
+  gettingCurrentTabUrl: false,
 };
 
 const setMessage = (state, { payload }) => {
@@ -83,11 +87,25 @@ const hideAnnouncement = (state, { payload }) => {
   };
 };
 
-const setuseDisplayNames = (state, { payload }) => {
+const setUseDisplayNames = (state, { payload }) => {
   const { useDisplayNames } = payload;
   return {
     ...state,
     useDisplayNames,
+  };
+};
+
+const getCurrentTabUrl = state => ({
+  ...state,
+  gettingCurrentTabUrl: true,
+});
+
+const gotCurrentTabUrl = (state, { payload }) => {
+  const { currentTabUrl } = payload;
+  return {
+    ...state,
+    currentTabUrl,
+    gettingCurrentTabUrl: false,
   };
 };
 
@@ -106,7 +124,9 @@ const reducer = (
     case HIDE_SECTION: return reduce(hideSection);
     case SHOW_SECTION: return reduce(showSection);
     case HIDE_ANNOUNCEMENT: return reduce(hideAnnouncement);
-    case SET_USE_DISPLAY_NAMES: return reduce(setuseDisplayNames);
+    case SET_USE_DISPLAY_NAMES: return reduce(setUseDisplayNames);
+    case GET_CURRENT_TAB_URL: return reduce(getCurrentTabUrl);
+    case GOT_CURRENT_TAB_URL: return reduce(gotCurrentTabUrl);
     default: return state;
   }
 };

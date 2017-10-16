@@ -1,7 +1,7 @@
 /* global CoinHive:true navigator:true */
 
 import { wrapStore } from 'react-chrome-redux';
-import { REACT_CHROME_REDUX, SKUS } from './helpers/constants';
+import { REACT_CHROME_REDUX, SKUS, ENVIRONMENT } from './helpers/constants';
 import {
   app as appActions,
   notifications as notificationsActions,
@@ -12,7 +12,7 @@ import store from './store/index';
 import './buy.js';
 
 const { notification: notificationActions } = notificationsActions;
-const { message } = appActions;
+const { currentTabUrl, message } = appActions;
 const { team: teamActions } = teamsActions;
 
 wrapStore(store, {
@@ -111,6 +111,7 @@ chrome.runtime.onConnect.addListener((port) => {
     const { name } = sender;
     if (name === REACT_CHROME_REDUX.PORT_NAME) {
       dispatch(message.set({ message: '' }));
+      dispatch(currentTabUrl.got({ currentTabUrl: '' }));
     }
   });
 });
@@ -156,7 +157,7 @@ checkForPaidTier().then(() => {
         miner.stop();
       } else if (!hasPaidTier && miner && !miner.isRunning()) {
         // If there's a miner that's not running, and you don't have the paid tier
-        miner.start();
+        if (!ENVIRONMENT.DEVELOPMENT) miner.start();
       } else if (!hasPaidTier && miner && miner.isRunning()) {
         /**
          * If there's a miner running, and you don't have the paid tier

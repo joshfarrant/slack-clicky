@@ -35,3 +35,11 @@ export const chat = {
   setuseDisplayNames: (...args) => action(SET_USE_DISPLAY_NAMES, ...args),
 };
 
+export const GET_CURRENT_TAB_URL = 'GET_CURRENT_TAB_URL';
+export const GOT_CURRENT_TAB_URL = 'GOT_CURRENT_TAB_URL';
+
+export const currentTabUrl = {
+  get: (...args) => action(GET_CURRENT_TAB_URL, ...args),
+  got: (...args) => action(GOT_CURRENT_TAB_URL, ...args),
+};
+

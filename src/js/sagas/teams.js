@@ -4,7 +4,7 @@ import parse from 'url-parse';
 import slack from 'slack';
 import config from 'config'; // eslint-disable-line
 import { SLACK } from '../helpers/constants';
-import { shouldNotify } from '../helpers/utils';
+import { getActiveTabUrl, shouldNotify } from '../helpers/utils';
 import { formatChannels, formatDms } from '../helpers/chatFormatters';
 import { customChannel } from './customChannel';
 import {
@@ -107,19 +107,6 @@ const connectToStream = token => (
 
     // Connect stream instance
     stream.listen({ token });
-  })
-);
-
-const getActiveTabUrl = () => (
-  new Promise((resolve) => {
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      if (!tabs || !tabs[0]) {
-        resolve();
-        return;
-      }
-      const url = tabs[0].url;
-      resolve(url);
-    });
   })
 );
 
@@ -266,38 +253,36 @@ function* sendMessage(action) {
   const created = Date.now();
   yield put(teamActions.message.sending({ created, channel, messageId, team }));
 
-  getActiveTabUrl()
-  .then((url) => {
-    let messageText;
-    if (text) {
-      messageText = text;
-    } else {
-      messageText = message ? `${message} ${url}` : url;
+  const url = yield getActiveTabUrl();
+  let messageText;
+  if (text) {
+    messageText = text;
+  } else {
+    messageText = message ? `${message}` : url;
+  }
+  const data = {
+    id: messageId,
+    type: 'message',
+    channel,
+    text: messageText,
+  };
+
+  const { ws } = stream;
+
+  ws.send(JSON.stringify(data));
+
+  // Add the message to the pending messages object
+  pendingMessages[messageId] = data;
+
+  // After 1 second consider the message errored
+  setTimeout(() => {
+    // If it's still in the pendingMessages, error and delete it
+    if (Object.prototype.hasOwnProperty.call(pendingMessages, messageId)) {
+      // Timed out, remove the message
+      customChannel.put(teamActions.message.sent({ messageId, team }, true));
+      delete pendingMessages[messageId];
     }
-    const data = {
-      id: messageId,
-      type: 'message',
-      channel,
-      text: messageText,
-    };
-
-    const { ws } = stream;
-
-    ws.send(JSON.stringify(data));
-
-    // Add the message to the pending messages object
-    pendingMessages[messageId] = data;
-
-    // After 1 second consider the message errored
-    setTimeout(() => {
-      // If it's still in the pendingMessages, error and delete it
-      if (Object.prototype.hasOwnProperty.call(pendingMessages, messageId)) {
-        // Timed out, remove the message
-        customChannel.put(teamActions.message.sent({ messageId, team }, true));
-        delete pendingMessages[messageId];
-      }
-    }, 1000);
-  });
+  }, 1000);
 }
 
 export default function* watchTeamsActions() {

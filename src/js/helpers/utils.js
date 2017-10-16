@@ -35,3 +35,16 @@ export const buildRandomId = (length) => {
 };
 
 export const getUniqueId = (prefix = 'id') => `${prefix}-${buildRandomId(10)}`;
+
+export const getActiveTabUrl = () => (
+  new Promise((resolve) => {
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+      if (!tabs || !tabs[0]) {
+        resolve();
+        return;
+      }
+      const url = tabs[0].url;
+      resolve(url);
+    });
+  })
+);

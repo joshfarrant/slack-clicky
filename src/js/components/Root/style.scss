@@ -120,8 +120,10 @@
    * MessageBox component styles
    */
   --message-box-color: var(--p-copy-color);
+  --message-box-background-color: var(--p-light-grey-color);
   --message-box-placeholder-color: var(--p-medium-grey-color);
   --message-box-cursor-color: var(--p-black-color);
+  --message-box-selection-color: var(--main-highlight-color);
 
   /*
    * Swatch component styles
@@ -167,6 +169,7 @@
    * MessageBox component styles
    */
   --message-box-color: var(--p-light-grey-color);
+  --message-box-background-color: var(--p-dark-grey-color);
   --message-box-placeholder-color: var(--p-dark-grey-color);
   --message-box-cursor-color: var(--p-medium-grey-color);
 
