@@ -35,17 +35,12 @@ class MessageBox extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // Re-sync inputValue
-    this.setState({
-      inputValue: nextProps.message,
-    });
-
     /**
      * Check to see if we've just recieved the currentTabUrl
      * If so, prepend it to the message
      */
     if (nextProps.currentTabUrl && this.props.currentTabUrl !== nextProps.currentTabUrl) {
-      this.props.setMessage(`${nextProps.currentTabUrl} ${this.props.message}`);
+      this.updateStateAndMessage(`${nextProps.currentTabUrl} ${this.props.message}`);
     }
   }
 
@@ -71,12 +66,16 @@ class MessageBox extends Component {
 
   onInputChange = (e) => {
     const { value } = e.target;
+    this.updateStateAndMessage(value);
+  }
+
+  updateStateAndMessage = (message) => {
     const { setMessage } = this.props;
     // Update our local copy of inputValue
     this.setState({
-      inputValue: value,
+      inputValue: message,
     });
-    setMessage(value);
+    setMessage(message);
   }
 
   render() {
