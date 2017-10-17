@@ -96,40 +96,23 @@ const App = ({
     };
   }
 
-  const announcementId = 'v3.1.0';
-  const announcementTitle = 'Changes to #Clicky';
+  const announcementId = 'v3.2.0';
+  const announcementTitle = 'New in v3.2.0';
   const announcementMessage = (
     <span>
       <p>
-        I&#39;ve been working hard on some changes to #Clicky over the last couple of weeks
-        which are now ready for prime-time!
+        You can now send #Clickys without including a link to your current page!
+        This allows you to use #Clicky to quickly reply to a message, without having
+        to open Slack and find the correct channel.
       </p>
       <p>
-        I&#39;m introducing two new versions of #Clicky; a free version, and a paid version.
-        Both versions will be completely identical and will offer exactly the same functionality,
-        the only difference between the two is the way that you choose to support #Clicky.
+        Just type your message into the message box below, then click the
+        channel or person that you&#39;d like to send the message to. #Clicky will send
+        whatever you type into that box, whether it includes a link or not.
       </p>
       <p>
-        The free version is what you&#39;re on right now! You&#39;ll notice that nothing is locked,
-        off-limits, or hidden behind a paywall. With the free version of #Clicky you have access to
-        absolutely everything, and you&#39;re able to support #Clicky by letting it utilize a tiny
-        bit of your computer&#39;s background processing power to generate a tiny bit of something
-        called  Monero, which will help fund future work on and around #Clicky.
-        This feature has been in testing for the last week-or-so and, after a lot of tweaking,
-        I&#39;m confident that it shouldn&#39;t have any noticable effect.
-        I expect that this will be the preferred option for almost everyone!
-      </p>
-      <p>
-        The paid version is made available for people who require every
-        last drop of power from their computer, and who would rather support #Clicky with a
-        one-off payment than sacrifice even a tiny bit of their computer&#39;s power.
-      </p>
-      <p>
-        If you&#39;ve got any questions or concerns about any of the changes, please don&#39;t
-        hesitate to get in touch on Twitter (@FarPixel), or pop an email over to josh@farrant.me.
-      </p>
-      <p>
-        Josh
+        Got a feature that you&#39;d like to see in #Clicky?
+        Let me know!
       </p>
     </span>
   );
