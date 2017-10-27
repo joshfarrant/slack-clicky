@@ -1,3 +1,5 @@
+import { SKUS } from './constants';
+
 // Matches urls
 const linkRegex = /(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])/;
 
@@ -45,6 +47,21 @@ export const getActiveTabUrl = () => (
       }
       const url = tabs[0].url;
       resolve(url);
+    });
+  })
+);
+
+export const checkForPaidTier = (
+  new Promise((resolve, reject) => {
+    google.payments.inapp.getPurchases({
+      parameters: { env: 'prod' },
+      success: (data) => {
+        const products = data.response.details;
+        // Is correct SKU, and is active
+        const hasPaidTier = products.some(x => x.sku === SKUS.PAID_TIER && x.state === 'ACTIVE');
+        resolve(hasPaidTier);
+      },
+      failure: reject,
     });
   })
 );

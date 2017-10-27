@@ -10,7 +10,7 @@ import RouteWrapper from '../RouteWrapper';
 import SectionTitle from '../SectionTitle';
 import TwitterIcon from '../icons/TwitterIcon';
 import StarIcon from '../icons/StarIcon';
-import { SKUS } from '../../helpers/constants';
+import { checkForPaidTier } from '../../helpers/utils';
 import styles from './style.scss';
 import '../../buy';
 
@@ -30,17 +30,12 @@ class About extends Component {
 
   componentDidMount() {
     // Check for paid tier
-    google.payments.inapp.getPurchases({
-      parameters: { env: 'prod' },
-      success: (data) => {
-        const products = data.response.details;
-        // Is correct SKU, and is active
-        const hasPaidTier = products.some(x => x.sku === SKUS.PAID_TIER && x.state === 'ACTIVE');
-        this.setState({ hasPaidTier });
-      },
-      failure: () => {
-        this.setState({ hasPaidTier: false });
-      },
+    checkForPaidTier()
+    .then((hasPaidTier) => {
+      this.setState({ hasPaidTier });
+    })
+    .catch(() => {
+      this.setState({ hasPaidTier: false });
     });
   }
 
@@ -96,9 +91,8 @@ class About extends Component {
         </p>
         <SectionTitle title="Free vs Paid Tier" />
         <p styleName="paragraph">
-          The free version of #Clicky is supported by ads, which help to support
-          future development of #Clicky.
-          Upgrading to the paid tier will completely disable all ads.
+          Upgrade to the paid tier to unlock multi-team support,
+          dark mode, and themes!
         </p>
         {hasPaidTier ? (
           <p styleName="paragraph">

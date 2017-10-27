@@ -1,5 +1,3 @@
-/* global CoinHive:true navigator:true */
-
 import { wrapStore } from 'react-chrome-redux';
 import { REACT_CHROME_REDUX, SKUS } from './helpers/constants';
 import {
