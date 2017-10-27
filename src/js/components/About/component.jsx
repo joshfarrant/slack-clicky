@@ -96,12 +96,9 @@ class About extends Component {
         </p>
         <SectionTitle title="Free vs Paid Tier" />
         <p styleName="paragraph">
-          The free version of #Clicky utilizes a tiny bit of your background computing power
-          to mine Monero, which helps support future development of #Clicky.
-        </p>
-        <p styleName="paragraph">
-          To opt-out of this, you can support #Clicky directly by upgrading to the paid tier.
-          This will completely disable Monero mining and stop #Clicky using this background CPU.
+          The free version of #Clicky is supported by ads, which help to support
+          future development of #Clicky.
+          Upgrading to the paid tier will completely disable all ads.
         </p>
         {hasPaidTier ? (
           <p styleName="paragraph">
