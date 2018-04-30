@@ -51,7 +51,7 @@ export const getActiveTabUrl = () => (
   })
 );
 
-export const checkForPaidTier = (
+export const checkForPaidTier = () => (
   new Promise((resolve, reject) => {
     google.payments.inapp.getPurchases({
       parameters: { env: 'prod' },
