@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900');
 
 :global {
+  html {
+    overflow-y: overlay;
+  }
+
   body {
     width: 304px; /* Based on 8 images, 34px wide with 4px margin */
     margin: 0;
