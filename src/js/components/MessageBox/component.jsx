@@ -18,7 +18,7 @@ class MessageBox extends Component {
     super(props);
     // Keep a local copy of inputValue to prevent cursor flickering on textarea rerender
     this.state = {
-      inputValue: '',
+      inputValue: props.message || '',
     };
   }
 
@@ -27,11 +27,16 @@ class MessageBox extends Component {
       input,
       props: {
         getCurrentTabUrl,
+        message,
       },
     } = this;
-    getCurrentTabUrl();
 
-    input.focus();
+    if (!message) {
+      getCurrentTabUrl();
+      input.focus();
+    } else {
+      input.select();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
