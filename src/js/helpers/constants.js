@@ -42,10 +42,6 @@ export const ENVIRONMENT = {
   TESTING: process.env.NODE_ENV === 'testing',
 };
 
-export const INTERCOM = {
-  APP_ID: ENVIRONMENT.PRODUCTION ? 'conjr0rg' : 'yhk1af5z',
-};
-
 export const MESSAGE_STATES = {
   ERROR: 'ERROR',
   SENDING: 'SENDING',

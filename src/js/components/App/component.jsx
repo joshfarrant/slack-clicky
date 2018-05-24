@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Intercom from 'react-intercom';
 import { Link } from 'react-router-dom';
 import Announcement from '../Announcement';
 import ChannelList from '../ChannelList';
@@ -16,14 +15,7 @@ import StarredChatList from '../StarredChatList';
 import RouteWrapper from '../RouteWrapper';
 import SectionTitle from '../SectionTitle';
 import TeamSelect from '../TeamSelect';
-import { CHAT_LISTS, INTERCOM, ROUTES } from '../../helpers/constants';
-
-const findBiggestImage = (sizes, parent, keyName) => (
-  // Descend through the sizes and return biggest image available
-  sizes
-  .map(size => parent[`${keyName}${size}`])
-  .filter(image => !!image)[0] // Remove undefineds and select first
-);
+import { CHAT_LISTS, ROUTES } from '../../helpers/constants';
 
 const App = ({
   hideAnnouncement,
@@ -58,43 +50,6 @@ const App = ({
 
   const showSections = teams.length > 0 && visibleSections.length > 0;
   const noVisibleSections = visibleSections.length === 0;
-  const showIntercom = selectedTeam && selectedTeam.users;
-  let intercomData = {};
-
-  if (showIntercom && selectedTeam.users) {
-    const team = selectedTeam;
-    const user = team.users.find(u => u.id === team.self.id);
-    const {
-      channelArray,
-      groupArray,
-      userArray,
-    } = team.clicky;
-
-    intercomData = {
-      app_id: INTERCOM.APP_ID,
-      name: user.profile.real_name_normalized || user.real_name || user.name,
-      email: user.profile.email,
-      user_id: user.id,
-      title: user.profile.title,
-      username: user.name,
-      user_image: findBiggestImage(
-        ['512', '192', '72', '48', '32', '24'],
-        user.profile,
-        'image_',
-      ),
-      company: {
-        id: team.team.id,
-        name: team.team.name,
-        team_email_domain: team.team.email_domain,
-        team_image: findBiggestImage(
-          ['original', '230', '132', '102', '88', '68', '44', '34'],
-          team.team.icon,
-          'image_',
-        ),
-        total_users: channelArray.length + groupArray.length + userArray.length,
-      },
-    };
-  }
 
   const announcementId = 'v3.2.0';
   const announcementTitle = 'New in v3.2.0';
@@ -145,12 +100,6 @@ const App = ({
           </InfoMessage>
         )}
       </div>
-      {showIntercom && (
-        <Intercom
-          appID={INTERCOM.APP_ID}
-          {...intercomData}
-        />
-      )}
     </RouteWrapper>
   );
 };
