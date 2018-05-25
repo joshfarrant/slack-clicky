@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CSSModules from 'react-css-modules';
-import Button from '../Button';
+// import Button from '../Button';
 import EmailIcon from '../icons/EmailIcon';
 import GithubIcon from '../icons/GithubIcon';
 import HeartIcon from '../icons/HeartIcon';
@@ -41,7 +41,7 @@ class About extends Component {
 
   render() {
     const { location } = this.props;
-    const { hasPaidTier } = this.state;
+    // const { hasPaidTier } = this.state;
 
     const links = {
       donate: (
@@ -89,24 +89,26 @@ class About extends Component {
           then get in touch by tweeting {links.twitter} or
           emailing {links.email}.
         </p>
-        <SectionTitle title="Free vs Paid Tier" />
-        <p styleName="paragraph">
-          Upgrade to the paid tier to unlock multi-team support,
-          dark mode, and themes!
-        </p>
-        {hasPaidTier ? (
+        {/*
+          <SectionTitle title="Free vs Paid Tier" />
           <p styleName="paragraph">
-            You&#39;re on the paid tier!
+            Upgrade to the paid tier to unlock multi-team support,
+            dark mode, and themes!
           </p>
-        ) : (
-          <Button
-            onClick={() => {
-              chrome.runtime.sendMessage({ type: 'BUY_PAID_TIER' });
-            }}
-          >
-            Upgrade To Paid Tier
-          </Button>
-        )}
+          {hasPaidTier ? (
+            <p styleName="paragraph">
+              You&#39;re on the paid tier!
+            </p>
+          ) : (
+            <Button
+              onClick={() => {
+                chrome.runtime.sendMessage({ type: 'BUY_PAID_TIER' });
+              }}
+            >
+              Upgrade To Paid Tier
+            </Button>
+          )}
+        */}
         <SectionTitle title="Links" />
         <ul styleName="link-list">
           <li styleName="link-item">
